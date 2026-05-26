@@ -1,6 +1,8 @@
 # Golden Glow Mobile Application
 
 A mobile Golden Glow application featuring a clean, modular user interface designed for seamless product discovery and shopping.
+We changed the colors from gold to blue and white becaue visibility was going to be hard
+And the typography and the color names are all there in the main.dart file. Endavour to use them than writing from scratch
 
 ---
 
@@ -12,7 +14,7 @@ To maintain a consistent UI/UX across all screens and prevent layout fragmentati
 
 | Usage | Hex Code | Visual Sample | Application |
 | :--- | :--- | :--- | :--- |
-| **Primary / Brand** | `#2596be` | 🟦 Ocean Blue | Active Bottom Nav, Primary Buttons, Price Tags, Selection Highlights |
+| **Primary / Brand** | `#000435` | 🟦 Dark Blue | Active Bottom Nav, Primary Buttons, Price Tags, Selection Highlights |
 | **Secondary Accent**| `#0EA5E9` | 🔷 Light Sky Blue | Hyperlinks, Secondary CTA ("See More" link text) |
 | **Dark Neutral** | `#1E293B` | ⬛ Deep Slate | Primary Headings, Product Names, Heavy Body Text |
 | **Medium Neutral** | `#64748B` | ⬜ Cool Grey | Form Placeholders, Secondary Descriptions, Pagination Text |
