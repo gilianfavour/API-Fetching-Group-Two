@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'screens/products/products_screen.dart'; 
+
+
+
 void main() {
   runApp(const MyApp());
 }
@@ -33,7 +37,7 @@ class MyApp extends StatelessWidget {
           // For AppBars and Major Screen Headers
           titleLarge: GoogleFonts.poppins(
             fontSize: 20,
-            fontWeight: FontWeight.w640,
+            fontWeight: FontWeight.w600,
             color: const Color(0xFF1E293B),
           ),
           // For Product Titles / Section Titles
@@ -74,7 +78,7 @@ class MyApp extends StatelessWidget {
       ),
       // --------------------------------------------
       
-      home: const Scaffold(body: Center(child: Text("App Entry"))), 
+      home: const ProductPage(), 
     );
   }
 }
