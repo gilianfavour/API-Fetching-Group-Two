@@ -21,10 +21,8 @@ class MyApp extends StatelessWidget {
         
         colorScheme: const ColorScheme.light(
           primary: Color(0xFF2596BE),        // Brand Ocean Blue
-          secondary: Color(0xFF0EA5E9),      // Secondary Accent
-          background: Color(0xFFF8FAFC),     // Light Neutral
-          surface: Color(0xFFFFFFFF),        // Pure White for Cards
-          onBackground: Color(0xFF1E293B),   // Dark Neutral Text
+          secondary: Color(0xFF0EA5E9),     // Light Neutral
+          surface: Color(0xFFFFFFFF),   // Dark Neutral Text
           onSurface: Color(0xFF1E293B),      // Dark Neutral Text on Cards
         ),
 
@@ -33,7 +31,7 @@ class MyApp extends StatelessWidget {
           // For AppBars and Major Screen Headers
           titleLarge: GoogleFonts.poppins(
             fontSize: 20,
-            fontWeight: FontWeight.w640,
+            fontWeight: FontWeight.w600,
             color: const Color(0xFF1E293B),
           ),
           // For Product Titles / Section Titles
