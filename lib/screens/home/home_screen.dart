@@ -74,19 +74,7 @@ const List<HeroBannerItem> _banners = [
     imageUrl:
         'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=900&fit=crop',
   ),
-  HeroBannerItem(
-    tag: 'Flash Sale',
-    title: 'Up to 50 % Off\nSupplements',
-    shortDesc: 'Limited-time deals. No coupon needed.',
-    fullDesc:
-        'Stock up on daily essentials — multivitamins, omega-3s, '
-        'probiotics and collagen boosters at up to 50 % off. '
-        'Sale ends midnight. Discount applied automatically at checkout.',
-    stat: 'Up to 50 % Off',
-    statSub: 'Ends midnight tonight',
-    imageUrl:
-        'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=900&fit=crop',
-  ),
+ 
 ];
 
 const List<NutriProduct> _featured = [
@@ -138,18 +126,7 @@ const List<NutriProduct> _featured = [
         'Multi-weight hyaluronic acid for deep-layer hydration. '
         'Fragrance-free, suitable for sensitive skin.',
   ),
-  NutriProduct(
-    id: 'p5',
-    name: 'Omega-3 Fish Oil',
-    category: 'Pharmaceuticals',
-    price: 18.99,
-    badge: 'Top',
-    imageUrl:
-        'https://images.unsplash.com/photo-1559181567-c3190bfbf369?w=400&fit=crop',
-    description:
-        '1 000 mg EPA/DHA per capsule. Molecularly distilled, '
-        'odourless enteric-coated softgels.',
-  ),
+ 
   NutriProduct(
     id: 'p6',
     name: 'Niacinamide 10 % Toner',
@@ -342,6 +319,40 @@ class _HomePageState extends State<HomePage> {
             onTap: _onNavBarTap,
           ),
         ],
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _HeroSection(
+              banners: _banners,
+              ctrl: _pageCtrl,
+              slide: _slide,
+              detailOpen: _detailOpen,
+              onPageChanged: (i) => setState(() => _slide = i),
+              onCta: () => setState(() => _detailOpen = !_detailOpen),
+              onClose: () => setState(() => _detailOpen = false),
+            ),
+            _StatsStrip(),
+            _SectionRow(
+              title: 'Featured Products',
+              linkLabel: 'View all',
+              onLink: () {
+                // TODO: Navigator.pushNamed(context, '/products');
+              },
+            ),
+            _ProductRow(
+              products: _featured,
+              wishlist: _wishlist,
+              onTap: _openProduct,
+              onFav: _toggleWishlist,
+            ),
+            _SectionRow(title: 'Browse Categories'),
+            _CategoryStrip(categories: _categories, onTap: _openCategory),
+            const SizedBox(height: 32),
+          ],
+        ),
       ),
     );
   }
@@ -512,7 +523,7 @@ class _HeroSection extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: detailOpen
                                 ? Colors.white24
-                                : Colors.white,
+                                : const Color(0xFF000435),
                             borderRadius: BorderRadius.circular(30),
                             border: detailOpen
                                 ? Border.all(color: Colors.white38)
@@ -521,7 +532,7 @@ class _HeroSection extends StatelessWidget {
                           child: Text(
                             detailOpen ? 'Close  ✕' : 'See More  →',
                             style: const TextStyle(
-                                color: Color(0xFF000435),
+                                color: Colors.white,
                                 fontSize: 13,
                                 fontWeight: FontWeight.w800,
                                 letterSpacing: 0.3),

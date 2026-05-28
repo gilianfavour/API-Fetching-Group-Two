@@ -12,7 +12,7 @@ class AppColors {
   AppColors._();
 
   static const Color primary       = Color(0xFF000435);
-  static const Color accent        = Color(0xFF0EA5E9);
+  static const Color accent        = Color(0xFF000435);
   static const Color darkNeutral   = Color(0xFF1E293B);
   static const Color mediumNeutral = Color(0xFF64748B);
   static const Color lightBg       = Color(0xFFF8FAFC);
