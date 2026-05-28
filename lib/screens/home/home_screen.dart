@@ -1,6 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../providers/product_provider.dart';
+import '../../models/product_model.dart';
 import 'package:nutriblend_group2/screens/products/products_screen.dart';
+import 'package:nutriblend_group2/screens/product_detail/product_detail_screen.dart';
 import '../../widgets/common/app_bar.dart';
 import '../../widgets/common/navigation_bar.dart';
 import '../../widgets/loading/shimmer_skeleton.dart';
@@ -20,23 +24,6 @@ class HeroBannerItem {
     required this.stat,
     required this.statSub,
     required this.imageUrl,
-  });
-}
-
-class NutriProduct {
-  final String id, name, category, imageUrl, description;
-  final double price;
-  final String badge;
-  final bool isSale;
-  const NutriProduct({
-    required this.id,
-    required this.name,
-    required this.category,
-    required this.price,
-    required this.imageUrl,
-    required this.description,
-    this.badge = '',
-    this.isSale = false,
   });
 }
 
@@ -87,51 +74,6 @@ const List<HeroBannerItem> _banners = [
   ),
 ];
 
-const List<NutriProduct> _featured = [
-  NutriProduct(
-    id: 'p1', name: 'Retinol Night Serum', category: 'Skin Care',
-    price: 34.99, badge: 'Hot',
-    imageUrl: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400&fit=crop',
-    description: '0.5 % retinol formula that visibly reduces fine lines, '
-        'uneven texture and dark spots overnight.',
-  ),
-  NutriProduct(
-    id: 'p2', name: 'SPF 50 Sunscreen', category: 'Skin Care',
-    price: 81400, badge: 'Sale', isSale: true,
-    imageUrl: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&fit=crop',
-    description: 'Broad-spectrum UVA/UVB protection. Lightweight, non-greasy '
-        'finish suitable for all skin types.',
-  ),
-  NutriProduct(
-    id: 'p3', name: 'Collagen Booster', category: 'Supplements',
-    price: 49.99, badge: 'New',
-    imageUrl: 'https://images.unsplash.com/photo-1550572017-edd951b55104?w=400&fit=crop',
-    description: 'Marine collagen peptides with vitamin C for improved skin '
-        'elasticity and joint support.',
-  ),
-  NutriProduct(
-    id: 'p4', name: 'Hyaluronic Acid Gel', category: 'Skin Care',
-    price: 27.50,
-    imageUrl: 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=400&fit=crop',
-    description: 'Multi-weight hyaluronic acid for deep-layer hydration. '
-        'Fragrance-free, suitable for sensitive skin.',
-  ),
-  NutriProduct(
-    id: 'p6', name: 'Niacinamide 10 % Toner', category: 'Skin Care',
-    price: 19.99,
-    imageUrl: 'https://images.unsplash.com/photo-1601049541289-9b1b7bbbfe19?w=400&fit=crop',
-    description: 'Pore-minimising, oil-controlling daily toner. Pairs with '
-        'any serum or moisturiser.',
-  ),
-  NutriProduct(
-    id: 'p7', name: 'Probiotic Complex', category: 'Pharmaceuticals',
-    price: 39.00, badge: 'Sale', isSale: true,
-    imageUrl: 'https://images.unsplash.com/photo-1576426863848-c21f53c60b19?w=400&fit=crop',
-    description: '10 billion CFU, 8 clinically studied strains for gut health '
-        'and daily immune support.',
-  ),
-];
-
 const List<_Category> _categories = [
   _Category('Skin Care', Icons.face_retouching_natural,
       Color(0xFFe0f2fe), Color(0xFF0369a1)),
@@ -163,11 +105,14 @@ class _HomePageState extends State<HomePage> {
 
   Timer? _timer;
   final PageController _pageCtrl = PageController();
-  final Set<String> _wishlist = {};
+  final Set<int> _wishlist = {};
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<ProductProvider>(context, listen: false).fetchProducts();
+    });
     Future.delayed(const Duration(seconds: 2), () {
       if (mounted) setState(() => _isLoading = false);
     });
@@ -186,7 +131,7 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  void _toggleWishlist(NutriProduct p) {
+  void _toggleWishlist(Product p) {
     setState(() => _wishlist.contains(p.id)
         ? _wishlist.remove(p.id)
         : _wishlist.add(p.id));
@@ -205,15 +150,11 @@ class _HomePageState extends State<HomePage> {
     ));
   }
 
-  void _openProduct(NutriProduct p) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (_) => _QuickView(
-        product: p,
-        isFav: _wishlist.contains(p.id),
-        onFav: () => _toggleWishlist(p),
+  void _openProduct(Product p) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ProductDetailPage(product: p),
       ),
     );
   }
@@ -352,11 +293,18 @@ class _HomePageState extends State<HomePage> {
                           builder: (_) => const ProductPage()),
                     ),
                   ),
-                  _ProductRow(
-                    products: _featured,
-                    wishlist: _wishlist,
-                    onTap: _openProduct,
-                    onFav: _toggleWishlist,
+                  Consumer<ProductProvider>(
+                    builder: (context, provider, child) {
+                      if (provider.isLoading && provider.products.isEmpty) {
+                        return const HorizontalProductShimmer();
+                      }
+                      return _ProductRow(
+                        products: provider.products,
+                        wishlist: _wishlist,
+                        onTap: _openProduct,
+                        onFav: _toggleWishlist,
+                      );
+                    },
                   ),
                   _SectionRow(title: 'Browse Categories'),
                   _CategoryStrip(
@@ -401,10 +349,10 @@ class _CategoryShimmer extends StatelessWidget {
 // PRODUCT ROW
 // ══════════════════════════════════════════════
 class _ProductRow extends StatelessWidget {
-  final List<NutriProduct> products;
-  final Set<String> wishlist;
-  final ValueChanged<NutriProduct> onTap;
-  final ValueChanged<NutriProduct> onFav;
+  final List<Product> products;
+  final Set<int> wishlist;
+  final ValueChanged<Product> onTap;
+  final ValueChanged<Product> onFav;
   final bool isLoading;
 
   const _ProductRow({
@@ -803,7 +751,7 @@ class _SectionRow extends StatelessWidget {
 // PRODUCT CARD
 // ══════════════════════════════════════════════
 class _ProductCard extends StatefulWidget {
-  final NutriProduct product;
+  final Product product;
   final bool isFav;
   final VoidCallback onTap, onFav;
   const _ProductCard({
@@ -866,7 +814,7 @@ class _ProductCardState extends State<_ProductCard>
                       topLeft: Radius.circular(18),
                       topRight: Radius.circular(18)),
                   child: Stack(children: [
-                    Image.network(p.imageUrl,
+                    Image.network(p.image,
                         width: 148, height: 112, fit: BoxFit.cover,
                         errorBuilder: (_, __, ___) => Container(
                             width: 148, height: 112,
@@ -874,20 +822,18 @@ class _ProductCardState extends State<_ProductCard>
                                 Theme.of(context).scaffoldBackgroundColor,
                             child: Icon(Icons.image_outlined,
                                 color: tt.bodyMedium?.color))),
-                    if (p.badge.isNotEmpty)
+                    if (p.isLimited)
                       Positioned(
                         top: 8, right: 8,
                         child: Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 3),
                           decoration: BoxDecoration(
-                            color: p.isSale
-                                ? const Color(0xFFE11D48)
-                                : cs.primary,
+                            color: const Color(0xFFE11D48),
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child: Text(p.badge,
-                              style: const TextStyle(
+                          child: const Text('Limited',
+                              style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 9,
                                   fontWeight: FontWeight.w700)),
@@ -907,7 +853,7 @@ class _ProductCardState extends State<_ProductCard>
                                 fontSize: 12,
                                 fontWeight: FontWeight.w700)),
                         const SizedBox(height: 2),
-                        Text(p.category,
+                        Text(p.brand ?? 'Product',
                             style:
                                 tt.bodyMedium?.copyWith(fontSize: 10)),
                         const SizedBox(height: 7),
@@ -915,7 +861,7 @@ class _ProductCardState extends State<_ProductCard>
                           mainAxisAlignment:
                               MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('\$${p.price.toStringAsFixed(2)}',
+                            Text('\$${p.price}',
                                 style: tt.titleSmall
                                     ?.copyWith(fontSize: 13)),
                             GestureDetector(
@@ -1005,7 +951,7 @@ class _CategoryStrip extends StatelessWidget {
 // QUICK VIEW BOTTOM SHEET
 // ══════════════════════════════════════════════
 class _QuickView extends StatelessWidget {
-  final NutriProduct product;
+  final Product product;
   final bool isFav;
   final VoidCallback onFav;
   const _QuickView({
@@ -1041,7 +987,7 @@ class _QuickView extends StatelessWidget {
             Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(14),
-                child: Image.network(product.imageUrl,
+                child: Image.network(product.image,
                     width: 88, height: 88, fit: BoxFit.cover,
                     errorBuilder: (_, __, ___) => Container(
                         width: 88, height: 88,
@@ -1055,9 +1001,9 @@ class _QuickView extends StatelessWidget {
                     children: [
                       Text(product.name, style: tt.titleMedium),
                       const SizedBox(height: 3),
-                      Text(product.category, style: tt.bodyMedium),
+                      Text(product.brand ?? 'Product', style: tt.bodyMedium),
                       const SizedBox(height: 8),
-                      Text('\$${product.price.toStringAsFixed(2)}',
+                      Text(product.price,
                           style:
                               tt.titleSmall?.copyWith(fontSize: 22)),
                     ]),
@@ -1104,7 +1050,7 @@ class _QuickView extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => const ProductPage()),
+                          builder: (_) => ProductDetailPage(product: product)),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -1114,7 +1060,7 @@ class _QuickView extends StatelessWidget {
                     padding:
                         const EdgeInsets.symmetric(vertical: 14),
                   ),
-                  child: const Text('View Products →'),
+                  child: const Text('View Details →'),
                 ),
               ),
             ]),
