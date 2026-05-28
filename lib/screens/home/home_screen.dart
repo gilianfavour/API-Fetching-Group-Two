@@ -1015,37 +1015,25 @@ class _QuickView extends StatelessWidget {
             ),
           const SizedBox(width: 12),
 
-          // Filled CTA — inherits ElevatedButtonTheme from main.dart
-          Expanded(
+          // Filled CTA
+        Expanded(
           flex: 2,
           child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF000435),
-            flex: 2,
-            child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context); // close the bottom sheet first
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ProductPage(),
-                    ),
-                  );
-                },
-                
-                child: const Text('View Products →'),
-              ),
-              onPressed: () {
-                Navigator.pop(context); // close the bottom sheet first
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const ProductPage(),
-                  ),
-                );
-              },
-              child: const Text('View Products →'),
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const ProductPage(),
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: const Color(0xFF000435),
             ),
+            child: const Text('View Products →'),
+          ),
         ),
         ]),
       ]),
