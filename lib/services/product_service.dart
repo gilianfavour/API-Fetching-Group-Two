@@ -10,7 +10,7 @@ class ProductService {
   // BASE URL
 
   static const String baseUrl =
-      'https://www.rasmuspharmaceuticals.com/api/products';
+      'https://admin.rasmuspharmaceuticals.com/api/v1/products';
 
   // =========================================
   // FETCH ALL PRODUCTS
@@ -29,6 +29,8 @@ class ProductService {
           await http.get(url);
 
       if (response.statusCode == 200) {
+         
+         print(response.body);
 
         final data =
             jsonDecode(response.body);
