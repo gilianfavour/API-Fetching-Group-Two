@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nutriblend_group2/screens/product_detail/product_detail_screen.dart';
+import '../../../widgets/common/app_bar.dart';
+import '../../../widgets/common/navigation_bar.dart';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // APP COLOR CONSTANTS
@@ -122,12 +124,10 @@ class _ZoomFadeRoute<T> extends PageRouteBuilder<T> {
           transitionDuration: const Duration(milliseconds: 420),
           reverseTransitionDuration: const Duration(milliseconds: 320),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            // Outgoing page fades + scales down slightly
             final fadeOut = Tween<double>(begin: 1.0, end: 0.88).animate(
               CurvedAnimation(parent: secondaryAnimation, curve: Curves.easeIn),
             );
 
-            // Incoming page: fade in + scale from 0.88 → 1.0
             final fadeIn = Tween<double>(begin: 0.0, end: 1.0).animate(
               CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
             );
@@ -166,8 +166,6 @@ class _ProductPageState extends State<ProductPage> with TickerProviderStateMixin
   int _lastPage    = 6;
   int _totalCount  = 0;
 
-  // Tracks which page index each currently-displayed product came from,
-  // so dot-navigation can jump back to any page.
   final TextEditingController _searchCtrl = TextEditingController();
 
   late final AnimationController _fadeCtrl = AnimationController(
@@ -189,7 +187,6 @@ class _ProductPageState extends State<ProductPage> with TickerProviderStateMixin
     super.dispose();
   }
 
-  // ── Data loading ──────────────────────────────────────────────────────────
   Future<void> _loadPage({bool loadMore = false}) async {
     if (!mounted) return;
 
@@ -207,7 +204,6 @@ class _ProductPageState extends State<ProductPage> with TickerProviderStateMixin
         if (loadMore) {
           _products.addAll(result.products);
         } else {
-          // REPLACE products (not append) so we only ever show current page
           _products
             ..clear()
             ..addAll(result.products);
@@ -228,15 +224,12 @@ class _ProductPageState extends State<ProductPage> with TickerProviderStateMixin
     }
   }
 
-  // ── Navigation ─────────────────────────────────────────────────────────────
-  /// Go to  page — replaces current products with next page
   void _loadNext() {
     if (_isLoadingMore || _isLoading || _currentPage >= _lastPage) return;
     _currentPage++;
-    _loadPage(); // NOT loadMore:true → replaces list
+    _loadPage();
   }
 
-  /// Jump to a specific page via dot tap (also handles going back to page 1)
   void _jumpToPage(int page) {
     if (page == _currentPage || _isLoading) return;
     _currentPage = page;
@@ -258,6 +251,39 @@ class _ProductPageState extends State<ProductPage> with TickerProviderStateMixin
     );
   }
 
+  void _navigateToAccount() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Account page coming soon')),
+    );
+  }
+
+  void _navigateToCart() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Cart page coming soon')),
+    );
+  }
+
+  void _handleSearch(String query) {
+    _searchCtrl.text = query;
+    setState(() {});
+  }
+
+  void _onNavBarTap(int index) {
+    switch (index) {
+      case 0:
+        Navigator.pop(context);
+        break;
+      case 1:
+        // Already on Products
+        break;
+      case 2:
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Profile page coming soon')),
+        );
+        break;
+    }
+  }
+
   // ═══════════════════════════════════════════════════════════════════════════
   // BUILD
   // ═══════════════════════════════════════════════════════════════════════════
@@ -269,84 +295,20 @@ class _ProductPageState extends State<ProductPage> with TickerProviderStateMixin
         backgroundColor: AppColors.lightBg,
         body: Column(
           children: [
-            _buildHeader(),
-            Expanded(child: _buildBody()),
+            CustomTopBar(
+              onAccountTap: _navigateToAccount,
+              onCartTap: _navigateToCart,
+              onSearchSubmitted: _handleSearch,
+            ),
+            Expanded(
+              child: _buildBody(),
+            ),
+            CustomBottomNavBar(
+              currentIndex: 1,
+              onTap: _onNavBarTap,
+            ),
           ],
         ),
-      ),
-    );
-  }
-
-  // ── Header  (straight corners, no bottom radius) ──────────────────────────
-  Widget _buildHeader() {
-    return Container(
-      color: AppColors.primary,
-      padding: EdgeInsets.only(
-        top: MediaQuery.of(context).padding.top + 16,
-        left: 20, right: 20, bottom: 24,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Our Products',
-                    style: GoogleFonts.poppins(
-                      fontSize: 22, fontWeight: FontWeight.w700,
-                      color: AppColors.white, letterSpacing: -0.4,
-                    )),
-                  Text(
-                    _totalCount > 0
-                        ? '$_totalCount items available'
-                        : 'Products collection',
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      color: AppColors.white.withValues(alpha: 0.5),
-                    ),
-                  ),
-                ],
-              ),
-              const Spacer(),
-              _HeaderIconBtn(icon: Icons.tune_rounded,          onTap: () {}),
-              const SizedBox(width: 8),
-              _HeaderIconBtn(icon: Icons.shopping_bag_outlined, onTap: () {}),
-            ],
-          ),
-          const SizedBox(height: 18),
-          Container(
-            height: 46,
-            decoration: BoxDecoration(
-              color: AppColors.white.withValues(alpha: 0.09),
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: AppColors.white.withValues(alpha: 0.14)),
-            ),
-            child: TextField(
-              controller: _searchCtrl,
-              onChanged: (_) => setState(() {}),
-              style: GoogleFonts.inter(color: AppColors.white, fontSize: 14),
-              decoration: InputDecoration(
-                hintText: 'Search products or brands…',
-                hintStyle: GoogleFonts.inter(
-                    color: AppColors.white.withValues(alpha: 0.38), fontSize: 14),
-                prefixIcon: Icon(Icons.search_rounded,
-                    color: AppColors.white.withValues(alpha: 0.45), size: 20),
-                suffixIcon: _searchCtrl.text.isNotEmpty
-                    ? GestureDetector(
-                        onTap: () { _searchCtrl.clear(); setState(() {}); },
-                        child: Icon(Icons.close_rounded,
-                            color: AppColors.white.withValues(alpha: 0.45), size: 18),
-                      )
-                    : null,
-                border: InputBorder.none,
-                contentPadding:
-                    const EdgeInsets.symmetric(vertical: 13, horizontal: 4),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -400,7 +362,6 @@ class _ProductPageState extends State<ProductPage> with TickerProviderStateMixin
                 crossAxisCount: 2,
                 mainAxisSpacing: 14,
                 crossAxisSpacing: 14,
-                // ✅ FIX: increased ratio to give cards more vertical space
                 childAspectRatio: 0.58,
               ),
               itemCount: products.length,
@@ -422,11 +383,10 @@ class _ProductPageState extends State<ProductPage> with TickerProviderStateMixin
     return Container(
       color: AppColors.lightBg,
       padding: EdgeInsets.fromLTRB(
-        20, 12, 20, MediaQuery.of(context).padding.bottom + 16,
+        20, 12, 20, 16,
       ),
       child: Column(
         children: [
-          // ── Tappable page dots ────────────────────────────────────────────
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(_lastPage, (i) {
@@ -451,11 +411,8 @@ class _ProductPageState extends State<ProductPage> with TickerProviderStateMixin
             }),
           ),
           const SizedBox(height: 14),
-
-          // ── Prev / Load More / Next row ───────────────────────────────────
           Row(
             children: [
-              // Previous button — only visible when not on page 1
               if (_currentPage > 1)
                 Expanded(
                   flex: 2,
@@ -469,8 +426,6 @@ class _ProductPageState extends State<ProductPage> with TickerProviderStateMixin
                     ),
                   ),
                 ),
-
-              // Load Next button
               Expanded(
                 flex: 3,
                 child: _LoadMoreButton(
@@ -542,7 +497,7 @@ class _PrevNextButton extends StatelessWidget {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// LOAD MORE BUTTON  (animated)
+// LOAD MORE BUTTON
 // ═══════════════════════════════════════════════════════════════════════════════
 class _LoadMoreButton extends StatefulWidget {
   final bool isLoading;
@@ -642,7 +597,7 @@ class _LoadMoreButtonState extends State<_LoadMoreButton>
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// PRODUCT CARD  — with press-shrink + staggered fade-in animation
+// PRODUCT CARD
 // ═══════════════════════════════════════════════════════════════════════════════
 class _ProductCard extends StatefulWidget {
   final Product      product;
@@ -661,7 +616,6 @@ class _ProductCard extends StatefulWidget {
 
 class _ProductCardState extends State<_ProductCard>
     with SingleTickerProviderStateMixin {
-  // Controls the press-shrink animation
   late final AnimationController _pressCtrl = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 110),
@@ -670,7 +624,6 @@ class _ProductCardState extends State<_ProductCard>
     upperBound: 1.00,
     value: 1.0,
   );
-
 
   @override
   void dispose() {
@@ -691,7 +644,7 @@ class _ProductCardState extends State<_ProductCard>
   void _relax() {
     _pressCtrl.animateTo(1.0,
       duration: const Duration(milliseconds: 250),
-      curve: Curves.elasticOut,  // bouncy spring-back
+      curve: Curves.elasticOut,
     );
   }
 
@@ -720,12 +673,9 @@ class _ProductCardState extends State<_ProductCard>
               ),
             ],
           ),
-          // ✅ FIX: use a fixed-height Column instead of Expanded/flex
-          // so text never overflows
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Image — takes up ~58% of the card
               Expanded(
                 flex: 58,
                 child: Stack(
@@ -742,7 +692,6 @@ class _ProductCardState extends State<_ProductCard>
                         ),
                       ),
                     ),
-                    // Favourite button
                     Positioned(
                       top: 10, right: 10,
                       child: Container(
@@ -761,7 +710,6 @@ class _ProductCardState extends State<_ProductCard>
                             size: 15, color: AppColors.mediumNeutral),
                       ),
                     ),
-                    // Limited stock badge
                     if (widget.product.isLimited)
                       Positioned(
                         top: 10, left: 10,
@@ -794,8 +742,6 @@ class _ProductCardState extends State<_ProductCard>
                   ],
                 ),
               ),
-
-              // ── Info section — takes up ~42% ─────────────────────────────
               Expanded(
                 flex: 42,
                 child: Padding(
@@ -804,7 +750,6 @@ class _ProductCardState extends State<_ProductCard>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // Brand + name
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -828,8 +773,6 @@ class _ProductCardState extends State<_ProductCard>
                           ),
                         ],
                       ),
-
-                      // Stars
                       Row(
                         children: [
                           ...List.generate(5, (i) => Icon(
@@ -845,8 +788,6 @@ class _ProductCardState extends State<_ProductCard>
                             )),
                         ],
                       ),
-
-                      // Price + add button
                       Row(
                         children: [
                           Expanded(
@@ -939,28 +880,6 @@ class _ProductImage extends StatelessWidget {
 // ═══════════════════════════════════════════════════════════════════════════════
 // SMALL REUSABLE WIDGETS
 // ═══════════════════════════════════════════════════════════════════════════════
-class _HeaderIconBtn extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onTap;
-  const _HeaderIconBtn({required this.icon, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 38, height: 38,
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.10),
-          borderRadius: BorderRadius.circular(11),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
-        ),
-        child: Icon(icon, color: AppColors.white, size: 19),
-      ),
-    );
-  }
-}
-
 class _FullPageSpinner extends StatelessWidget {
   const _FullPageSpinner();
 
