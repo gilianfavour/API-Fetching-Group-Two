@@ -362,9 +362,9 @@ class _HeroSection extends StatelessWidget {
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
                     colors: [
-                      cs.primary.withOpacity(0.88),
-                      cs.primary.withOpacity(0.40),
-                      Colors.transparent,
+                      const Color(0xFF000435).withOpacity(0.92),
+                      const Color(0xFF000435).withOpacity(0.45),
+                       Colors.transparent,
                     ],
                   ),
                 ),
@@ -443,18 +443,18 @@ class _HeroSection extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                            color: cs.secondary,
+                            color: Colors.white,
                             borderRadius: BorderRadius.circular(20)),
                         child: Text(
                           banner.tag.toUpperCase(),
                           style: const TextStyle(
-                              color: Colors.white,
+                              color: Color(0xFF000435),
                               fontSize: 9,
-                              fontWeight: FontWeight.w700,
+                              fontWeight: FontWeight.w800,
                               letterSpacing: 1.3),
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 9),
 
                       // Title
                       Text(
@@ -485,7 +485,7 @@ class _HeroSection extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: detailOpen
                                 ? Colors.white24
-                                : cs.secondary,
+                                :  Colors.white,
                             borderRadius: BorderRadius.circular(30),
                             border: detailOpen
                                 ? Border.all(color: Colors.white38)
@@ -494,10 +494,12 @@ class _HeroSection extends StatelessWidget {
                           child: Text(
                             detailOpen ? 'Close  ✕' : 'See More  →',
                             style: const TextStyle(
-                                color: Colors.white,
+                                color: Color(0xFF000435),
                                 fontSize: 13,
-                                fontWeight: FontWeight.w700),
-                          ),
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: 0.3),
+                                ),
+                                
                         ),
                       ),
                     ],
@@ -517,7 +519,7 @@ class _HeroSection extends StatelessWidget {
                       width: active ? 20 : 6,
                       height: 6,
                       decoration: BoxDecoration(
-                        color: active ? cs.secondary : Colors.white38,
+                        color: active ? Colors.white : Colors.white38,
                         borderRadius: BorderRadius.circular(4),
                       ),
                     );
@@ -1005,10 +1007,11 @@ class _QuickView extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const ProductsScreen(),
+                      builder: (_) => ProductPage(),
                     ),
                   );
                 },
+                
                 child: const Text('View Products →'),
               ),
           ),
