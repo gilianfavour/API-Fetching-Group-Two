@@ -304,7 +304,7 @@ class _ProductPageState extends State<ProductPage> with TickerProviderStateMixin
                         : 'Products collection',
                     style: GoogleFonts.inter(
                       fontSize: 12,
-                      color: AppColors.white.withOpacity(0.5),
+                      color: AppColors.white.withValues(alpha: 0.5),
                     ),
                   ),
                 ],
@@ -319,9 +319,9 @@ class _ProductPageState extends State<ProductPage> with TickerProviderStateMixin
           Container(
             height: 46,
             decoration: BoxDecoration(
-              color: AppColors.white.withOpacity(0.09),
+              color: AppColors.white.withValues(alpha: 0.09),
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: AppColors.white.withOpacity(0.14)),
+              border: Border.all(color: AppColors.white.withValues(alpha: 0.14)),
             ),
             child: TextField(
               controller: _searchCtrl,
@@ -330,14 +330,14 @@ class _ProductPageState extends State<ProductPage> with TickerProviderStateMixin
               decoration: InputDecoration(
                 hintText: 'Search products or brands…',
                 hintStyle: GoogleFonts.inter(
-                    color: AppColors.white.withOpacity(0.38), fontSize: 14),
+                    color: AppColors.white.withValues(alpha: 0.38), fontSize: 14),
                 prefixIcon: Icon(Icons.search_rounded,
-                    color: AppColors.white.withOpacity(0.45), size: 20),
+                    color: AppColors.white.withValues(alpha: 0.45), size: 20),
                 suffixIcon: _searchCtrl.text.isNotEmpty
                     ? GestureDetector(
                         onTap: () { _searchCtrl.clear(); setState(() {}); },
                         child: Icon(Icons.close_rounded,
-                            color: AppColors.white.withOpacity(0.45), size: 18),
+                            color: AppColors.white.withValues(alpha: 0.45), size: 18),
                       )
                     : null,
                 border: InputBorder.none,
@@ -443,7 +443,7 @@ class _ProductPageState extends State<ProductPage> with TickerProviderStateMixin
                   decoration: BoxDecoration(
                     color: active
                         ? AppColors.primary
-                        : AppColors.primary.withOpacity(0.18),
+                        : AppColors.primary.withValues(alpha: 0.18),
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
@@ -511,7 +511,7 @@ class _PrevNextButton extends StatelessWidget {
         onPressed: onTap,
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.primary,
-          side: BorderSide(color: AppColors.primary.withOpacity(0.4)),
+          side: BorderSide(color: AppColors.primary.withValues(alpha: 0.4)),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
           ),
@@ -605,8 +605,8 @@ class _LoadMoreButtonState extends State<_LoadMoreButton>
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.primary,
             foregroundColor: AppColors.white,
-            disabledBackgroundColor: AppColors.primary.withOpacity(0.35),
-            disabledForegroundColor: AppColors.white.withOpacity(0.5),
+            disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.35),
+            disabledForegroundColor: AppColors.white.withValues(alpha: 0.5),
             elevation: 0,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(14),
@@ -714,7 +714,7 @@ class _ProductCardState extends State<_ProductCard>
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
-                color: AppColors.primary.withOpacity(0.06),
+                color: AppColors.primary.withValues(alpha: 0.06),
                 blurRadius: 20,
                 offset: const Offset(0, 6),
               ),
@@ -748,11 +748,11 @@ class _ProductCardState extends State<_ProductCard>
                       child: Container(
                         width: 30, height: 30,
                         decoration: BoxDecoration(
-                          color: AppColors.white.withOpacity(0.88),
+                          color: AppColors.white.withValues(alpha: 0.88),
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.08),
+                              color: Colors.black.withValues(alpha: 0.08),
                               blurRadius: 6, offset: const Offset(0, 2),
                             ),
                           ],
@@ -914,7 +914,7 @@ class _ProductImage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(Icons.spa_outlined,
-              color: AppColors.primary.withOpacity(0.22), size: 40),
+              color: AppColors.primary.withValues(alpha: 0.22), size: 40),
           const SizedBox(height: 8),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -922,7 +922,7 @@ class _ProductImage extends StatelessWidget {
               name,
               style: GoogleFonts.inter(
                 fontSize: 10,
-                color: AppColors.mediumNeutral.withOpacity(0.7),
+                color: AppColors.mediumNeutral.withValues(alpha: 0.7),
               ),
               textAlign: TextAlign.center,
               maxLines: 2, overflow: TextOverflow.ellipsis,
@@ -951,9 +951,9 @@ class _HeaderIconBtn extends StatelessWidget {
       child: Container(
         width: 38, height: 38,
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.10),
+          color: Colors.white.withValues(alpha: 0.10),
           borderRadius: BorderRadius.circular(11),
-          border: Border.all(color: Colors.white.withOpacity(0.15)),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
         ),
         child: Icon(icon, color: AppColors.white, size: 19),
       ),
@@ -1003,11 +1003,11 @@ class _FullPageError extends StatelessWidget {
             Container(
               width: 64, height: 64,
               decoration: BoxDecoration(
-                color: AppColors.limitedRed.withOpacity(0.08),
+                color: AppColors.limitedRed.withValues(alpha: 0.08),
                 shape: BoxShape.circle,
               ),
               child: Icon(Icons.wifi_off_rounded,
-                  color: AppColors.limitedRed.withOpacity(0.7), size: 30),
+                  color: AppColors.limitedRed.withValues(alpha: 0.7), size: 30),
             ),
             const SizedBox(height: 16),
             Text('Connection Error',
@@ -1059,7 +1059,7 @@ class _EmptyState extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.search_off_rounded,
-              size: 48, color: AppColors.mediumNeutral.withOpacity(0.35)),
+              size: 48, color: AppColors.mediumNeutral.withValues(alpha: 0.35)),
           const SizedBox(height: 14),
           Text(
             query.isEmpty ? 'No products available' : 'No results for "$query"',

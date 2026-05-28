@@ -3,24 +3,18 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'providers/product_provider.dart';
 
+import 'screens/splash/splash_screen.dart';
+import 'screens/onboarding/onboarding_screen.dart';
 import 'screens/home/home_screen.dart';
 // import 'screens/products/products_screen.dart'; 
 
+import 'screens/products/products_screen.dart';
 
 
 void main() {
-
   runApp(
-
     MultiProvider(
-
-      providers: [
-
-        ChangeNotifierProvider(
-
-          create: (_) => ProductProvider(),
-        ),
-      ],
+      providers: [ChangeNotifierProvider(create: (_) => ProductProvider())],
 
       child: const MyApp(),
     ),
@@ -35,17 +29,17 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'E-Commerce App',
       debugShowCheckedModeBanner: false,
-      
+
       // --- CRITICAL DESIGN SYSTEM CONFIGURATION ---
       theme: ThemeData(
         useMaterial3: true,
         scaffoldBackgroundColor: const Color(0xFFF8FAFC), // Light Background
-        
+
         colorScheme: const ColorScheme.light(
-          primary: Color(0xFF2596BE),        // Brand Ocean Blue
-          secondary: Color(0xFF0EA5E9),     // Light Neutral
-          surface: Color(0xFFFFFFFF),   // Dark Neutral Text
-          onSurface: Color(0xFF1E293B),      // Dark Neutral Text on Cards
+          primary: Color(0xFF2596BE), // Brand Ocean Blue
+          secondary: Color(0xFF0EA5E9), // Light Neutral
+          surface: Color(0xFFFFFFFF), // Dark Neutral Text
+          onSurface: Color(0xFF1E293B), // Dark Neutral Text on Cards
         ),
 
         // Global Typography Configurations
@@ -92,10 +86,11 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
+
       // --------------------------------------------
       
       home: const Scaffold(
-          body: HomePage(),
+          body: const SplashScreen(),
         ),
       // home: const ProductPage(), 
     );
