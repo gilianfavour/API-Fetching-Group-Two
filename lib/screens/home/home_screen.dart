@@ -362,8 +362,8 @@ class _HeroSection extends StatelessWidget {
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
                     colors: [
-                      cs.primary.withOpacity(0.88),
-                      cs.primary.withOpacity(0.40),
+                      cs.primary.withValues(alpha: 0.88),
+                      cs.primary.withValues(alpha: 0.40),
                       Colors.transparent,
                     ],
                   ),
@@ -381,7 +381,7 @@ class _HeroSection extends StatelessWidget {
                       center: Alignment.topRight,
                       radius: 1.0,
                       colors: [
-                        Colors.black.withOpacity(0.45),
+                        Colors.black.withValues(alpha: 0.45),
                         Colors.transparent,
                       ],
                     ),
@@ -397,10 +397,10 @@ class _HeroSection extends StatelessWidget {
                       horizontal: 14, vertical: 10),
                   decoration: BoxDecoration(
                     // Solid dark background so text is always legible
-                    color: Colors.black.withOpacity(0.52),
+                    color: Colors.black.withValues(alpha: 0.52),
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(
-                        color: Colors.white.withOpacity(0.18), width: 1),
+                        color: Colors.white.withValues(alpha: 0.18), width: 1),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -543,7 +543,7 @@ class _HeroSection extends StatelessWidget {
               borderRadius: BorderRadius.circular(18),
               boxShadow: [
                 BoxShadow(
-                    color: Colors.black.withOpacity(0.06),
+                    color: Colors.black.withValues(alpha: 0.06),
                     blurRadius: 16,
                     offset: const Offset(0, 4))
               ],
@@ -602,10 +602,10 @@ class _StatsStrip extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 18, 16, 0),
       child: Row(children: [
         _Stat(Icons.inventory_2_outlined,
-            cs.secondary.withOpacity(0.12), cs.secondary,  '2 400+', 'Products'),
+            cs.secondary.withValues(alpha: 0.12), cs.secondary,  '2 400+', 'Products'),
         const SizedBox(width: 10),
         _Stat(Icons.local_shipping_outlined,
-            cs.primary.withOpacity(0.10),  cs.primary,     'Free',   'Ship \$50+'),
+            cs.primary.withValues(alpha: 0.10),  cs.primary,     'Free',   'Ship \$50+'),
         const SizedBox(width: 10),
         _Stat(Icons.star_outline_rounded,
             const Color(0xFFdcfce7),        const Color(0xFF16a34a), '4.8★', 'Avg Rating'),
@@ -629,7 +629,7 @@ class _Stat extends StatelessWidget {
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.black.withOpacity(0.06)),
+          border: Border.all(color: Colors.black.withValues(alpha: 0.06)),
         ),
         child: Column(children: [
           Container(
@@ -766,10 +766,10 @@ class _ProductCardState extends State<_ProductCard>
           decoration: BoxDecoration(
             color: cs.surface,
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: Colors.black.withOpacity(0.06)),
+            border: Border.all(color: Colors.black.withValues(alpha: 0.06)),
             boxShadow: [
               BoxShadow(
-                  color: Colors.black.withOpacity(0.04),
+                  color: Colors.black.withValues(alpha: 0.04),
                   blurRadius: 10,
                   offset: const Offset(0, 4))
             ],
@@ -842,7 +842,7 @@ class _ProductCardState extends State<_ProductCard>
                             : Theme.of(context).scaffoldBackgroundColor,
                         shape: BoxShape.circle,
                         border: Border.all(
-                            color: Colors.black.withOpacity(0.08)),
+                            color: Colors.black.withValues(alpha: 0.08)),
                       ),
                       child: Icon(
                         widget.isFav
