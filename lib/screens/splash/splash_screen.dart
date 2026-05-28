@@ -16,10 +16,17 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
 
-    Timer(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 3), () {
+      if (!mounted) return; // 👈 prevents crash
+
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const OnboardingScreen()),
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) => const OnboardingScreen(),
+          transitionsBuilder: (_, animation, __, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        ),
       );
     });
   }
