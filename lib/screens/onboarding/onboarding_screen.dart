@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 // ===================== GOLDEN GLOW ONBOARDING =====================
 
@@ -42,6 +43,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF8FAFC),
       body: Stack(
         children: [
           // ================= PAGE VIEW =================
@@ -83,9 +85,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             top: 50,
             right: 20,
             child: TextButton(
-              style: TextButton.styleFrom(foregroundColor: Colors.orange),
+              style: TextButton.styleFrom(
+                foregroundColor: const Color(0xFF0EA5E9),
+              ),
               onPressed: skip,
-              child: const Text("Skip", style: TextStyle(fontSize: 16)),
+              child: Text(
+                "Skip",
+                style: GoogleFonts.inter(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: const Color(0xFF0EA5E9),
+                ),
+              ),
             ),
           ),
 
@@ -105,8 +116,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   height: 8,
                   decoration: BoxDecoration(
                     color: currentIndex == index
-                        ? Colors.orange
-                        : Colors.white54,
+                        ? const Color(0xFF000435)
+                        : const Color(0xFF64748B),
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
@@ -121,21 +132,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             right: 20,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
-                foregroundColor: Colors.black,
+                backgroundColor: const Color(0xFF000435),
+                foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 18),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),
                 ),
-              ),
-              onPressed: nextPage,
-              child: Text(
-                currentIndex == 2 ? "Finish" : "Next",
-                style: const TextStyle(
+                textStyle: GoogleFonts.inter(
                   fontSize: 16,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
+              onPressed: nextPage,
+              child: Text(currentIndex == 2 ? "Finish" : "Next"),
             ),
           ),
         ],
@@ -163,13 +172,7 @@ class OnboardPage extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(25),
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Color(0xFF121212), Color(0xFF1F1F1F)],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
-      ),
+      color: const Color(0xFFF8FAFC),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -189,7 +192,7 @@ class OnboardPage extends StatelessWidget {
                 return const SizedBox(
                   height: 300,
                   child: Center(
-                    child: CircularProgressIndicator(color: Colors.orange),
+                    child: CircularProgressIndicator(color: Color(0xFF0EA5E9)),
                   ),
                 );
               },
@@ -200,14 +203,14 @@ class OnboardPage extends StatelessWidget {
                   height: 300,
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade800,
+                    color: const Color(0xFFF1F5F9),
                     borderRadius: BorderRadius.circular(25),
                   ),
                   child: const Center(
                     child: Icon(
                       Icons.broken_image,
                       size: 60,
-                      color: Colors.white54,
+                      color: Color(0xFF64748B),
                     ),
                   ),
                 );
@@ -221,10 +224,10 @@ class OnboardPage extends StatelessWidget {
           Text(
             title,
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: GoogleFonts.poppins(
               fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+              fontWeight: FontWeight.w700,
+              color: const Color(0xFF1E293B),
             ),
           ),
 
@@ -234,9 +237,10 @@ class OnboardPage extends StatelessWidget {
           Text(
             desc,
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: GoogleFonts.inter(
               fontSize: 16,
-              color: Colors.white70,
+              fontWeight: FontWeight.w400,
+              color: const Color(0xFF64748B),
               height: 1.5,
             ),
           ),

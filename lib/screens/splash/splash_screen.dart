@@ -26,10 +26,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
+      backgroundColor: const Color(0xFFF8FAFC),
 
       body: Center(
         child: Column(
@@ -40,7 +38,7 @@ class _SplashScreenState extends State<SplashScreen> {
               height: 120,
               width: 120,
               decoration: BoxDecoration(
-                color: theme.colorScheme.primary,
+                color: const Color(0xFF000435),
                 borderRadius: BorderRadius.circular(30),
               ),
               child: const Icon(Icons.spa, color: Colors.white, size: 60),
@@ -54,7 +52,7 @@ class _SplashScreenState extends State<SplashScreen> {
               style: GoogleFonts.poppins(
                 fontSize: 30,
                 fontWeight: FontWeight.w700,
-                color: theme.colorScheme.onBackground,
+                color: const Color(0xFF1E293B),
               ),
             ),
 
@@ -64,14 +62,14 @@ class _SplashScreenState extends State<SplashScreen> {
               "Skincare & Beauty",
               style: GoogleFonts.inter(
                 fontSize: 15,
-                color: Colors.grey.shade600,
+                color: const Color(0xFF64748B),
               ),
             ),
 
             const SizedBox(height: 40),
 
             // ================= LOADING =================
-            CircularProgressIndicator(color: theme.colorScheme.primary),
+            const CircularProgressIndicator(color: Color(0xFF0EA5E9)),
           ],
         ),
       ),
