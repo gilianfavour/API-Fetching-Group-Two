@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'providers/product_provider.dart';
 
 import 'screens/home/home_screen.dart';
-import 'screens/products/products_screen.dart'; 
+// import 'screens/products/products_screen.dart'; 
 
 
 
@@ -97,7 +97,7 @@ class MyApp extends StatelessWidget {
       home: const Scaffold(
           body: HomePage(),
         ),
-      home: const ProductPage(), 
+      // home: const ProductPage(), 
     );
   }
 }

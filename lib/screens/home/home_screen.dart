@@ -102,19 +102,34 @@ const List<NutriProduct> _featured = [
         '0.5 % retinol formula that visibly reduces fine lines, '
         'uneven texture and dark spots overnight.',
   ),
+
+
   NutriProduct(
-    id: 'p2',
-    name: 'SPF 50 Sunscreen',
-    category: 'Skin Care',
-    price: 22.00,
-    badge: 'Sale',
-    isSale: true,
-    imageUrl:
-        'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&fit=crop',
-    description:
-        'Broad-spectrum UVA/UVB protection. Lightweight, non-greasy '
-        'finish suitable for all skin types.',
-  ),
+  id: 'p2',
+  name: 'SPF 50 Sunscreen',
+  category: 'Skin Care',
+  price: 81400,
+  badge: 'Sale',
+  isSale: true,
+  imageUrl:
+      'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&fit=crop',
+  description:
+      'Broad-spectrum UVA/UVB protection. Lightweight, non-greasy '
+      'finish suitable for all skin types.',
+),
+  // NutriProduct(
+  //   id: 'p2',
+  //   name: 'SPF 50 Sunscreen',
+  //   category: 'Skin Care',
+  //   price: 22.00,
+  //   badge: 'Sale',
+  //   isSale: true,
+  //   imageUrl:
+  //       'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&fit=crop',
+  //   description:
+  //       'Broad-spectrum UVA/UVB protection. Lightweight, non-greasy '
+  //       'finish suitable for all skin types.',
+  // ),
   NutriProduct(
     id: 'p3',
     name: 'Collagen Booster',
@@ -976,42 +991,47 @@ class _QuickView extends StatelessWidget {
         const SizedBox(height: 22),
 
         Row(children: [
-          // Outline wishlist button
-          Expanded(
-            child: OutlinedButton.icon(
-              onPressed: onFav,
-              icon: Icon(
-                isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                size: 16,
-                color: isFav ? Colors.pinkAccent : cs.primary,
-              ),
-              label: Text(isFav ? 'Saved' : 'Wishlist'),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: isFav ? Colors.pinkAccent : cs.primary,
-                side: BorderSide(
-                    color: isFav ? Colors.pinkAccent : cs.primary),
-                shape: const StadiumBorder(),
-                padding: const EdgeInsets.symmetric(vertical: 14),
+          
+            // Outline wishlist button
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed: onFav,
+                icon: Icon(
+                  isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                  size: 16,
+                  color: isFav ? Colors.pinkAccent : const Color(0xFF000435),
+                ),
+                label: Text(isFav ? 'Saved' : 'Wishlist'),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: isFav ? Colors.pinkAccent : const Color(0xFF000435),
+                  side: BorderSide(
+                      color: isFav ? Colors.pinkAccent : const Color(0xFF000435)),
+                  shape: const StadiumBorder(),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                ),
               ),
             ),
-          ),
           const SizedBox(width: 12),
+
           // Filled CTA — inherits ElevatedButtonTheme from main.dart
           Expanded(
-            flex: 2,
-            child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context); // close the bottom sheet first
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const ProductsScreen(),
-                    ),
-                  );
-                },
-                child: const Text('View Products →'),
+          flex: 2,
+          child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF000435),
               ),
-          ),
+              onPressed: () {
+                Navigator.pop(context); // close the bottom sheet first
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const ProductPage(),
+                  ),
+                );
+              },
+              child: const Text('View Products →'),
+            ),
+        ),
         ]),
       ]),
     );

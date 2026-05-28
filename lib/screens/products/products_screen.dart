@@ -280,7 +280,6 @@ class _ProductPageState extends State<ProductPage> with TickerProviderStateMixin
   // ── Header  (straight corners, no bottom radius) ──────────────────────────
   Widget _buildHeader() {
     return Container(
-      // ✅ FIX: removed BorderRadius so all four corners are straight
       color: AppColors.primary,
       padding: EdgeInsets.only(
         top: MediaQuery.of(context).padding.top + 16,
