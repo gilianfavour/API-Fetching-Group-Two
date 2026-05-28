@@ -4,6 +4,10 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import '../products/products_screen.dart' show AppColors, Product;
+import '../../widgets/loading/shimmer_skeleton.dart';
+import '../../widgets/loading/loader.dart';
+import '../../widgets/loading/shimmer.dart'; 
+
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // EXTENDED PRODUCT MODEL  (detail-page fields)
@@ -269,11 +273,11 @@ class _ProductDetailPageState extends State<ProductDetailPage>
           onTap: () => Navigator.pop(context),
           child: Container(
             decoration: BoxDecoration(
-              color: AppColors.white.withValues(alpha: 0.90),
+              color: AppColors.white.withOpacity(0.90),
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.08),
+                  color: Colors.black.withOpacity(0.08),
                   blurRadius: 8, offset: const Offset(0, 2),
                 ),
               ],
@@ -294,11 +298,11 @@ class _ProductDetailPageState extends State<ProductDetailPage>
             child: Container(
               width: 38, height: 38,
               decoration: BoxDecoration(
-                color: AppColors.white.withValues(alpha: 0.90),
+                color: AppColors.white.withOpacity(0.90),
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.08),
+                    color: Colors.black.withOpacity(0.08),
                     blurRadius: 8, offset: const Offset(0, 2),
                   ),
                 ],
@@ -347,7 +351,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                     end: Alignment.bottomCenter,
                     colors: [
                       Colors.transparent,
-                      AppColors.lightBg.withValues(alpha: 0.9),
+                      AppColors.lightBg.withOpacity(0.9),
                     ],
                   ),
                 ),
@@ -403,7 +407,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
                   decoration: BoxDecoration(
-                    color: AppColors.accent.withValues(alpha: 0.10),
+                    color: AppColors.accent.withOpacity(0.10),
                     borderRadius: BorderRadius.circular(7),
                   ),
                   child: Text(
@@ -446,10 +450,10 @@ class _ProductDetailPageState extends State<ProductDetailPage>
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(
-                  color: AppColors.starAmber.withValues(alpha: 0.08),
+                  color: AppColors.starAmber.withOpacity(0.08),
                   borderRadius: BorderRadius.circular(9),
                   border: Border.all(
-                    color: AppColors.starAmber.withValues(alpha: 0.25)),
+                    color: AppColors.starAmber.withOpacity(0.25)),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -518,7 +522,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
             decoration: BoxDecoration(
               color: AppColors.lightBg,
               borderRadius: BorderRadius.circular(13),
-              border: Border.all(color: AppColors.primary.withValues(alpha: 0.14)),
+              border: Border.all(color: AppColors.primary.withOpacity(0.14)),
             ),
             child: Row(
               children: [
@@ -667,7 +671,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
               child: Column(
                 children: [
                   Icon(badge.$1,
-                    size: 22, color: AppColors.primary.withValues(alpha: 0.65)),
+                    size: 22, color: AppColors.primary.withOpacity(0.65)),
                   const SizedBox(height: 6),
                   Text(badge.$2,
                     style: GoogleFonts.inter(
@@ -730,7 +734,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
         border: Border(top: BorderSide(color: AppColors.divider)),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.06),
+            color: AppColors.primary.withOpacity(0.06),
             blurRadius: 20, offset: const Offset(0, -4),
           ),
         ],
@@ -743,7 +747,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
             child: Container(
               width: 50, height: 50,
               decoration: BoxDecoration(
-                color: const Color(0xFF25D366).withValues(alpha: 0.1),
+                color: const Color(0xFF25D366).withOpacity(0.1),
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(
                     color: const Color(0xFF25D366).withValues(alpha: 0.35)),
@@ -944,63 +948,137 @@ class _HeroPlaceholder extends StatelessWidget {
 // ═══════════════════════════════════════════════════════════════════════════════
 // SKELETON LOADER
 // ═══════════════════════════════════════════════════════════════════════════════
-class _SkeletonScreen extends StatefulWidget {
+class _SkeletonScreen extends StatelessWidget {
   const _SkeletonScreen();
 
   @override
-  State<_SkeletonScreen> createState() => _SkeletonScreenState();
-}
-
-class _SkeletonScreenState extends State<_SkeletonScreen>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _ctrl = AnimationController(
-    vsync: this, duration: const Duration(milliseconds: 1100),
-  )..repeat(reverse: true);
-
-  late final Animation<Color?> _color = ColorTween(
-    begin: const Color(0xFFE8EEF6),
-    end:   const Color(0xFFF4F7FC),
-  ).animate(_ctrl);
-
-  @override
-  void dispose() { _ctrl.dispose(); super.dispose(); }
-
-  @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _color,
-      builder: (_, __) {
-        final c = _color.value!;
-        return SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(height: 320, color: c),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _bar(c, 80, 16),  const SizedBox(height: 10),
-                    _bar(c, double.infinity, 26), const SizedBox(height: 8),
-                    _bar(c, 220, 26), const SizedBox(height: 18),
-                    _bar(c, 140, 16), const SizedBox(height: 20),
-                    _bar(c, double.infinity, 80), const SizedBox(height: 14),
-                    _bar(c, double.infinity, 60),
-                  ],
-                ),
-              ),
-            ],
+    return SingleChildScrollView(
+      physics: const NeverScrollableScrollPhysics(),
+      child: Column(
+        children: [
+          AppShimmer(
+            child: Container(
+              height: 320,
+              width: double.infinity,
+              color: Colors.white,
+            ),
           ),
-        );
-      },
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _shimmerBar(
+                  width: 90,
+                  height: 16,
+                ),
+
+                const SizedBox(height: 14),
+
+                _shimmerBar(
+                  width: double.infinity,
+                  height: 24,
+                ),
+
+                const SizedBox(height: 8),
+
+                _shimmerBar(
+                  width: 240,
+                  height: 24,
+                ),
+
+                const SizedBox(height: 24),
+
+                _shimmerCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _shimmerBar(
+                        width: 70,
+                        height: 14,
+                      ),
+
+                      const SizedBox(height: 12),
+
+                      _shimmerBar(
+                        width: 120,
+                        height: 28,
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 12),
+
+                _shimmerCard(
+                  child: Column(
+                    children: List.generate(
+                      3,
+                      (_) => Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: _shimmerBar(
+                          width: double.infinity,
+                          height: 14,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 12),
+
+                _shimmerCard(
+                  child: Column(
+                    children: List.generate(
+                      4,
+                      (_) => Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: _shimmerBar(
+                          width: double.infinity,
+                          height: 14,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _bar(Color c, double w, double h) => Container(
-    width: w, height: h,
-    margin: const EdgeInsets.only(bottom: 0),
-    decoration: BoxDecoration(
-      color: c, borderRadius: BorderRadius.circular(10),
-    ),
-  );
+  static Widget _shimmerBar({
+    required double width,
+    required double height,
+  }) {
+    return AppShimmer(
+      child: Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+    );
+  }
+
+  static Widget _shimmerCard({
+    required Widget child,
+  }) {
+    return AppShimmer(
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: child,
+      ),
+    );
+  }
 }
