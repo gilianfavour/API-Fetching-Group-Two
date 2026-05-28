@@ -746,7 +746,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                 color: const Color(0xFF25D366).withOpacity(0.1),
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(
-                    color: const Color(0xFF25D366).withOpacity(0.35)),
+                    color: const Color(0xFF25D366).withValues(alpha: 0.35)),
               ),
               child: const Icon(Icons.chat_bubble_outline_rounded,
                   color: Color(0xFF25D366), size: 21),
