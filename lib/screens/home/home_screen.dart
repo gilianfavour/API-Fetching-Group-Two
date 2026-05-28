@@ -56,7 +56,10 @@ const List<HeroBannerItem> _banners = [
     tag: 'New Arrivals',
     title: 'Vitamin C Glow\nCollection',
     shortDesc: 'Brighten your skin with our newest serums.',
-    fullDesc: 'Our Vitamin C Glow Collection harnesses pharmaceutical-grade ascorbic acid blended with hyaluronic acid and niacinamide. Clinically proven to reduce dark spots by 40 % in 4 weeks. Over 12 new SKUs just launched.',
+    fullDesc: 'Our Vitamin C Glow Collection harnesses pharmaceutical-grade '
+        'ascorbic acid blended with hyaluronic acid and niacinamide. '
+        'Clinically proven to reduce dark spots by 40 % in 4 weeks. '
+        'Over 12 new SKUs just launched.',
     stat: '12 New Products',
     statSub: 'Launched this week',
     imageUrl: 'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=900&fit=crop',
@@ -65,7 +68,9 @@ const List<HeroBannerItem> _banners = [
     tag: 'Best Sellers',
     title: "Editor's Picks\nby NutriBlend",
     shortDesc: "Pharmacist-recommended formulas, 4.8 ★ average.",
-    fullDesc: 'Hand-selected by our in-house pharmacists and dermatologists. Every product on this list carries 4.8+ stars and thousands of verified reviews. Free same-day delivery available.',
+    fullDesc: 'Hand-selected by our in-house pharmacists and dermatologists. '
+        'Every product on this list carries 4.8+ stars and thousands of '
+        'verified reviews. Free same-day delivery available.',
     stat: '4.9 ★ Avg Rating',
     statSub: 'Across 3,800+ reviews',
     imageUrl: 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=900&fit=crop',
@@ -88,8 +93,10 @@ const List<NutriProduct> _featured = [
     category: 'Skin Care',
     price: 34.99,
     badge: 'Hot',
-    imageUrl: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400&fit=crop',
-    description: '0.5 % retinol formula that visibly reduces fine lines, uneven texture and dark spots overnight.',
+    imageUrl:
+        'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400&fit=crop',
+    description: '0.5 % retinol formula that visibly reduces fine lines, '
+        'uneven texture and dark spots overnight.',
   ),
   NutriProduct(
     id: 'p2',
@@ -98,8 +105,10 @@ const List<NutriProduct> _featured = [
     price: 81400,
     badge: 'Sale',
     isSale: true,
-    imageUrl: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&fit=crop',
-    description: 'Broad-spectrum UVA/UVB protection. Lightweight, non-greasy finish suitable for all skin types.',
+    imageUrl:
+        'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&fit=crop',
+    description: 'Broad-spectrum UVA/UVB protection. Lightweight, non-greasy '
+        'finish suitable for all skin types.',
   ),
   NutriProduct(
     id: 'p3',
@@ -107,33 +116,30 @@ const List<NutriProduct> _featured = [
     category: 'Supplements',
     price: 49.99,
     badge: 'New',
-    imageUrl: 'https://images.unsplash.com/photo-1550572017-edd951b55104?w=400&fit=crop',
-    description: 'Marine collagen peptides with vitamin C for improved skin elasticity and joint support.',
+    imageUrl:
+        'https://images.unsplash.com/photo-1550572017-edd951b55104?w=400&fit=crop',
+    description: 'Marine collagen peptides with vitamin C for improved skin '
+        'elasticity and joint support.',
   ),
   NutriProduct(
     id: 'p4',
     name: 'Hyaluronic Acid Gel',
     category: 'Skin Care',
     price: 27.50,
-    imageUrl: 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=400&fit=crop',
-    description: 'Multi-weight hyaluronic acid for deep-layer hydration. Fragrance-free, suitable for sensitive skin.',
-  ),
-  NutriProduct(
-    id: 'p5',
-    name: 'Omega-3 Fish Oil',
-    category: 'Pharmaceuticals',
-    price: 18.99,
-    badge: 'Top',
-    imageUrl: 'https://images.unsplash.com/photo-1559181567-c3190bfbf369?w=400&fit=crop',
-    description: '1 000 mg EPA/DHA per capsule. Molecularly distilled, odourless enteric-coated softgels.',
+    imageUrl:
+        'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=400&fit=crop',
+    description: 'Multi-weight hyaluronic acid for deep-layer hydration. '
+        'Fragrance-free, suitable for sensitive skin.',
   ),
   NutriProduct(
     id: 'p6',
     name: 'Niacinamide 10 % Toner',
     category: 'Skin Care',
     price: 19.99,
-    imageUrl: 'https://images.unsplash.com/photo-1601049541289-9b1b7bbbfe19?w=400&fit=crop',
-    description: 'Pore-minimising, oil-controlling daily toner. Pairs with any serum or moisturiser.',
+    imageUrl:
+        'https://images.unsplash.com/photo-1601049541289-9b1b7bbbfe19?w=400&fit=crop',
+    description: 'Pore-minimising, oil-controlling daily toner. Pairs with '
+        'any serum or moisturiser.',
   ),
   NutriProduct(
     id: 'p7',
@@ -142,17 +148,24 @@ const List<NutriProduct> _featured = [
     price: 39.00,
     badge: 'Sale',
     isSale: true,
-    imageUrl: 'https://images.unsplash.com/photo-1576426863848-c21f53c60b19?w=400&fit=crop',
-    description: '10 billion CFU, 8 clinically studied strains for gut health and daily immune support.',
+    imageUrl:
+        'https://images.unsplash.com/photo-1576426863848-c21f53c60b19?w=400&fit=crop',
+    description: '10 billion CFU, 8 clinically studied strains for gut health '
+        'and daily immune support.',
   ),
 ];
 
 const List<_Category> _categories = [
-  _Category('Skin Care', Icons.face_retouching_natural, Color(0xFFe0f2fe), Color(0xFF0369a1)),
-  _Category('Supplements', Icons.medication_outlined, Color(0xFFdcfce7), Color(0xFF15803d)),
-  _Category('Pharmaceuticals', Icons.local_pharmacy_outlined, Color(0xFFfce7f3), Color(0xFFbe185d)),
-  _Category('Hair Care', Icons.dry_cleaning_outlined, Color(0xFFfef3c7), Color(0xFFb45309)),
-  _Category('Vitamins', Icons.spa_outlined, Color(0xFFf3e8ff), Color(0xFF7c3aed)),
+  _Category('Skin Care', Icons.face_retouching_natural, Color(0xFFe0f2fe),
+      Color(0xFF0369a1)),
+  _Category('Supplements', Icons.medication_outlined, Color(0xFFdcfce7),
+      Color(0xFF15803d)),
+  _Category('Pharmaceuticals', Icons.local_pharmacy_outlined, Color(0xFFfce7f3),
+      Color(0xFFbe185d)),
+  _Category('Hair Care', Icons.dry_cleaning_outlined, Color(0xFFfef3c7),
+      Color(0xFFb45309)),
+  _Category(
+      'Vitamins', Icons.spa_outlined, Color(0xFFf3e8ff), Color(0xFF7c3aed)),
 ];
 
 class _Category {
@@ -173,12 +186,12 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _slide = 0;
   bool _detailOpen = false;
+  int _cartCount = 0; // add this
   bool _isLoading = true;                    // ← Full screen loading control
 
   Timer? _timer;
   final PageController _pageCtrl = PageController();
   final Set<String> _wishlist = {};
-
   @override
   void initState() {
     super.initState();
@@ -240,6 +253,12 @@ class _HomePageState extends State<HomePage> {
     _toast('Browsing $name');
   }
 
+
+  void _navigateToCart() {
+    // TODO: Navigator.pushNamed(context, '/cart');
+    _toast('Cart page coming soon');
+  }
+
   @override
   Widget build(BuildContext context) {
     // Show shimmer while loading
@@ -282,6 +301,64 @@ class _HomePageState extends State<HomePage> {
       );
     }
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        body: Column(
+      
+          children: [
+            CustomTopBar(
+            onCartTap: _navigateToCart,
+            cartCount: _cartCount,
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _HeroSection(
+                      banners: _banners,
+                      ctrl: _pageCtrl,
+                      slide: _slide,
+                      detailOpen: _detailOpen,
+                      onPageChanged: (i) => setState(() => _slide = i),
+                      onCta: () => setState(() => _detailOpen = !_detailOpen),
+                      onClose: () => setState(() => _detailOpen = false),
+                    ),
+                    _StatsStrip(),
+                    _SectionRow(
+                      title: 'Featured Products',
+                      linkLabel: 'View all',
+                      onLink: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const ProductPage()),
+                        );
+                      },
+                    ),
+                    _ProductRow(
+                      products: _featured,
+                      wishlist: _wishlist,
+                      onTap: _openProduct,
+                      onFav: _toggleWishlist,
+                    ),
+                    _SectionRow(title: 'Browse Categories'),
+                    _CategoryStrip(
+                        categories: _categories, onTap: _openCategory),
+                    const SizedBox(height: 32),
+                  ],
+                ),
+              ),
+            ),
+            CustomBottomNavBar(
+              currentIndex: 0,
+              onTap: _onNavBarTap,
+            ),
+          ],
+        ));
     // Main Content when loaded
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
@@ -469,8 +546,8 @@ class _HeroSection extends StatelessWidget {
               Positioned(
                 top: 18, right: 16,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 14, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                   decoration: BoxDecoration(
                     // Solid dark background so text is always legible
                     color: Colors.black.withValues(alpha: 0.52),
@@ -609,9 +686,8 @@ class _HeroSection extends StatelessWidget {
         // ── Expandable detail card
         AnimatedCrossFade(
           duration: const Duration(milliseconds: 300),
-          crossFadeState: detailOpen
-              ? CrossFadeState.showSecond
-              : CrossFadeState.showFirst,
+          crossFadeState:
+              detailOpen ? CrossFadeState.showSecond : CrossFadeState.showFirst,
           firstChild: const SizedBox.shrink(),
           secondChild: Container(
             margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
@@ -648,8 +724,8 @@ class _HeroSection extends StatelessWidget {
                             ?.copyWith(fontWeight: FontWeight.w700)),
                     const SizedBox(height: 5),
                     Text(banner.fullDesc,
-                        style: tt.bodyMedium
-                            ?.copyWith(fontSize: 11, height: 1.6)),
+                        style:
+                            tt.bodyMedium?.copyWith(fontSize: 11, height: 1.6)),
                   ],
                 ),
               ),
@@ -806,14 +882,14 @@ class _StatsStrip extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 18, 16, 0),
       child: Row(children: [
-        _Stat(Icons.inventory_2_outlined,
-            cs.secondary.withValues(alpha: 0.12), cs.secondary,  '2 400+', 'Products'),
+        _Stat(Icons.inventory_2_outlined, cs.secondary.withValues(alpha: 0.12),
+            cs.secondary, '2 400+', 'Products'),
         const SizedBox(width: 10),
-        _Stat(Icons.local_shipping_outlined,
-            cs.primary.withValues(alpha: 0.10),  cs.primary,     'Free',   'Ship \$50+'),
+        _Stat(Icons.local_shipping_outlined, cs.primary.withValues(alpha: 0.10),
+            cs.primary, 'Free', 'Ship \$50+'),
         const SizedBox(width: 10),
-        _Stat(Icons.star_outline_rounded,
-            const Color(0xFFdcfce7),        const Color(0xFF16a34a), '4.8★', 'Avg Rating'),
+        _Stat(Icons.star_outline_rounded, const Color(0xFFdcfce7),
+            const Color(0xFF16a34a), '4.8★', 'Avg Rating'),
       ]),
     );
   }
@@ -847,8 +923,7 @@ class _Stat extends StatelessWidget {
               style: tt.titleMedium
                   ?.copyWith(fontSize: 14, fontWeight: FontWeight.w800)),
           const SizedBox(height: 2),
-          Text(label,
-              style: tt.bodyMedium?.copyWith(fontSize: 10)),
+          Text(label, style: tt.bodyMedium?.copyWith(fontSize: 10)),
         ]),
       ),
     );
@@ -905,6 +980,138 @@ class _ProductCard extends StatefulWidget {
   State<_ProductCard> createState() => _ProductCardState();
 }
 
+class _ProductCardState extends State<_ProductCard>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl = AnimationController(
+      vsync: this, duration: const Duration(milliseconds: 110));
+  late final Animation<double> _scale = Tween<double>(begin: 1.0, end: 0.95)
+      .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut));
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final p = widget.product;
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
+
+    return GestureDetector(
+      onTapDown: (_) => _ctrl.forward(),
+      onTapUp: (_) {
+        _ctrl.reverse();
+        widget.onTap();
+      },
+      onTapCancel: () => _ctrl.reverse(),
+      child: ScaleTransition(
+        scale: _scale,
+        child: Container(
+          width: 148,
+          margin: const EdgeInsets.only(right: 12),
+          decoration: BoxDecoration(
+            color: cs.surface,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: Colors.black.withValues(alpha: 0.06)),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.04),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4))
+            ],
+          ),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            ClipRRect(
+              borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(18), topRight: Radius.circular(18)),
+              child: Stack(children: [
+                Image.network(p.imageUrl,
+                    width: 148,
+                    height: 112,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => Container(
+                        width: 148,
+                        height: 112,
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        child: Icon(Icons.image_outlined,
+                            color: tt.bodyMedium?.color))),
+                if (p.badge.isNotEmpty)
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: p.isSale ? const Color(0xFFE11D48) : cs.primary,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(p.badge,
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 9,
+                              fontWeight: FontWeight.w700)),
+                    ),
+                  ),
+              ]),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 9, 10, 10),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(p.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: tt.titleMedium?.copyWith(
+                            fontSize: 12, fontWeight: FontWeight.w700)),
+                    const SizedBox(height: 2),
+                    Text(p.category,
+                        style: tt.bodyMedium?.copyWith(fontSize: 10)),
+                    const SizedBox(height: 7),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('\$${p.price.toStringAsFixed(2)}',
+                            style: tt.titleSmall?.copyWith(fontSize: 13)),
+                        GestureDetector(
+                          onTap: widget.onFav,
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            width: 28,
+                            height: 28,
+                            decoration: BoxDecoration(
+                              color: widget.isFav
+                                  ? const Color(0xFFfce7f3)
+                                  : Theme.of(context).scaffoldBackgroundColor,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                  color: Colors.black.withValues(alpha: 0.08)),
+                            ),
+                            child: Icon(
+                              widget.isFav
+                                  ? Icons.favorite_rounded
+                                  : Icons.favorite_border_rounded,
+                              size: 14,
+                              color: widget.isFav
+                                  ? Colors.pinkAccent
+                                  : tt.bodyMedium?.color,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ]),
+            ),
+          ]),
+        ),
+      ),
+    );
+  }
+}
 
 class _CategoryStrip extends StatelessWidget {
   final List<_Category> categories;
@@ -969,92 +1176,95 @@ class _QuickView extends StatelessWidget {
               const BorderRadius.vertical(top: Radius.circular(26))),
       padding: EdgeInsets.fromLTRB(
           20, 16, 20, MediaQuery.of(context).viewInsets.bottom + 28),
-      child: Column(mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start, children: [
-        // Handle
-        Center(
-          child: Container(
-              width: 38, height: 4,
-              decoration: BoxDecoration(
-                  color: Colors.black12,
-                  borderRadius: BorderRadius.circular(2))),
-        ),
-        const SizedBox(height: 18),
-
-        Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(14),
-            child: Image.network(product.imageUrl,
-                width: 88, height: 88, fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(
-                    width: 88, height: 88,
-                    color: Theme.of(context).scaffoldBackgroundColor)),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(product.name, style: tt.titleMedium),
-              const SizedBox(height: 3),
-              Text(product.category, style: tt.bodyMedium),
-              const SizedBox(height: 8),
-              // titleSmall = Inter bold + primary colour from main.dart
-              Text('\$${product.price.toStringAsFixed(2)}',
-                  style: tt.titleSmall?.copyWith(fontSize: 22)),
+      child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                  width: 38,
+                  height: 4,
+                  decoration: BoxDecoration(
+                      color: Colors.black12,
+                      borderRadius: BorderRadius.circular(2))),
+            ),
+            const SizedBox(height: 18),
+            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(14),
+                child: Image.network(product.imageUrl,
+                    width: 88,
+                    height: 88,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => Container(
+                        width: 88,
+                        height: 88,
+                        color: Theme.of(context).scaffoldBackgroundColor)),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(product.name, style: tt.titleMedium),
+                      const SizedBox(height: 3),
+                      Text(product.category, style: tt.bodyMedium),
+                      const SizedBox(height: 8),
+                      Text('\$${product.price.toStringAsFixed(2)}',
+                          style: tt.titleSmall?.copyWith(fontSize: 22)),
+                    ]),
+              ),
             ]),
-          ),
-        ]),
-
-        const SizedBox(height: 14),
-        Text(product.description,
-            style: tt.bodyMedium?.copyWith(height: 1.65)),
-        const SizedBox(height: 22),
-
-        Row(children: [
-          
-            // Outline wishlist button
-            Expanded(
-              child: OutlinedButton.icon(
-                onPressed: onFav,
-                icon: Icon(
-                  isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                  size: 16,
-                  color: isFav ? Colors.pinkAccent : const Color(0xFF000435),
-                ),
-                label: Text(isFav ? 'Saved' : 'Wishlist'),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: isFav ? Colors.pinkAccent : const Color(0xFF000435),
-                  side: BorderSide(
-                      color: isFav ? Colors.pinkAccent : const Color(0xFF000435)),
-                  shape: const StadiumBorder(),
-                  padding: const EdgeInsets.symmetric(vertical: 14),
+            const SizedBox(height: 14),
+            Text(product.description,
+                style: tt.bodyMedium?.copyWith(height: 1.65)),
+            const SizedBox(height: 22),
+            Row(children: [
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: onFav,
+                  icon: Icon(
+                    isFav
+                        ? Icons.favorite_rounded
+                        : Icons.favorite_border_rounded,
+                    size: 16,
+                    color: isFav ? Colors.pinkAccent : const Color(0xFF000435),
+                  ),
+                  label: Text(isFav ? 'Saved' : 'Wishlist'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor:
+                        isFav ? Colors.pinkAccent : const Color(0xFF000435),
+                    side: BorderSide(
+                        color: isFav
+                            ? Colors.pinkAccent
+                            : const Color(0xFF000435)),
+                    shape: const StadiumBorder(),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                  ),
                 ),
               ),
-            ),
-          const SizedBox(width: 12),
-
-          // Filled CTA
-        Expanded(
-          flex: 2,
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const ProductPage(),
+              const SizedBox(width: 12),
+              Expanded(
+                flex: 2,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const ProductPage(),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: const Color(0xFF000435),
+                  ),
+                  child: const Text('View Products →'),
                 ),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white,
-              foregroundColor: const Color(0xFF000435),
-            ),
-            child: const Text('View Products →'),
-          ),
-        ),
-        ]),
-      ]),
+              ),
+            ]),
+          ]),
     );
   }
 }
