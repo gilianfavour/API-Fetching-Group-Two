@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:nutriblend_group2/screens/products/products_screen.dart'; 
-
+import 'package:nutriblend_group2/screens/products/products_screen.dart';
+import '../../../widgets/common/app_bar.dart';
+import '../../../widgets/common/navigation_bar.dart';
 
 class HeroBannerItem {
   final String tag;
@@ -44,7 +45,6 @@ class NutriProduct {
     required this.description,
   });
 }
-
 
 const List<HeroBannerItem> _banners = [
   HeroBannerItem(
@@ -102,34 +102,19 @@ const List<NutriProduct> _featured = [
         '0.5 % retinol formula that visibly reduces fine lines, '
         'uneven texture and dark spots overnight.',
   ),
-
-
   NutriProduct(
-  id: 'p2',
-  name: 'SPF 50 Sunscreen',
-  category: 'Skin Care',
-  price: 81400,
-  badge: 'Sale',
-  isSale: true,
-  imageUrl:
-      'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&fit=crop',
-  description:
-      'Broad-spectrum UVA/UVB protection. Lightweight, non-greasy '
-      'finish suitable for all skin types.',
-),
-  // NutriProduct(
-  //   id: 'p2',
-  //   name: 'SPF 50 Sunscreen',
-  //   category: 'Skin Care',
-  //   price: 22.00,
-  //   badge: 'Sale',
-  //   isSale: true,
-  //   imageUrl:
-  //       'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&fit=crop',
-  //   description:
-  //       'Broad-spectrum UVA/UVB protection. Lightweight, non-greasy '
-  //       'finish suitable for all skin types.',
-  // ),
+    id: 'p2',
+    name: 'SPF 50 Sunscreen',
+    category: 'Skin Care',
+    price: 81400,
+    badge: 'Sale',
+    isSale: true,
+    imageUrl:
+        'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&fit=crop',
+    description:
+        'Broad-spectrum UVA/UVB protection. Lightweight, non-greasy '
+        'finish suitable for all skin types.',
+  ),
   NutriProduct(
     id: 'p3',
     name: 'Collagen Booster',
@@ -191,14 +176,12 @@ const List<NutriProduct> _featured = [
   ),
 ];
 
-// Category accent colours are purely decorative pill tints —
-// intentionally NOT in the global ColorScheme.
 const List<_Category> _categories = [
-  _Category('Skin Care',       Icons.face_retouching_natural, Color(0xFFe0f2fe), Color(0xFF0369a1)),
-  _Category('Supplements',     Icons.medication_outlined,      Color(0xFFdcfce7), Color(0xFF15803d)),
-  _Category('Pharmaceuticals', Icons.local_pharmacy_outlined,  Color(0xFFfce7f3), Color(0xFFbe185d)),
-  _Category('Hair Care',       Icons.dry_cleaning_outlined,    Color(0xFFfef3c7), Color(0xFFb45309)),
-  _Category('Vitamins',        Icons.spa_outlined,             Color(0xFFf3e8ff), Color(0xFF7c3aed)),
+  _Category('Skin Care', Icons.face_retouching_natural, Color(0xFFe0f2fe), Color(0xFF0369a1)),
+  _Category('Supplements', Icons.medication_outlined, Color(0xFFdcfce7), Color(0xFF15803d)),
+  _Category('Pharmaceuticals', Icons.local_pharmacy_outlined, Color(0xFFfce7f3), Color(0xFFbe185d)),
+  _Category('Hair Care', Icons.dry_cleaning_outlined, Color(0xFFfef3c7), Color(0xFFb45309)),
+  _Category('Vitamins', Icons.spa_outlined, Color(0xFFf3e8ff), Color(0xFF7c3aed)),
 ];
 
 class _Category {
@@ -208,7 +191,6 @@ class _Category {
   final Color fg;
   const _Category(this.name, this.icon, this.bg, this.fg);
 }
-
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -274,49 +256,96 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _openCategory(String name) {
-    // TODO: Navigator.pushNamed(context, '/products', arguments: {'category': name});
     _toast('Browsing $name');
+  }
+
+  void _navigateToAccount() {
+    _toast('Account page coming soon');
+  }
+
+  void _navigateToCart() {
+    _toast('Cart page coming soon');
+  }
+
+  void _handleSearch(String query) {
+    _toast('Searching for: $query');
+  }
+
+  void _onNavBarTap(int index) {
+    switch (index) {
+      case 0:
+        // Already on Home
+        break;
+      case 1:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const ProductPage()),
+        );
+        break;
+      case 2:
+        _toast('Profile page coming soon');
+        break;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return Scaffold(
+      body: Column(
         children: [
-          _HeroSection(
-            banners: _banners,
-            ctrl: _pageCtrl,
-            slide: _slide,
-            detailOpen: _detailOpen,
-            onPageChanged: (i) => setState(() => _slide = i),
-            onCta: () => setState(() => _detailOpen = !_detailOpen),
-            onClose: () => setState(() => _detailOpen = false),
+          CustomTopBar(
+            onAccountTap: _navigateToAccount,
+            onCartTap: _navigateToCart,
+            onSearchSubmitted: _handleSearch,
           ),
-          _StatsStrip(),
-          _SectionRow(
-            title: 'Featured Products',
-            linkLabel: 'View all',
-            onLink: () {
-              // TODO: Navigator.pushNamed(context, '/products');
-            },
+          Expanded(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _HeroSection(
+                    banners: _banners,
+                    ctrl: _pageCtrl,
+                    slide: _slide,
+                    detailOpen: _detailOpen,
+                    onPageChanged: (i) => setState(() => _slide = i),
+                    onCta: () => setState(() => _detailOpen = !_detailOpen),
+                    onClose: () => setState(() => _detailOpen = false),
+                  ),
+                  _StatsStrip(),
+                  _SectionRow(
+                    title: 'Featured Products',
+                    linkLabel: 'View all',
+                    onLink: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const ProductPage()),
+                      );
+                    },
+                  ),
+                  _ProductRow(
+                    products: _featured,
+                    wishlist: _wishlist,
+                    onTap: _openProduct,
+                    onFav: _toggleWishlist,
+                  ),
+                  _SectionRow(title: 'Browse Categories'),
+                  _CategoryStrip(categories: _categories, onTap: _openCategory),
+                  const SizedBox(height: 32),
+                ],
+              ),
+            ),
           ),
-          _ProductRow(
-            products: _featured,
-            wishlist: _wishlist,
-            onTap: _openProduct,
-            onFav: _toggleWishlist,
+          CustomBottomNavBar(
+            currentIndex: 0,
+            onTap: _onNavBarTap,
           ),
-          _SectionRow(title: 'Browse Categories'),
-          _CategoryStrip(categories: _categories, onTap: _openCategory),
-          const SizedBox(height: 32),
         ],
       ),
     );
   }
 }
-
 
 class _HeroSection extends StatelessWidget {
   final List<HeroBannerItem> banners;
@@ -339,23 +368,21 @@ class _HeroSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs     = Theme.of(context).colorScheme;
-    final tt     = Theme.of(context).textTheme;
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
     final banner = banners[slide];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // ── Image strip
         SizedBox(
           height: 280,
           child: ClipRRect(
             borderRadius: const BorderRadius.only(
-              bottomLeft:  Radius.circular(28),
+              bottomLeft: Radius.circular(28),
               bottomRight: Radius.circular(28),
             ),
             child: Stack(fit: StackFit.expand, children: [
-              // Paged images
               PageView.builder(
                 controller: ctrl,
                 onPageChanged: onPageChanged,
@@ -365,12 +392,9 @@ class _HeroSection extends StatelessWidget {
                   fit: BoxFit.cover,
                   loadingBuilder: (_, child, p) =>
                       p == null ? child : Container(color: cs.primary),
-                  errorBuilder: (_, __, ___) =>
-                      Container(color: cs.primary),
+                  errorBuilder: (_, __, ___) => Container(color: cs.primary),
                 ),
               ),
-
-              // Left-to-right dark gradient (keeps left text readable)
               Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -379,18 +403,17 @@ class _HeroSection extends StatelessWidget {
                     colors: [
                       const Color(0xFF000435).withOpacity(0.92),
                       const Color(0xFF000435).withOpacity(0.45),
-                       Colors.transparent,
+                      Colors.transparent,
                     ],
                   ),
                 ),
               ),
-
-              // Top-right dark vignette — guarantees badge is always readable
-              // regardless of how bright the image is in that corner.
               Positioned(
-                top: 0, right: 0,
+                top: 0,
+                right: 0,
                 child: Container(
-                  width: 160, height: 120,
+                  width: 160,
+                  height: 120,
                   decoration: BoxDecoration(
                     gradient: RadialGradient(
                       center: Alignment.topRight,
@@ -403,15 +426,13 @@ class _HeroSection extends StatelessWidget {
                   ),
                 ),
               ),
-
-              // ── Stat badge — top right
               Positioned(
-                top: 18, right: 16,
+                top: 18,
+                right: 16,
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 14, vertical: 10),
                   decoration: BoxDecoration(
-                    // Solid dark background so text is always legible
                     color: Colors.black.withValues(alpha: 0.52),
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(
@@ -420,7 +441,6 @@ class _HeroSection extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // "Featured" label — white so it shows on any image
                       const Text('Featured',
                           style: TextStyle(
                               color: Colors.white70,
@@ -434,7 +454,6 @@ class _HeroSection extends StatelessWidget {
                               fontSize: 16,
                               fontWeight: FontWeight.w800)),
                       const SizedBox(height: 3),
-                      // statSub also white — sky-blue was invisible on bright images
                       Text(banner.statSub,
                           style: const TextStyle(
                               color: Colors.white70,
@@ -444,16 +463,15 @@ class _HeroSection extends StatelessWidget {
                   ),
                 ),
               ),
-
-              // ── Text content — bottom left
               Positioned(
-                bottom: 0, left: 0, right: 0,
+                bottom: 0,
+                left: 0,
+                right: 0,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(20, 0, 20, 18),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Tag pill
                       Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 4),
@@ -470,8 +488,6 @@ class _HeroSection extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 9),
-
-                      // Title
                       Text(
                         banner.title,
                         style: tt.titleLarge?.copyWith(
@@ -481,16 +497,12 @@ class _HeroSection extends StatelessWidget {
                             height: 1.2),
                       ),
                       const SizedBox(height: 5),
-
-                      // Short desc
                       Text(
                         banner.shortDesc,
                         style: tt.bodyMedium
                             ?.copyWith(color: Colors.white70, fontSize: 12),
                       ),
                       const SizedBox(height: 14),
-
-                      // CTA
                       GestureDetector(
                         onTap: onCta,
                         child: AnimatedContainer(
@@ -500,7 +512,7 @@ class _HeroSection extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: detailOpen
                                 ? Colors.white24
-                                :  Colors.white,
+                                : Colors.white,
                             borderRadius: BorderRadius.circular(30),
                             border: detailOpen
                                 ? Border.all(color: Colors.white38)
@@ -513,18 +525,16 @@ class _HeroSection extends StatelessWidget {
                                 fontSize: 13,
                                 fontWeight: FontWeight.w800,
                                 letterSpacing: 0.3),
-                                ),
-                                
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
               ),
-
-              // ── Slide dots — bottom right
               Positioned(
-                bottom: 18, right: 16,
+                bottom: 18,
+                right: 16,
                 child: Row(
                   children: List.generate(banners.length, (i) {
                     final active = i == slide;
@@ -544,8 +554,6 @@ class _HeroSection extends StatelessWidget {
             ]),
           ),
         ),
-
-        // ── Expandable detail card
         AnimatedCrossFade(
           duration: const Duration(milliseconds: 300),
           crossFadeState: detailOpen
@@ -570,10 +578,12 @@ class _HeroSection extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 child: Image.network(
                   banner.imageUrl,
-                  width: 88, height: 82,
+                  width: 88,
+                  height: 82,
                   fit: BoxFit.cover,
                   errorBuilder: (_, __, ___) => Container(
-                      width: 88, height: 82,
+                      width: 88,
+                      height: 82,
                       color: Theme.of(context).scaffoldBackgroundColor),
                 ),
               ),
@@ -608,9 +618,6 @@ class _HeroSection extends StatelessWidget {
   }
 }
 
-
-//  STATS STRIP
-
 class _StatsStrip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -619,13 +626,13 @@ class _StatsStrip extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 18, 16, 0),
       child: Row(children: [
         _Stat(Icons.inventory_2_outlined,
-            cs.secondary.withValues(alpha: 0.12), cs.secondary,  '2 400+', 'Products'),
+            cs.secondary.withValues(alpha: 0.12), cs.secondary, '2 400+', 'Products'),
         const SizedBox(width: 10),
         _Stat(Icons.local_shipping_outlined,
-            cs.primary.withValues(alpha: 0.10),  cs.primary,     'Free',   'Ship \$50+'),
+            cs.primary.withValues(alpha: 0.10), cs.primary, 'Free', 'Ship \$50+'),
         const SizedBox(width: 10),
         _Stat(Icons.star_outline_rounded,
-            const Color(0xFFdcfce7),        const Color(0xFF16a34a), '4.8★', 'Avg Rating'),
+            const Color(0xFFdcfce7), const Color(0xFF16a34a), '4.8★', 'Avg Rating'),
       ]),
     );
   }
@@ -650,7 +657,8 @@ class _Stat extends StatelessWidget {
         ),
         child: Column(children: [
           Container(
-            width: 34, height: 34,
+            width: 34,
+            height: 34,
             decoration: BoxDecoration(
                 color: iconBg, borderRadius: BorderRadius.circular(9)),
             child: Icon(icon, color: iconFg, size: 17),
@@ -667,7 +675,6 @@ class _Stat extends StatelessWidget {
     );
   }
 }
-
 
 class _SectionRow extends StatelessWidget {
   final String title;
@@ -701,9 +708,6 @@ class _SectionRow extends StatelessWidget {
     );
   }
 }
-
-
-//  PRODUCT ROW  (horizontal scroll)
 
 class _ProductRow extends StatelessWidget {
   final List<NutriProduct> products;
@@ -763,17 +767,23 @@ class _ProductCardState extends State<_ProductCard>
           CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut));
 
   @override
-  void dispose() { _ctrl.dispose(); super.dispose(); }
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final p  = widget.product;
+    final p = widget.product;
     final cs = Theme.of(context).colorScheme;
     final tt = Theme.of(context).textTheme;
 
     return GestureDetector(
-      onTapDown:   (_) => _ctrl.forward(),
-      onTapUp:     (_) { _ctrl.reverse(); widget.onTap(); },
+      onTapDown: (_) => _ctrl.forward(),
+      onTapUp: (_) {
+        _ctrl.reverse();
+        widget.onTap();
+      },
       onTapCancel: () => _ctrl.reverse(),
       child: ScaleTransition(
         scale: _scale,
@@ -792,22 +802,25 @@ class _ProductCardState extends State<_ProductCard>
             ],
           ),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            // Image + badge
             ClipRRect(
               borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(18),
                   topRight: Radius.circular(18)),
               child: Stack(children: [
                 Image.network(p.imageUrl,
-                    width: 148, height: 112, fit: BoxFit.cover,
+                    width: 148,
+                    height: 112,
+                    fit: BoxFit.cover,
                     errorBuilder: (_, __, ___) => Container(
-                        width: 148, height: 112,
+                        width: 148,
+                        height: 112,
                         color: Theme.of(context).scaffoldBackgroundColor,
                         child: Icon(Icons.image_outlined,
                             color: tt.bodyMedium?.color))),
                 if (p.badge.isNotEmpty)
                   Positioned(
-                    top: 8, right: 8,
+                    top: 8,
+                    right: 8,
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 3),
@@ -826,54 +839,53 @@ class _ProductCardState extends State<_ProductCard>
                   ),
               ]),
             ),
-
-            // Details
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 9, 10, 10),
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                Text(p.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: tt.titleMedium?.copyWith(
-                        fontSize: 12, fontWeight: FontWeight.w700)),
-                const SizedBox(height: 2),
-                Text(p.category,
-                    style: tt.bodyMedium?.copyWith(fontSize: 10)),
-                const SizedBox(height: 7),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                  // Uses titleSmall (Inter bold + primary colour from main.dart)
-                  Text('\$${p.price.toStringAsFixed(2)}',
-                      style: tt.titleSmall?.copyWith(fontSize: 13)),
-                  GestureDetector(
-                    onTap: widget.onFav,
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      width: 28, height: 28,
-                      decoration: BoxDecoration(
-                        color: widget.isFav
-                            ? const Color(0xFFfce7f3)
-                            : Theme.of(context).scaffoldBackgroundColor,
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                            color: Colors.black.withValues(alpha: 0.08)),
-                      ),
-                      child: Icon(
-                        widget.isFav
-                            ? Icons.favorite_rounded
-                            : Icons.favorite_border_rounded,
-                        size: 14,
-                        color: widget.isFav
-                            ? Colors.pinkAccent
-                            : tt.bodyMedium?.color,
-                      ),
+                    Text(p.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: tt.titleMedium?.copyWith(
+                            fontSize: 12, fontWeight: FontWeight.w700)),
+                    const SizedBox(height: 2),
+                    Text(p.category,
+                        style: tt.bodyMedium?.copyWith(fontSize: 10)),
+                    const SizedBox(height: 7),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('\$${p.price.toStringAsFixed(2)}',
+                            style: tt.titleSmall?.copyWith(fontSize: 13)),
+                        GestureDetector(
+                          onTap: widget.onFav,
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            width: 28,
+                            height: 28,
+                            decoration: BoxDecoration(
+                              color: widget.isFav
+                                  ? const Color(0xFFfce7f3)
+                                  : Theme.of(context).scaffoldBackgroundColor,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                  color: Colors.black.withValues(alpha: 0.08)),
+                            ),
+                            child: Icon(
+                              widget.isFav
+                                  ? Icons.favorite_rounded
+                                  : Icons.favorite_border_rounded,
+                              size: 14,
+                              color: widget.isFav
+                                  ? Colors.pinkAccent
+                                  : tt.bodyMedium?.color,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ]),
-              ]),
+                  ]),
             ),
           ]),
         ),
@@ -881,9 +893,6 @@ class _ProductCardState extends State<_ProductCard>
     );
   }
 }
-
-
-//  CATEGORY STRIP
 
 class _CategoryStrip extends StatelessWidget {
   final List<_Category> categories;
@@ -905,8 +914,7 @@ class _CategoryStrip extends StatelessWidget {
             onTap: () => onTap(c.name),
             child: Container(
               margin: const EdgeInsets.only(right: 10),
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
               decoration: BoxDecoration(
                   color: c.bg, borderRadius: BorderRadius.circular(30)),
               child: Row(children: [
@@ -926,9 +934,6 @@ class _CategoryStrip extends StatelessWidget {
   }
 }
 
-
-//  PRODUCT QUICK-VIEW BOTTOM SHEET
-
 class _QuickView extends StatelessWidget {
   final NutriProduct product;
   final bool isFav;
@@ -947,29 +952,30 @@ class _QuickView extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
           color: cs.surface,
-          borderRadius:
-              const BorderRadius.vertical(top: Radius.circular(26))),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(26))),
       padding: EdgeInsets.fromLTRB(
           20, 16, 20, MediaQuery.of(context).viewInsets.bottom + 28),
       child: Column(mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start, children: [
-        // Handle
         Center(
           child: Container(
-              width: 38, height: 4,
+              width: 38,
+              height: 4,
               decoration: BoxDecoration(
                   color: Colors.black12,
                   borderRadius: BorderRadius.circular(2))),
         ),
         const SizedBox(height: 18),
-
         Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(14),
             child: Image.network(product.imageUrl,
-                width: 88, height: 88, fit: BoxFit.cover,
+                width: 88,
+                height: 88,
+                fit: BoxFit.cover,
                 errorBuilder: (_, __, ___) => Container(
-                    width: 88, height: 88,
+                    width: 88,
+                    height: 88,
                     color: Theme.of(context).scaffoldBackgroundColor)),
           ),
           const SizedBox(width: 14),
@@ -980,61 +986,54 @@ class _QuickView extends StatelessWidget {
               const SizedBox(height: 3),
               Text(product.category, style: tt.bodyMedium),
               const SizedBox(height: 8),
-              // titleSmall = Inter bold + primary colour from main.dart
               Text('\$${product.price.toStringAsFixed(2)}',
                   style: tt.titleSmall?.copyWith(fontSize: 22)),
             ]),
           ),
         ]),
-
         const SizedBox(height: 14),
         Text(product.description,
             style: tt.bodyMedium?.copyWith(height: 1.65)),
         const SizedBox(height: 22),
-
         Row(children: [
-          
-            // Outline wishlist button
-            Expanded(
-              child: OutlinedButton.icon(
-                onPressed: onFav,
-                icon: Icon(
-                  isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                  size: 16,
-                  color: isFav ? Colors.pinkAccent : const Color(0xFF000435),
-                ),
-                label: Text(isFav ? 'Saved' : 'Wishlist'),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: isFav ? Colors.pinkAccent : const Color(0xFF000435),
-                  side: BorderSide(
-                      color: isFav ? Colors.pinkAccent : const Color(0xFF000435)),
-                  shape: const StadiumBorder(),
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                ),
+          Expanded(
+            child: OutlinedButton.icon(
+              onPressed: onFav,
+              icon: Icon(
+                isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                size: 16,
+                color: isFav ? Colors.pinkAccent : const Color(0xFF000435),
+              ),
+              label: Text(isFav ? 'Saved' : 'Wishlist'),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: isFav ? Colors.pinkAccent : const Color(0xFF000435),
+                side: BorderSide(
+                    color: isFav ? Colors.pinkAccent : const Color(0xFF000435)),
+                shape: const StadiumBorder(),
+                padding: const EdgeInsets.symmetric(vertical: 14),
               ),
             ),
-          const SizedBox(width: 12),
-
-          // Filled CTA
-        Expanded(
-          flex: 2,
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const ProductPage(),
-                ),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white,
-              foregroundColor: const Color(0xFF000435),
-            ),
-            child: const Text('View Products →'),
           ),
-        ),
+          const SizedBox(width: 12),
+          Expanded(
+            flex: 2,
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const ProductPage(),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: const Color(0xFF000435),
+              ),
+              child: const Text('View Products →'),
+            ),
+          ),
         ]),
       ]),
     );
