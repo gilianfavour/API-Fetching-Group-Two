@@ -746,7 +746,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                 color: const Color(0xFF25D366).withOpacity(0.1),
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(
-                    color: const Color(0xFF25D366).withOpacity(0.35)),
+                    color: const Color(0xFF25D366).withValues(alpha: 0.35)),
               ),
               child: const Icon(Icons.chat_bubble_outline_rounded,
                   color: Color(0xFF25D366), size: 21),
@@ -764,7 +764,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                   backgroundColor: AppColors.primary,
                   foregroundColor: AppColors.white,
                   disabledBackgroundColor:
-                      AppColors.primary.withOpacity(0.55),
+                      AppColors.primary.withValues(alpha: 0.55),
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
@@ -838,7 +838,7 @@ class _QtyBtn extends StatelessWidget {
       alignment: Alignment.center,
       child: Icon(icon,
         size: 18,
-        color: enabled ? AppColors.primary : AppColors.mediumNeutral.withOpacity(0.35)),
+        color: enabled ? AppColors.primary : AppColors.mediumNeutral.withValues(alpha: 0.35)),
     ),
   );
 }
@@ -858,9 +858,9 @@ class _StatusChip extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
     decoration: BoxDecoration(
-      color: data.color.withOpacity(0.08),
+      color: data.color.withValues(alpha: 0.08),
       borderRadius: BorderRadius.circular(10),
-      border: Border.all(color: data.color.withOpacity(0.25)),
+      border: Border.all(color: data.color.withValues(alpha: 0.25)),
     ),
     child: Row(
       mainAxisSize: MainAxisSize.min,
@@ -895,9 +895,9 @@ class _ShareBtn extends StatelessWidget {
     child: Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.07),
+        color: color.withValues(alpha: 0.07),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.22)),
+        border: Border.all(color: color.withValues(alpha: 0.22)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -925,14 +925,14 @@ class _HeroPlaceholder extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Icon(Icons.spa_outlined,
-            color: AppColors.primary.withOpacity(0.18), size: 68),
+            color: AppColors.primary.withValues(alpha: 0.18), size: 68),
         const SizedBox(height: 12),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 32),
           child: Text(name,
             style: GoogleFonts.poppins(
               fontSize: 14, fontWeight: FontWeight.w500,
-              color: AppColors.mediumNeutral.withOpacity(0.5),
+              color: AppColors.mediumNeutral.withValues(alpha: 0.5),
             ),
             textAlign: TextAlign.center),
         ),
