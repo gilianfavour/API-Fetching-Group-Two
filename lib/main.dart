@@ -4,11 +4,6 @@ import 'package:provider/provider.dart';
 import 'providers/product_provider.dart';
 
 import 'screens/splash/splash_screen.dart';
-import 'screens/onboarding/onboarding_screen.dart';
-import 'screens/home/home_screen.dart';
-// import 'screens/products/products_screen.dart'; 
-
-import 'screens/products/products_screen.dart';
 
 
 void main() {
@@ -36,8 +31,8 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFFF8FAFC), // Light Background
 
         colorScheme: const ColorScheme.light(
-          primary: Color(0xFF2596BE), // Brand Ocean Blue
-          secondary: Color(0xFF0EA5E9), // Light Neutral
+          primary: Color(0xFF000435), // Brand Navy
+          secondary: Color(0xFF000435), // Brand Navy
           surface: Color(0xFFFFFFFF), // Dark Neutral Text
           onSurface: Color(0xFF1E293B), // Dark Neutral Text on Cards
         ),
@@ -60,7 +55,7 @@ class MyApp extends StatelessWidget {
           titleSmall: GoogleFonts.inter(
             fontSize: 16,
             fontWeight: FontWeight.w700,
-            color: const Color(0xFF2596BE),
+            color: const Color(0xFF000435),
           ),
           // For Body Paragraphs/Descriptions
           bodyMedium: GoogleFonts.inter(
@@ -73,7 +68,7 @@ class MyApp extends StatelessWidget {
         // Button Style Overrides
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF2596BE),
+            backgroundColor: const Color(0xFF000435),
             foregroundColor: Colors.white,
             padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
             shape: RoundedRectangleBorder(
@@ -90,7 +85,7 @@ class MyApp extends StatelessWidget {
       // --------------------------------------------
       
       home: const Scaffold(
-          body: const SplashScreen(),
+          body: SplashScreen(),
         ),
       // home: const ProductPage(), 
     );

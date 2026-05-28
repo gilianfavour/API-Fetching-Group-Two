@@ -269,11 +269,11 @@ class _ProductDetailPageState extends State<ProductDetailPage>
           onTap: () => Navigator.pop(context),
           child: Container(
             decoration: BoxDecoration(
-              color: AppColors.white.withOpacity(0.90),
+              color: AppColors.white.withValues(alpha: 0.90),
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.08),
+                  color: Colors.black.withValues(alpha: 0.08),
                   blurRadius: 8, offset: const Offset(0, 2),
                 ),
               ],
@@ -294,11 +294,11 @@ class _ProductDetailPageState extends State<ProductDetailPage>
             child: Container(
               width: 38, height: 38,
               decoration: BoxDecoration(
-                color: AppColors.white.withOpacity(0.90),
+                color: AppColors.white.withValues(alpha: 0.90),
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.08),
+                    color: Colors.black.withValues(alpha: 0.08),
                     blurRadius: 8, offset: const Offset(0, 2),
                   ),
                 ],
@@ -347,7 +347,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                     end: Alignment.bottomCenter,
                     colors: [
                       Colors.transparent,
-                      AppColors.lightBg.withOpacity(0.9),
+                      AppColors.lightBg.withValues(alpha: 0.9),
                     ],
                   ),
                 ),
@@ -403,7 +403,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
                   decoration: BoxDecoration(
-                    color: AppColors.accent.withOpacity(0.10),
+                    color: AppColors.accent.withValues(alpha: 0.10),
                     borderRadius: BorderRadius.circular(7),
                   ),
                   child: Text(
@@ -446,10 +446,10 @@ class _ProductDetailPageState extends State<ProductDetailPage>
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(
-                  color: AppColors.starAmber.withOpacity(0.08),
+                  color: AppColors.starAmber.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(9),
                   border: Border.all(
-                    color: AppColors.starAmber.withOpacity(0.25)),
+                    color: AppColors.starAmber.withValues(alpha: 0.25)),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -518,7 +518,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
             decoration: BoxDecoration(
               color: AppColors.lightBg,
               borderRadius: BorderRadius.circular(13),
-              border: Border.all(color: AppColors.primary.withOpacity(0.14)),
+              border: Border.all(color: AppColors.primary.withValues(alpha: 0.14)),
             ),
             child: Row(
               children: [
@@ -667,7 +667,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
               child: Column(
                 children: [
                   Icon(badge.$1,
-                    size: 22, color: AppColors.primary.withOpacity(0.65)),
+                    size: 22, color: AppColors.primary.withValues(alpha: 0.65)),
                   const SizedBox(height: 6),
                   Text(badge.$2,
                     style: GoogleFonts.inter(
@@ -730,7 +730,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
         border: Border(top: BorderSide(color: AppColors.divider)),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.06),
+            color: AppColors.primary.withValues(alpha: 0.06),
             blurRadius: 20, offset: const Offset(0, -4),
           ),
         ],
@@ -743,7 +743,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
             child: Container(
               width: 50, height: 50,
               decoration: BoxDecoration(
-                color: const Color(0xFF25D366).withOpacity(0.1),
+                color: const Color(0xFF25D366).withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(
                     color: const Color(0xFF25D366).withValues(alpha: 0.35)),
