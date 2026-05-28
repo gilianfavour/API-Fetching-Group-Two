@@ -1,12 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'providers/product_provider.dart';
 
+import 'screens/home/home_screen.dart';
 import 'screens/products/products_screen.dart'; 
 
 
 
 void main() {
-  runApp(const MyApp());
+
+  runApp(
+
+    MultiProvider(
+
+      providers: [
+
+        ChangeNotifierProvider(
+
+          create: (_) => ProductProvider(),
+        ),
+      ],
+
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -25,10 +43,8 @@ class MyApp extends StatelessWidget {
         
         colorScheme: const ColorScheme.light(
           primary: Color(0xFF2596BE),        // Brand Ocean Blue
-          secondary: Color(0xFF0EA5E9),      // Secondary Accent
-          background: Color(0xFFF8FAFC),     // Light Neutral
-          surface: Color(0xFFFFFFFF),        // Pure White for Cards
-          onBackground: Color(0xFF1E293B),   // Dark Neutral Text
+          secondary: Color(0xFF0EA5E9),     // Light Neutral
+          surface: Color(0xFFFFFFFF),   // Dark Neutral Text
           onSurface: Color(0xFF1E293B),      // Dark Neutral Text on Cards
         ),
 
@@ -78,6 +94,9 @@ class MyApp extends StatelessWidget {
       ),
       // --------------------------------------------
       
+      home: const Scaffold(
+          body: HomePage(),
+        ),
       home: const ProductPage(), 
     );
   }
