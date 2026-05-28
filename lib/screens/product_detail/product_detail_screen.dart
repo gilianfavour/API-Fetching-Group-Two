@@ -4,8 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import '../products/products_screen.dart' show AppColors, Product;
-import '../../widgets/loading/shimmer_skeleton.dart';
-import '../../widgets/loading/loader.dart';
+// import '../../widgets/loading/shimmer_skeleton.dart';
+// import '../../widgets/loading/loader.dart';
 import '../../widgets/loading/shimmer.dart'; 
 
 

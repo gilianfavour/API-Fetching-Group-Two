@@ -55,7 +55,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
             // ================= APP NAME =================
             Text(
-              "Golden Glow",
+              "WellNest",
               style: GoogleFonts.poppins(
                 fontSize: 30,
                 fontWeight: FontWeight.w700,
@@ -66,7 +66,7 @@ class _SplashScreenState extends State<SplashScreen> {
             const SizedBox(height: 12),
 
             Text(
-              "Skincare & Beauty",
+              "Health & Wellness",
               style: GoogleFonts.inter(
                 fontSize: 15,
                 color: const Color(0xFF64748B),
