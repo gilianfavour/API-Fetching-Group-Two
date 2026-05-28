@@ -1005,7 +1005,7 @@ class _QuickView extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const ProductsScreen(),
+                      builder: (_) => const ProductPage(),
                     ),
                   );
                 },
