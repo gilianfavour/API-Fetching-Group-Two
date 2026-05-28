@@ -1,18 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:nutriblend_group2/screens/products/products_screen.dart'; 
 
-// ─────────────────────────────────────────────────────────────
-//  NOTE TO TEAM
-//  • AppBar    → managed externally. This file returns a plain
-//                body widget — no Scaffold, no AppBar here.
-//  • BottomNav → managed externally. Not referenced here.
-//  • Colors    → all via Theme.of(context) from main.dart.
-//                Zero duplicate ColorScheme definitions.
-// ─────────────────────────────────────────────────────────────
 
-// ─────────────────────────────────────────────────────────────
-//  MODELS
-// ─────────────────────────────────────────────────────────────
 class HeroBannerItem {
   final String tag;
   final String title;
@@ -55,9 +45,7 @@ class NutriProduct {
   });
 }
 
-// ─────────────────────────────────────────────────────────────
-//  MOCK DATA  — swap these lists for your real API responses
-// ─────────────────────────────────────────────────────────────
+
 const List<HeroBannerItem> _banners = [
   HeroBannerItem(
     tag: 'New Arrivals',
@@ -206,9 +194,7 @@ class _Category {
   const _Category(this.name, this.icon, this.bg, this.fg);
 }
 
-// ─────────────────────────────────────────────────────────────
-//  HOME PAGE  — pure body widget, no Scaffold/AppBar/BottomNav
-// ─────────────────────────────────────────────────────────────
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -316,9 +302,7 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-// ─────────────────────────────────────────────────────────────
-//  HERO SECTION
-// ─────────────────────────────────────────────────────────────
+
 class _HeroSection extends StatelessWidget {
   final List<HeroBannerItem> banners;
   final PageController ctrl;
@@ -607,9 +591,9 @@ class _HeroSection extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────
+
 //  STATS STRIP
-// ─────────────────────────────────────────────────────────────
+
 class _StatsStrip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -667,9 +651,7 @@ class _Stat extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────
-//  SECTION ROW  (title + optional link)
-// ─────────────────────────────────────────────────────────────
+
 class _SectionRow extends StatelessWidget {
   final String title;
   final String? linkLabel;
@@ -703,9 +685,9 @@ class _SectionRow extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────
+
 //  PRODUCT ROW  (horizontal scroll)
-// ─────────────────────────────────────────────────────────────
+
 class _ProductRow extends StatelessWidget {
   final List<NutriProduct> products;
   final Set<String> wishlist;
@@ -883,9 +865,9 @@ class _ProductCardState extends State<_ProductCard>
   }
 }
 
-// ─────────────────────────────────────────────────────────────
+
 //  CATEGORY STRIP
-// ─────────────────────────────────────────────────────────────
+
 class _CategoryStrip extends StatelessWidget {
   final List<_Category> categories;
   final ValueChanged<String> onTap;
@@ -927,9 +909,9 @@ class _CategoryStrip extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────
+
 //  PRODUCT QUICK-VIEW BOTTOM SHEET
-// ─────────────────────────────────────────────────────────────
+
 class _QuickView extends StatelessWidget {
   final NutriProduct product;
   final bool isFav;
@@ -1018,12 +1000,17 @@ class _QuickView extends StatelessWidget {
           Expanded(
             flex: 2,
             child: ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-                // TODO: Navigator.pushNamed(context, '/product', arguments: product);
-              },
-              child: const Text('View Details →'),
-            ),
+                onPressed: () {
+                  Navigator.pop(context); // close the bottom sheet first
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const ProductsScreen(),
+                    ),
+                  );
+                },
+                child: const Text('View Products →'),
+              ),
           ),
         ]),
       ]),
