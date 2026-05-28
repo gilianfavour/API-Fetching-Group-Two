@@ -1,22 +1,17 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:nutriblend_group2/screens/products/products_screen.dart';
-
-// Import Shimmer Widgets
+import '../../widgets/common/app_bar.dart';
+import '../../widgets/common/navigation_bar.dart';
 import '../../widgets/loading/shimmer_skeleton.dart';
 import '../../widgets/loading/loader.dart';
-import '../../widgets/loading/shimmer.dart'; 
+import '../../widgets/loading/shimmer.dart';
 
-
+// ══════════════════════════════════════════════
+// MODELS
+// ══════════════════════════════════════════════
 class HeroBannerItem {
-  final String tag;
-  final String title;
-  final String shortDesc;
-  final String fullDesc;
-  final String stat;
-  final String statSub;
-  final String imageUrl;
-
+  final String tag, title, shortDesc, fullDesc, stat, statSub, imageUrl;
   const HeroBannerItem({
     required this.tag,
     required this.title,
@@ -29,28 +24,32 @@ class HeroBannerItem {
 }
 
 class NutriProduct {
-  final String id;
-  final String name;
-  final String category;
+  final String id, name, category, imageUrl, description;
   final double price;
   final String badge;
   final bool isSale;
-  final String imageUrl;
-  final String description;
-
   const NutriProduct({
     required this.id,
     required this.name,
     required this.category,
     required this.price,
-    this.badge = '',
-    this.isSale = false,
     required this.imageUrl,
     required this.description,
+    this.badge = '',
+    this.isSale = false,
   });
 }
 
-// ================== DATA ==================
+class _Category {
+  final String name;
+  final IconData icon;
+  final Color bg, fg;
+  const _Category(this.name, this.icon, this.bg, this.fg);
+}
+
+// ══════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════
 const List<HeroBannerItem> _banners = [
   HeroBannerItem(
     tag: 'New Arrivals',
@@ -79,7 +78,9 @@ const List<HeroBannerItem> _banners = [
     tag: 'Flash Sale',
     title: 'Up to 50 % Off\nSupplements',
     shortDesc: 'Limited-time deals. No coupon needed.',
-    fullDesc: 'Stock up on daily essentials — multivitamins, omega-3s, probiotics and collagen boosters at up to 50 % off. Sale ends midnight. Discount applied automatically at checkout.',
+    fullDesc: 'Stock up on daily essentials — multivitamins, omega-3s, '
+        'probiotics and collagen boosters at up to 50 % off. '
+        'Sale ends midnight. Discount applied automatically at checkout.',
     stat: 'Up to 50 % Off',
     statSub: 'Ends midnight tonight',
     imageUrl: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=900&fit=crop',
@@ -88,94 +89,65 @@ const List<HeroBannerItem> _banners = [
 
 const List<NutriProduct> _featured = [
   NutriProduct(
-    id: 'p1',
-    name: 'Retinol Night Serum',
-    category: 'Skin Care',
-    price: 34.99,
-    badge: 'Hot',
-    imageUrl:
-        'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400&fit=crop',
+    id: 'p1', name: 'Retinol Night Serum', category: 'Skin Care',
+    price: 34.99, badge: 'Hot',
+    imageUrl: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400&fit=crop',
     description: '0.5 % retinol formula that visibly reduces fine lines, '
         'uneven texture and dark spots overnight.',
   ),
   NutriProduct(
-    id: 'p2',
-    name: 'SPF 50 Sunscreen',
-    category: 'Skin Care',
-    price: 81400,
-    badge: 'Sale',
-    isSale: true,
-    imageUrl:
-        'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&fit=crop',
+    id: 'p2', name: 'SPF 50 Sunscreen', category: 'Skin Care',
+    price: 81400, badge: 'Sale', isSale: true,
+    imageUrl: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&fit=crop',
     description: 'Broad-spectrum UVA/UVB protection. Lightweight, non-greasy '
         'finish suitable for all skin types.',
   ),
   NutriProduct(
-    id: 'p3',
-    name: 'Collagen Booster',
-    category: 'Supplements',
-    price: 49.99,
-    badge: 'New',
-    imageUrl:
-        'https://images.unsplash.com/photo-1550572017-edd951b55104?w=400&fit=crop',
+    id: 'p3', name: 'Collagen Booster', category: 'Supplements',
+    price: 49.99, badge: 'New',
+    imageUrl: 'https://images.unsplash.com/photo-1550572017-edd951b55104?w=400&fit=crop',
     description: 'Marine collagen peptides with vitamin C for improved skin '
         'elasticity and joint support.',
   ),
   NutriProduct(
-    id: 'p4',
-    name: 'Hyaluronic Acid Gel',
-    category: 'Skin Care',
+    id: 'p4', name: 'Hyaluronic Acid Gel', category: 'Skin Care',
     price: 27.50,
-    imageUrl:
-        'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=400&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=400&fit=crop',
     description: 'Multi-weight hyaluronic acid for deep-layer hydration. '
         'Fragrance-free, suitable for sensitive skin.',
   ),
   NutriProduct(
-    id: 'p6',
-    name: 'Niacinamide 10 % Toner',
-    category: 'Skin Care',
+    id: 'p6', name: 'Niacinamide 10 % Toner', category: 'Skin Care',
     price: 19.99,
-    imageUrl:
-        'https://images.unsplash.com/photo-1601049541289-9b1b7bbbfe19?w=400&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1601049541289-9b1b7bbbfe19?w=400&fit=crop',
     description: 'Pore-minimising, oil-controlling daily toner. Pairs with '
         'any serum or moisturiser.',
   ),
   NutriProduct(
-    id: 'p7',
-    name: 'Probiotic Complex',
-    category: 'Pharmaceuticals',
-    price: 39.00,
-    badge: 'Sale',
-    isSale: true,
-    imageUrl:
-        'https://images.unsplash.com/photo-1576426863848-c21f53c60b19?w=400&fit=crop',
+    id: 'p7', name: 'Probiotic Complex', category: 'Pharmaceuticals',
+    price: 39.00, badge: 'Sale', isSale: true,
+    imageUrl: 'https://images.unsplash.com/photo-1576426863848-c21f53c60b19?w=400&fit=crop',
     description: '10 billion CFU, 8 clinically studied strains for gut health '
         'and daily immune support.',
   ),
 ];
 
 const List<_Category> _categories = [
-  _Category('Skin Care', Icons.face_retouching_natural, Color(0xFFe0f2fe),
-      Color(0xFF0369a1)),
-  _Category('Supplements', Icons.medication_outlined, Color(0xFFdcfce7),
-      Color(0xFF15803d)),
-  _Category('Pharmaceuticals', Icons.local_pharmacy_outlined, Color(0xFFfce7f3),
-      Color(0xFFbe185d)),
-  _Category('Hair Care', Icons.dry_cleaning_outlined, Color(0xFFfef3c7),
-      Color(0xFFb45309)),
-  _Category(
-      'Vitamins', Icons.spa_outlined, Color(0xFFf3e8ff), Color(0xFF7c3aed)),
+  _Category('Skin Care', Icons.face_retouching_natural,
+      Color(0xFFe0f2fe), Color(0xFF0369a1)),
+  _Category('Supplements', Icons.medication_outlined,
+      Color(0xFFdcfce7), Color(0xFF15803d)),
+  _Category('Pharmaceuticals', Icons.local_pharmacy_outlined,
+      Color(0xFFfce7f3), Color(0xFFbe185d)),
+  _Category('Hair Care', Icons.dry_cleaning_outlined,
+      Color(0xFFfef3c7), Color(0xFFb45309)),
+  _Category('Vitamins', Icons.spa_outlined,
+      Color(0xFFf3e8ff), Color(0xFF7c3aed)),
 ];
 
-class _Category {
-  final String name;
-  final IconData icon;
-  final Color bg;
-  final Color fg;
-  const _Category(this.name, this.icon, this.bg, this.fg);
-}
-
+// ══════════════════════════════════════════════
+// HOME PAGE
+// ══════════════════════════════════════════════
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -186,27 +158,24 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _slide = 0;
   bool _detailOpen = false;
-  int _cartCount = 0; // add this
-  bool _isLoading = true;                    // ← Full screen loading control
+  int _cartCount = 0;
+  bool _isLoading = true;
 
   Timer? _timer;
   final PageController _pageCtrl = PageController();
   final Set<String> _wishlist = {};
+
   @override
   void initState() {
     super.initState();
-
-    // Simulate API call delay
     Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
+      if (mounted) setState(() => _isLoading = false);
     });
-
     _timer = Timer.periodic(const Duration(seconds: 5), (_) {
       final next = (_slide + 1) % _banners.length;
       _pageCtrl.animateToPage(next,
-          duration: const Duration(milliseconds: 600), curve: Curves.easeInOut);
+          duration: const Duration(milliseconds: 600),
+          curve: Curves.easeInOut);
     });
   }
 
@@ -249,43 +218,49 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _openCategory(String name) {
-    _toast('Browsing $name');
-  }
-
+  void _openCategory(String name) => _toast('Browsing $name');
 
   void _navigateToCart() {
-    // TODO: Navigator.pushNamed(context, '/cart');
+    // TODO: Navigator.push(context, MaterialPageRoute(builder: (_) => const CartPage()));
     _toast('Cart page coming soon');
   }
 
-  @override
-  Widget build(BuildContext context) {
-    // Show shimmer while loading
-    if (_isLoading) {
-      return const Scaffold(
-        backgroundColor: Color(0xFFF8FAFC),
-        body: SingleChildScrollView(
+  void _onNavBarTap(int index) {
+    switch (index) {
+      case 0:
+        break; // Already on Home
+      case 1:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const ProductPage()),
+        );
+        break;
+      case 2:
+        _toast('Profile page coming soon');
+        break;
+    }
+  }
+
+  // ── Shimmer loading screen
+  Widget _buildShimmer() {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF8FAFC),
+      body: SafeArea(
+        child: SingleChildScrollView(
           child: Column(
             children: [
-              // Hero Area Shimmer
-              SizedBox(
+              const SizedBox(
                 height: 280,
                 child: Center(child: Loader(size: 60)),
               ),
-              SizedBox(height: 24),
-
-              // Featured Products Shimmer
-              HorizontalProductShimmer(),
-
-              SizedBox(height: 30),
-
-              // Categories Placeholder Shimmer
+              const SizedBox(height: 24),
+              const HorizontalProductShimmer(),
+              const SizedBox(height: 30),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
+                  children: const [
                     _CategoryShimmer(),
                     _CategoryShimmer(),
                     _CategoryShimmer(),
@@ -294,110 +269,118 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-              SizedBox(height: 40),
+              const SizedBox(height: 40),
             ],
           ),
         ),
-      );
-    }
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) return _buildShimmer();
+
     return Scaffold(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        body: Column(
-      
-          children: [
-            CustomTopBar(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: Column(
+        children: [
+          CustomTopBar(
             onCartTap: _navigateToCart,
             cartCount: _cartCount,
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _HeroSection(
-                      banners: _banners,
-                      ctrl: _pageCtrl,
-                      slide: _slide,
-                      detailOpen: _detailOpen,
-                      onPageChanged: (i) => setState(() => _slide = i),
-                      onCta: () => setState(() => _detailOpen = !_detailOpen),
-                      onClose: () => setState(() => _detailOpen = false),
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Search bar
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+                    child: Container(
+                      height: 46,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surface,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                            color: Colors.black.withValues(alpha: 0.08)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.04),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: TextField(
+                        onSubmitted: (q) => _toast('Searching for: $q'),
+                        style: const TextStyle(fontSize: 14),
+                        decoration: InputDecoration(
+                          hintText: 'Search products, brands, categories…',
+                          hintStyle: TextStyle(
+                              color: Colors.grey[400], fontSize: 13),
+                          prefixIcon: Icon(Icons.search_rounded,
+                              color: Colors.grey[400], size: 20),
+                          suffixIcon: const Icon(Icons.tune_rounded,
+                              color: Color(0xFF000435), size: 20),
+                          border: InputBorder.none,
+                          contentPadding:
+                              const EdgeInsets.symmetric(vertical: 13),
+                        ),
+                      ),
                     ),
-                    _StatsStrip(),
-                    _SectionRow(
-                      title: 'Featured Products',
-                      linkLabel: 'View all',
-                      onLink: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => const ProductPage()),
-                        );
-                      },
+                  ),
+                  _HeroSection(
+                    banners: _banners,
+                    ctrl: _pageCtrl,
+                    slide: _slide,
+                    detailOpen: _detailOpen,
+                    onPageChanged: (i) => setState(() => _slide = i),
+                    onCta: () =>
+                        setState(() => _detailOpen = !_detailOpen),
+                    onClose: () =>
+                        setState(() => _detailOpen = false),
+                  ),
+                  _StatsStrip(),
+                  _SectionRow(
+                    title: 'Featured Products',
+                    linkLabel: 'View all',
+                    onLink: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const ProductPage()),
                     ),
-                    _ProductRow(
-                      products: _featured,
-                      wishlist: _wishlist,
-                      onTap: _openProduct,
-                      onFav: _toggleWishlist,
-                    ),
-                    _SectionRow(title: 'Browse Categories'),
-                    _CategoryStrip(
-                        categories: _categories, onTap: _openCategory),
-                    const SizedBox(height: 32),
-                  ],
-                ),
+                  ),
+                  _ProductRow(
+                    products: _featured,
+                    wishlist: _wishlist,
+                    onTap: _openProduct,
+                    onFav: _toggleWishlist,
+                  ),
+                  _SectionRow(title: 'Browse Categories'),
+                  _CategoryStrip(
+                      categories: _categories, onTap: _openCategory),
+                  const SizedBox(height: 32),
+                ],
               ),
             ),
-            CustomBottomNavBar(
-              currentIndex: 0,
-              onTap: _onNavBarTap,
-            ),
-          ],
-        ));
-    // Main Content when loaded
-    return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _HeroSection(
-            banners: _banners,
-            ctrl: _pageCtrl,
-            slide: _slide,
-            detailOpen: _detailOpen,
-            onPageChanged: (i) => setState(() => _slide = i),
-            onCta: () => setState(() => _detailOpen = !_detailOpen),
-            onClose: () => setState(() => _detailOpen = false),
           ),
-          _StatsStrip(),
-          _SectionRow(
-            title: 'Featured Products',
-            linkLabel: 'View all',
-            onLink: () {},
+          CustomBottomNavBar(
+            currentIndex: 0,
+            onTap: _onNavBarTap,
           ),
-          _ProductRow(
-            products: _featured,
-            wishlist: _wishlist,
-            onTap: _openProduct,
-            onFav: _toggleWishlist,
-          ),
-          _SectionRow(title: 'Browse Categories'),
-          _CategoryStrip(categories: _categories, onTap: _openCategory),
-          const SizedBox(height: 32),
         ],
       ),
     );
   }
 }
 
-// Small helper shimmer for categories
+// ══════════════════════════════════════════════
+// SHIMMER HELPERS
+// ══════════════════════════════════════════════
 class _CategoryShimmer extends StatelessWidget {
-  const _CategoryShimmer({super.key});
+  const _CategoryShimmer();
 
   @override
   Widget build(BuildContext context) {
@@ -414,7 +397,9 @@ class _CategoryShimmer extends StatelessWidget {
   }
 }
 
-// ================== PRODUCT ROW WITH SHIMMER ==================
+// ══════════════════════════════════════════════
+// PRODUCT ROW
+// ══════════════════════════════════════════════
 class _ProductRow extends StatelessWidget {
   final List<NutriProduct> products;
   final Set<String> wishlist;
@@ -427,15 +412,11 @@ class _ProductRow extends StatelessWidget {
     required this.wishlist,
     required this.onTap,
     required this.onFav,
-    this.isLoading = false,
-  });
+  }) : isLoading = false;
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) {
-      return const HorizontalProductShimmer();
-    }
-
+    if (isLoading) return const HorizontalProductShimmer();
     return SizedBox(
       height: 218,
       child: ListView.builder(
@@ -454,16 +435,16 @@ class _ProductRow extends StatelessWidget {
   }
 }
 
-// ================== ALL ORIGINAL WIDGETS BELOW ==================
-
+// ══════════════════════════════════════════════
+// HERO SECTION
+// ══════════════════════════════════════════════
 class _HeroSection extends StatelessWidget {
   final List<HeroBannerItem> banners;
   final PageController ctrl;
   final int slide;
   final bool detailOpen;
   final ValueChanged<int> onPageChanged;
-  final VoidCallback onCta;
-  final VoidCallback onClose;
+  final VoidCallback onCta, onClose;
 
   const _HeroSection({
     required this.banners,
@@ -477,23 +458,21 @@ class _HeroSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs     = Theme.of(context).colorScheme;
-    final tt     = Theme.of(context).textTheme;
+    final cs = Theme.of(context).colorScheme;
+    final tt = Theme.of(context).textTheme;
     final banner = banners[slide];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // ── Image strip
         SizedBox(
           height: 280,
           child: ClipRRect(
             borderRadius: const BorderRadius.only(
-              bottomLeft:  Radius.circular(28),
+              bottomLeft: Radius.circular(28),
               bottomRight: Radius.circular(28),
             ),
             child: Stack(fit: StackFit.expand, children: [
-              // Paged images
               PageView.builder(
                 controller: ctrl,
                 onPageChanged: onPageChanged,
@@ -507,8 +486,6 @@ class _HeroSection extends StatelessWidget {
                       Container(color: cs.primary),
                 ),
               ),
-
-              // Left-to-right dark gradient (keeps left text readable)
               Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -517,14 +494,11 @@ class _HeroSection extends StatelessWidget {
                     colors: [
                       const Color(0xFF000435).withOpacity(0.92),
                       const Color(0xFF000435).withOpacity(0.45),
-                       Colors.transparent,
+                      Colors.transparent,
                     ],
                   ),
                 ),
               ),
-
-              // Top-right dark vignette — guarantees badge is always readable
-              // regardless of how bright the image is in that corner.
               Positioned(
                 top: 0, right: 0,
                 child: Container(
@@ -541,24 +515,21 @@ class _HeroSection extends StatelessWidget {
                   ),
                 ),
               ),
-
-              // ── Stat badge — top right
               Positioned(
                 top: 18, right: 16,
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 14, vertical: 10),
                   decoration: BoxDecoration(
-                    // Solid dark background so text is always legible
                     color: Colors.black.withValues(alpha: 0.52),
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.18), width: 1),
+                        color: Colors.white.withValues(alpha: 0.18),
+                        width: 1),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // "Featured" label — white so it shows on any image
                       const Text('Featured',
                           style: TextStyle(
                               color: Colors.white70,
@@ -572,7 +543,6 @@ class _HeroSection extends StatelessWidget {
                               fontSize: 16,
                               fontWeight: FontWeight.w800)),
                       const SizedBox(height: 3),
-                      // statSub also white — sky-blue was invisible on bright images
                       Text(banner.statSub,
                           style: const TextStyle(
                               color: Colors.white70,
@@ -582,8 +552,6 @@ class _HeroSection extends StatelessWidget {
                   ),
                 ),
               ),
-
-              // ── Text content — bottom left
               Positioned(
                 bottom: 0, left: 0, right: 0,
                 child: Padding(
@@ -591,7 +559,6 @@ class _HeroSection extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Tag pill
                       Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 4),
@@ -608,27 +575,17 @@ class _HeroSection extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 9),
-
-                      // Title
-                      Text(
-                        banner.title,
-                        style: tt.titleLarge?.copyWith(
-                            color: Colors.white,
-                            fontSize: 22,
-                            fontWeight: FontWeight.w800,
-                            height: 1.2),
-                      ),
+                      Text(banner.title,
+                          style: tt.titleLarge?.copyWith(
+                              color: Colors.white,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w800,
+                              height: 1.2)),
                       const SizedBox(height: 5),
-
-                      // Short desc
-                      Text(
-                        banner.shortDesc,
-                        style: tt.bodyMedium
-                            ?.copyWith(color: Colors.white70, fontSize: 12),
-                      ),
+                      Text(banner.shortDesc,
+                          style: tt.bodyMedium?.copyWith(
+                              color: Colors.white70, fontSize: 12)),
                       const SizedBox(height: 14),
-
-                      // CTA
                       GestureDetector(
                         onTap: onCta,
                         child: AnimatedContainer(
@@ -638,7 +595,7 @@ class _HeroSection extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: detailOpen
                                 ? Colors.white24
-                                :  Colors.white,
+                                : Colors.white,
                             borderRadius: BorderRadius.circular(30),
                             border: detailOpen
                                 ? Border.all(color: Colors.white38)
@@ -651,16 +608,13 @@ class _HeroSection extends StatelessWidget {
                                 fontSize: 13,
                                 fontWeight: FontWeight.w800,
                                 letterSpacing: 0.3),
-                                ),
-                                
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
               ),
-
-              // ── Slide dots — bottom right
               Positioned(
                 bottom: 18, right: 16,
                 child: Row(
@@ -682,12 +636,11 @@ class _HeroSection extends StatelessWidget {
             ]),
           ),
         ),
-
-        // ── Expandable detail card
         AnimatedCrossFade(
           duration: const Duration(milliseconds: 300),
-          crossFadeState:
-              detailOpen ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+          crossFadeState: detailOpen
+              ? CrossFadeState.showSecond
+              : CrossFadeState.showFirst,
           firstChild: const SizedBox.shrink(),
           secondChild: Container(
             margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
@@ -702,42 +655,45 @@ class _HeroSection extends StatelessWidget {
                     offset: const Offset(0, 4))
               ],
             ),
-            child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  banner.imageUrl,
-                  width: 88, height: 82,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => Container(
+            child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.network(
+                      banner.imageUrl,
                       width: 88, height: 82,
-                      color: Theme.of(context).scaffoldBackgroundColor),
-                ),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(banner.title.replaceAll('\n', ' '),
-                        style: tt.titleMedium
-                            ?.copyWith(fontWeight: FontWeight.w700)),
-                    const SizedBox(height: 5),
-                    Text(banner.fullDesc,
-                        style:
-                            tt.bodyMedium?.copyWith(fontSize: 11, height: 1.6)),
-                  ],
-                ),
-              ),
-              GestureDetector(
-                onTap: onClose,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 8),
-                  child: Icon(Icons.close_rounded,
-                      size: 18, color: tt.bodyMedium?.color),
-                ),
-              ),
-            ]),
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Container(
+                          width: 88,
+                          height: 82,
+                          color: Theme.of(context).scaffoldBackgroundColor),
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(banner.title.replaceAll('\n', ' '),
+                            style: tt.titleMedium
+                                ?.copyWith(fontWeight: FontWeight.w700)),
+                        const SizedBox(height: 5),
+                        Text(banner.fullDesc,
+                            style: tt.bodyMedium
+                                ?.copyWith(fontSize: 11, height: 1.6)),
+                      ],
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: onClose,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: Icon(Icons.close_rounded,
+                          size: 18, color: tt.bodyMedium?.color),
+                    ),
+                  ),
+                ]),
           ),
         ),
       ],
@@ -745,136 +701,9 @@ class _HeroSection extends StatelessWidget {
   }
 }
 
-
-class _ProductCardState extends State<_ProductCard>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _ctrl = AnimationController(
-      vsync: this, duration: const Duration(milliseconds: 110));
-  late final Animation<double> _scale =
-      Tween<double>(begin: 1.0, end: 0.95).animate(
-          CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut));
-
-  @override
-  void dispose() { _ctrl.dispose(); super.dispose(); }
-
-  @override
-  Widget build(BuildContext context) {
-    final p  = widget.product;
-    final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
-
-    return GestureDetector(
-      onTapDown:   (_) => _ctrl.forward(),
-      onTapUp:     (_) { _ctrl.reverse(); widget.onTap(); },
-      onTapCancel: () => _ctrl.reverse(),
-      child: ScaleTransition(
-        scale: _scale,
-        child: Container(
-          width: 148,
-          margin: const EdgeInsets.only(right: 12),
-          decoration: BoxDecoration(
-            color: cs.surface,
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: Colors.black.withValues(alpha: 0.06)),
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.04),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4))
-            ],
-          ),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            // Image + badge
-            ClipRRect(
-              borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(18),
-                  topRight: Radius.circular(18)),
-              child: Stack(children: [
-                Image.network(p.imageUrl,
-                    width: 148, height: 112, fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
-                        width: 148, height: 112,
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        child: Icon(Icons.image_outlined,
-                            color: tt.bodyMedium?.color))),
-                if (p.badge.isNotEmpty)
-                  Positioned(
-                    top: 8, right: 8,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 3),
-                      decoration: BoxDecoration(
-                        color: p.isSale
-                            ? const Color(0xFFE11D48)
-                            : cs.primary,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(p.badge,
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 9,
-                              fontWeight: FontWeight.w700)),
-                    ),
-                  ),
-              ]),
-            ),
-
-            // Details
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 9, 10, 10),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                Text(p.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: tt.titleMedium?.copyWith(
-                        fontSize: 12, fontWeight: FontWeight.w700)),
-                const SizedBox(height: 2),
-                Text(p.category,
-                    style: tt.bodyMedium?.copyWith(fontSize: 10)),
-                const SizedBox(height: 7),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                  // Uses titleSmall (Inter bold + primary colour from main.dart)
-                  Text('\$${p.price.toStringAsFixed(2)}',
-                      style: tt.titleSmall?.copyWith(fontSize: 13)),
-                  GestureDetector(
-                    onTap: widget.onFav,
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      width: 28, height: 28,
-                      decoration: BoxDecoration(
-                        color: widget.isFav
-                            ? const Color(0xFFfce7f3)
-                            : Theme.of(context).scaffoldBackgroundColor,
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                            color: Colors.black.withValues(alpha: 0.08)),
-                      ),
-                      child: Icon(
-                        widget.isFav
-                            ? Icons.favorite_rounded
-                            : Icons.favorite_border_rounded,
-                        size: 14,
-                        color: widget.isFav
-                            ? Colors.pinkAccent
-                            : tt.bodyMedium?.color,
-                      ),
-                    ),
-                  ),
-                ]),
-              ]),
-            ),
-          ]),
-        ),
-      ),
-    );
-  }
-}
-// Paste the rest of your original classes (_StatsStrip, _Stat, _SectionRow, _ProductCard, _CategoryStrip, _QuickView) here unchanged.
-
+// ══════════════════════════════════════════════
+// STATS STRIP
+// ══════════════════════════════════════════════
 class _StatsStrip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -882,18 +711,22 @@ class _StatsStrip extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 18, 16, 0),
       child: Row(children: [
-        _Stat(Icons.inventory_2_outlined, cs.secondary.withValues(alpha: 0.12),
-            cs.secondary, '2 400+', 'Products'),
+        _Stat(Icons.inventory_2_outlined,
+            cs.secondary.withValues(alpha: 0.12), cs.secondary,
+            '2 400+', 'Products'),
         const SizedBox(width: 10),
-        _Stat(Icons.local_shipping_outlined, cs.primary.withValues(alpha: 0.10),
-            cs.primary, 'Free', 'Ship \$50+'),
+        _Stat(Icons.local_shipping_outlined,
+            cs.primary.withValues(alpha: 0.10), cs.primary,
+            'Free', 'Ship \$50+'),
         const SizedBox(width: 10),
-        _Stat(Icons.star_outline_rounded, const Color(0xFFdcfce7),
-            const Color(0xFF16a34a), '4.8★', 'Avg Rating'),
+        _Stat(Icons.star_outline_rounded,
+            const Color(0xFFdcfce7), const Color(0xFF16a34a),
+            '4.8★', 'Avg Rating'),
       ]),
     );
   }
 }
+
 class _Stat extends StatelessWidget {
   final IconData icon;
   final Color iconBg, iconFg;
@@ -930,6 +763,9 @@ class _Stat extends StatelessWidget {
   }
 }
 
+// ══════════════════════════════════════════════
+// SECTION ROW
+// ══════════════════════════════════════════════
 class _SectionRow extends StatelessWidget {
   final String title;
   final String? linkLabel;
@@ -963,12 +799,13 @@ class _SectionRow extends StatelessWidget {
   }
 }
 
-
+// ══════════════════════════════════════════════
+// PRODUCT CARD
+// ══════════════════════════════════════════════
 class _ProductCard extends StatefulWidget {
   final NutriProduct product;
   final bool isFav;
-  final VoidCallback onTap;
-  final VoidCallback onFav;
+  final VoidCallback onTap, onFav;
   const _ProductCard({
     required this.product,
     required this.isFav,
@@ -984,8 +821,9 @@ class _ProductCardState extends State<_ProductCard>
     with SingleTickerProviderStateMixin {
   late final AnimationController _ctrl = AnimationController(
       vsync: this, duration: const Duration(milliseconds: 110));
-  late final Animation<double> _scale = Tween<double>(begin: 1.0, end: 0.95)
-      .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut));
+  late final Animation<double> _scale =
+      Tween<double>(begin: 1.0, end: 0.95).animate(
+          CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut));
 
   @override
   void dispose() {
@@ -1001,10 +839,7 @@ class _ProductCardState extends State<_ProductCard>
 
     return GestureDetector(
       onTapDown: (_) => _ctrl.forward(),
-      onTapUp: (_) {
-        _ctrl.reverse();
-        widget.onTap();
-      },
+      onTapUp: (_) { _ctrl.reverse(); widget.onTap(); },
       onTapCancel: () => _ctrl.reverse(),
       child: ScaleTransition(
         scale: _scale,
@@ -1014,7 +849,8 @@ class _ProductCardState extends State<_ProductCard>
           decoration: BoxDecoration(
             color: cs.surface,
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: Colors.black.withValues(alpha: 0.06)),
+            border:
+                Border.all(color: Colors.black.withValues(alpha: 0.06)),
             boxShadow: [
               BoxShadow(
                   color: Colors.black.withValues(alpha: 0.04),
@@ -1022,97 +858,107 @@ class _ProductCardState extends State<_ProductCard>
                   offset: const Offset(0, 4))
             ],
           ),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            ClipRRect(
-              borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(18), topRight: Radius.circular(18)),
-              child: Stack(children: [
-                Image.network(p.imageUrl,
-                    width: 148,
-                    height: 112,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
-                        width: 148,
-                        height: 112,
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        child: Icon(Icons.image_outlined,
-                            color: tt.bodyMedium?.color))),
-                if (p.badge.isNotEmpty)
-                  Positioned(
-                    top: 8,
-                    right: 8,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 3),
-                      decoration: BoxDecoration(
-                        color: p.isSale ? const Color(0xFFE11D48) : cs.primary,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(p.badge,
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 9,
-                              fontWeight: FontWeight.w700)),
-                    ),
-                  ),
-              ]),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 9, 10, 10),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(p.name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: tt.titleMedium?.copyWith(
-                            fontSize: 12, fontWeight: FontWeight.w700)),
-                    const SizedBox(height: 2),
-                    Text(p.category,
-                        style: tt.bodyMedium?.copyWith(fontSize: 10)),
-                    const SizedBox(height: 7),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('\$${p.price.toStringAsFixed(2)}',
-                            style: tt.titleSmall?.copyWith(fontSize: 13)),
-                        GestureDetector(
-                          onTap: widget.onFav,
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 200),
-                            width: 28,
-                            height: 28,
-                            decoration: BoxDecoration(
-                              color: widget.isFav
-                                  ? const Color(0xFFfce7f3)
-                                  : Theme.of(context).scaffoldBackgroundColor,
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                  color: Colors.black.withValues(alpha: 0.08)),
-                            ),
-                            child: Icon(
-                              widget.isFav
-                                  ? Icons.favorite_rounded
-                                  : Icons.favorite_border_rounded,
-                              size: 14,
-                              color: widget.isFav
-                                  ? Colors.pinkAccent
-                                  : tt.bodyMedium?.color,
-                            ),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(18),
+                      topRight: Radius.circular(18)),
+                  child: Stack(children: [
+                    Image.network(p.imageUrl,
+                        width: 148, height: 112, fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Container(
+                            width: 148, height: 112,
+                            color:
+                                Theme.of(context).scaffoldBackgroundColor,
+                            child: Icon(Icons.image_outlined,
+                                color: tt.bodyMedium?.color))),
+                    if (p.badge.isNotEmpty)
+                      Positioned(
+                        top: 8, right: 8,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: p.isSale
+                                ? const Color(0xFFE11D48)
+                                : cs.primary,
+                            borderRadius: BorderRadius.circular(20),
                           ),
+                          child: Text(p.badge,
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.w700)),
                         ),
-                      ],
-                    ),
+                      ),
                   ]),
-            ),
-          ]),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 9, 10, 10),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(p.name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: tt.titleMedium?.copyWith(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700)),
+                        const SizedBox(height: 2),
+                        Text(p.category,
+                            style:
+                                tt.bodyMedium?.copyWith(fontSize: 10)),
+                        const SizedBox(height: 7),
+                        Row(
+                          mainAxisAlignment:
+                              MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('\$${p.price.toStringAsFixed(2)}',
+                                style: tt.titleSmall
+                                    ?.copyWith(fontSize: 13)),
+                            GestureDetector(
+                              onTap: widget.onFav,
+                              child: AnimatedContainer(
+                                duration:
+                                    const Duration(milliseconds: 200),
+                                width: 28, height: 28,
+                                decoration: BoxDecoration(
+                                  color: widget.isFav
+                                      ? const Color(0xFFfce7f3)
+                                      : Theme.of(context)
+                                          .scaffoldBackgroundColor,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                      color: Colors.black
+                                          .withValues(alpha: 0.08)),
+                                ),
+                                child: Icon(
+                                  widget.isFav
+                                      ? Icons.favorite_rounded
+                                      : Icons.favorite_border_rounded,
+                                  size: 14,
+                                  color: widget.isFav
+                                      ? Colors.pinkAccent
+                                      : tt.bodyMedium?.color,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ]),
+                ),
+              ]),
         ),
       ),
     );
   }
 }
 
+// ══════════════════════════════════════════════
+// CATEGORY STRIP
+// ══════════════════════════════════════════════
 class _CategoryStrip extends StatelessWidget {
   final List<_Category> categories;
   final ValueChanged<String> onTap;
@@ -1133,10 +979,11 @@ class _CategoryStrip extends StatelessWidget {
             onTap: () => onTap(c.name),
             child: Container(
               margin: const EdgeInsets.only(right: 10),
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 14, vertical: 9),
               decoration: BoxDecoration(
-                  color: c.bg, borderRadius: BorderRadius.circular(30)),
+                  color: c.bg,
+                  borderRadius: BorderRadius.circular(30)),
               child: Row(children: [
                 Icon(c.icon, size: 15, color: c.fg),
                 const SizedBox(width: 6),
@@ -1154,6 +1001,9 @@ class _CategoryStrip extends StatelessWidget {
   }
 }
 
+// ══════════════════════════════════════════════
+// QUICK VIEW BOTTOM SHEET
+// ══════════════════════════════════════════════
 class _QuickView extends StatelessWidget {
   final NutriProduct product;
   final bool isFav;
@@ -1182,8 +1032,7 @@ class _QuickView extends StatelessWidget {
           children: [
             Center(
               child: Container(
-                  width: 38,
-                  height: 4,
+                  width: 38, height: 4,
                   decoration: BoxDecoration(
                       color: Colors.black12,
                       borderRadius: BorderRadius.circular(2))),
@@ -1193,13 +1042,11 @@ class _QuickView extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(14),
                 child: Image.network(product.imageUrl,
-                    width: 88,
-                    height: 88,
-                    fit: BoxFit.cover,
+                    width: 88, height: 88, fit: BoxFit.cover,
                     errorBuilder: (_, __, ___) => Container(
-                        width: 88,
-                        height: 88,
-                        color: Theme.of(context).scaffoldBackgroundColor)),
+                        width: 88, height: 88,
+                        color: Theme.of(context)
+                            .scaffoldBackgroundColor)),
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -1211,7 +1058,8 @@ class _QuickView extends StatelessWidget {
                       Text(product.category, style: tt.bodyMedium),
                       const SizedBox(height: 8),
                       Text('\$${product.price.toStringAsFixed(2)}',
-                          style: tt.titleSmall?.copyWith(fontSize: 22)),
+                          style:
+                              tt.titleSmall?.copyWith(fontSize: 22)),
                     ]),
               ),
             ]),
@@ -1228,18 +1076,22 @@ class _QuickView extends StatelessWidget {
                         ? Icons.favorite_rounded
                         : Icons.favorite_border_rounded,
                     size: 16,
-                    color: isFav ? Colors.pinkAccent : const Color(0xFF000435),
+                    color: isFav
+                        ? Colors.pinkAccent
+                        : const Color(0xFF000435),
                   ),
                   label: Text(isFav ? 'Saved' : 'Wishlist'),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor:
-                        isFav ? Colors.pinkAccent : const Color(0xFF000435),
+                    foregroundColor: isFav
+                        ? Colors.pinkAccent
+                        : const Color(0xFF000435),
                     side: BorderSide(
                         color: isFav
                             ? Colors.pinkAccent
                             : const Color(0xFF000435)),
                     shape: const StadiumBorder(),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 14),
                   ),
                 ),
               ),
@@ -1252,13 +1104,15 @@ class _QuickView extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const ProductPage(),
-                      ),
+                          builder: (_) => const ProductPage()),
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: const Color(0xFF000435),
+                    backgroundColor: const Color(0xFF000435),
+                    foregroundColor: Colors.white,
+                    shape: const StadiumBorder(),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 14),
                   ),
                   child: const Text('View Products →'),
                 ),
