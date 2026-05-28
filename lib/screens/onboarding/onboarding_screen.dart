@@ -86,7 +86,7 @@ void skip() {
             right: 20,
             child: TextButton(
               style: TextButton.styleFrom(
-                foregroundColor: const Color(0xFF0EA5E9),
+                foregroundColor: const Color(0xFF000435),
               ),
               onPressed: skip,
               child: Text(
@@ -94,7 +94,7 @@ void skip() {
                 style: GoogleFonts.inter(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
-                  color: const Color(0xFF0EA5E9),
+                  color: const Color(0xFF000435),
                 ),
               ),
             ),
@@ -192,7 +192,7 @@ class OnboardPage extends StatelessWidget {
                 return const SizedBox(
                   height: 300,
                   child: Center(
-                    child: CircularProgressIndicator(color: Color(0xFF0EA5E9)),
+                    child: CircularProgressIndicator(color: Color(0xFF000435)),
                   ),
                 );
               },

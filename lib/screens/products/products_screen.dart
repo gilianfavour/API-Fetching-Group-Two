@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:nutriblend_group2/checkout/checkout_screen.dart';
+import 'package:nutriblend_group2/screens/product_detail/product_detail_screen.dart';
+import '../../../widgets/common/app_bar.dart';
+import '../../../widgets/common/navigation_bar.dart';
 import '../../models/product_model.dart';
 import '../../services/product_service.dart';
-import '../product_detail/product_detail_screen.dart';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // APP COLOR CONSTANTS
@@ -13,7 +15,7 @@ class AppColors {
   AppColors._();
 
   static const Color primary = Color(0xFF000435);
-  static const Color accent = Color(0xFF0EA5E9);
+  static const Color accent = Color(0xFF000435);
   static const Color darkNeutral = Color(0xFF1E293B);
   static const Color mediumNeutral = Color(0xFF64748B);
   static const Color lightBg = Color(0xFFF8FAFC);
@@ -23,8 +25,9 @@ class AppColors {
   static const Color divider = Color(0xFFE2E8F0);
 }
 
+
 // ═══════════════════════════════════════════════════════════════════════════════
-// BEAUTIFUL PAGE ROUTE
+// BEAUTIFUL PAGE ROUTE  — scale + fade zoom transition when tapping a card
 // ═══════════════════════════════════════════════════════════════════════════════
 class _ZoomFadeRoute<T> extends PageRouteBuilder<T> {
   final Widget page;
@@ -34,26 +37,13 @@ class _ZoomFadeRoute<T> extends PageRouteBuilder<T> {
           pageBuilder: (_, __, ___) => page,
           transitionDuration: const Duration(milliseconds: 420),
           reverseTransitionDuration: const Duration(milliseconds: 320),
-          transitionsBuilder:
-              (context, animation, secondaryAnimation, child) {
-            final fadeOut = Tween<double>(
-              begin: 1.0,
-              end: 0.88,
-            ).animate(
-              CurvedAnimation(
-                parent: secondaryAnimation,
-                curve: Curves.easeIn,
-              ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            final fadeOut = Tween<double>(begin: 1.0, end: 0.88).animate(
+              CurvedAnimation(parent: secondaryAnimation, curve: Curves.easeIn),
             );
 
-            final fadeIn = Tween<double>(
-              begin: 0.0,
-              end: 1.0,
-            ).animate(
-              CurvedAnimation(
-                parent: animation,
-                curve: Curves.easeOutCubic,
-              ),
+            final fadeIn = Tween<double>(begin: 0.0, end: 1.0).animate(
+              CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
             );
 
             final scaleIn = Tween<double>(
@@ -92,18 +82,14 @@ class ProductPage extends StatefulWidget {
 
 class _ProductPageState extends State<ProductPage>
     with TickerProviderStateMixin {
-  final ProductService _productService = ProductService();
-
   final List<Product> _products = [];
-
+  final ProductService _productService = ProductService();
   bool _isLoading = false;
   bool _isLoadingMore = false;
-
   String? _error;
 
   int _currentPage = 1;
-  int _lastPage = 1;
-  int _totalCount = 0;
+  int _lastPage = 6;
 
   final TextEditingController _searchCtrl = TextEditingController();
 
@@ -114,7 +100,7 @@ class _ProductPageState extends State<ProductPage>
 
   late final Animation<double> _fadeAnim = CurvedAnimation(
     parent: _fadeCtrl,
-    curve: Curves.easeOut,
+    curve: Curves.easeIn,
   );
 
   @override
@@ -130,16 +116,17 @@ class _ProductPageState extends State<ProductPage>
     super.dispose();
   }
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // LOAD PRODUCTS
-  // ═══════════════════════════════════════════════════════════════════════════
-  Future<void> _loadPage() async {
+  Future<void> _loadPage({bool loadMore = false}) async {
     if (!mounted) return;
 
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
+    if (loadMore) {
+      setState(() => _isLoadingMore = true);
+    } else {
+      setState(() {
+        _isLoading = true;
+        _error = null;
+      });
+    }
 
     try {
       final result = await _productService.fetchProducts(
@@ -149,14 +136,14 @@ class _ProductPageState extends State<ProductPage>
       if (!mounted) return;
 
       setState(() {
-        _products
-          ..clear()
-          ..addAll(result.products);
-
-        _currentPage = result.currentPage;
+        if (loadMore) {
+          _products.addAll(result.products);
+        } else {
+          _products
+            ..clear()
+            ..addAll(result.products);
+        }
         _lastPage = result.lastPage;
-        _totalCount = result.total;
-
         _isLoading = false;
         _isLoadingMore = false;
       });
@@ -166,29 +153,24 @@ class _ProductPageState extends State<ProductPage>
       if (!mounted) return;
 
       setState(() {
-        _error = e.toString();
+        _error =
+            'Could not load products.\nCheck your connection and try again.';
         _isLoading = false;
         _isLoadingMore = false;
       });
     }
   }
-
-  // ═══════════════════════════════════════════════════════════════════════════
   // PAGINATION
   // ═══════════════════════════════════════════════════════════════════════════
   void _loadNext() {
-    if (_currentPage >= _lastPage) return;
-
+    if (_isLoadingMore || _isLoading || _currentPage >= _lastPage) return;
     _currentPage++;
-
-    _loadPage();
+    _loadPage(loadMore: true);
   }
 
   void _jumpToPage(int page) {
-    if (page == _currentPage) return;
-
+    if (page == _currentPage || _isLoading) return;
     _currentPage = page;
-
     _loadPage();
   }
 
@@ -197,12 +179,12 @@ class _ProductPageState extends State<ProductPage>
   // ═══════════════════════════════════════════════════════════════════════════
   List<Product> get _visibleProducts {
     final q = _searchCtrl.text.trim().toLowerCase();
-
     if (q.isEmpty) return _products;
-
-    return _products.where((p) {
-      return p.name.toLowerCase().contains(q);
-    }).toList();
+    return _products
+        .where((p) =>
+            p.name.toLowerCase().contains(q) ||
+            (p.brand?.toLowerCase().contains(q) ?? false))
+        .toList();
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -217,6 +199,29 @@ class _ProductPageState extends State<ProductPage>
     );
   }
 
+  void _navigateToCart() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const CheckoutPage()),
+    );
+  }
+
+  void _onNavBarTap(int index) {
+    switch (index) {
+      case 0:
+        Navigator.pop(context);
+        break;
+      case 1:
+        // Already on Products
+        break;
+      case 2:
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Profile page coming soon')),
+        );
+        break;
+    }
+  }
+
   // ═══════════════════════════════════════════════════════════════════════════
   // BUILD
   // ═══════════════════════════════════════════════════════════════════════════
@@ -228,9 +233,16 @@ class _ProductPageState extends State<ProductPage>
         backgroundColor: AppColors.lightBg,
         body: Column(
           children: [
-            _buildHeader(),
+            CustomTopBar(
+              onCartTap: _navigateToCart,
+              cartCount: 0,
+            ),
             Expanded(
               child: _buildBody(),
+            ),
+            CustomBottomNavBar(
+              currentIndex: 1,
+              onTap: _onNavBarTap,
             ),
           ],
         ),
@@ -238,114 +250,7 @@ class _ProductPageState extends State<ProductPage>
     );
   }
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // HEADER
-  // ═══════════════════════════════════════════════════════════════════════════
-  Widget _buildHeader() {
-    return Container(
-      color: AppColors.primary,
-      padding: EdgeInsets.only(
-        top: MediaQuery.of(context).padding.top + 16,
-        left: 20,
-        right: 20,
-        bottom: 24,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Our Products',
-                    style: GoogleFonts.poppins(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.white,
-                    ),
-                  ),
-                  Text(
-                    _totalCount > 0
-                        ? '$_totalCount items available'
-                        : 'Products collection',
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      color: AppColors.white.withOpacity(0.6),
-                    ),
-                  ),
-                ],
-              ),
-
-              const Spacer(),
-
-              _HeaderIconBtn(
-                icon: Icons.tune_rounded,
-                onTap: () {},
-              ),
-
-              const SizedBox(width: 8),
-
-              _HeaderIconBtn(
-                icon: Icons.shopping_bag_outlined,
-                onTap: () {},
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 18),
-
-          Container(
-            height: 46,
-            decoration: BoxDecoration(
-              color: AppColors.white.withOpacity(0.09),
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(
-                color: AppColors.white.withOpacity(0.14),
-              ),
-            ),
-            child: TextField(
-              controller: _searchCtrl,
-              onChanged: (_) => setState(() {}),
-              style: GoogleFonts.inter(
-                color: AppColors.white,
-                fontSize: 14,
-              ),
-              decoration: InputDecoration(
-                hintText: 'Search products...',
-                hintStyle: GoogleFonts.inter(
-                  color: AppColors.white.withOpacity(0.4),
-                  fontSize: 14,
-                ),
-                prefixIcon: Icon(
-                  Icons.search_rounded,
-                  color: AppColors.white.withOpacity(0.4),
-                ),
-                suffixIcon: _searchCtrl.text.isNotEmpty
-                    ? GestureDetector(
-                        onTap: () {
-                          _searchCtrl.clear();
-                          setState(() {});
-                        },
-                        child: Icon(
-                          Icons.close_rounded,
-                          color: AppColors.white.withOpacity(0.4),
-                        ),
-                      )
-                    : null,
-                border: InputBorder.none,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // ═══════════════════════════════════════════════════════════════════════════
-  // BODY
-  // ═══════════════════════════════════════════════════════════════════════════
+  // ── Body ──────────────────────────────────────────────────────────────────
   Widget _buildBody() {
     if (_isLoading) {
       return const _FullPageSpinner();
@@ -355,6 +260,7 @@ class _ProductPageState extends State<ProductPage>
       return _FullPageError(
         message: _error!,
         onRetry: () {
+          _currentPage = 1;
           _loadPage();
         },
       );
@@ -378,24 +284,18 @@ class _ProductPageState extends State<ProductPage>
           padding: const EdgeInsets.fromLTRB(20, 14, 20, 6),
           child: Row(
             children: [
-              Text(
-                '${products.length} products',
-                style: GoogleFonts.inter(
-                  fontSize: 12,
-                  color: AppColors.mediumNeutral,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-
+              Text('${products.length} products',
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    color: AppColors.mediumNeutral,
+                    fontWeight: FontWeight.w500,
+                  )),
               const Spacer(),
-
-              Text(
-                'Page $_currentPage of $_lastPage',
-                style: GoogleFonts.inter(
-                  fontSize: 12,
-                  color: AppColors.mediumNeutral,
-                ),
-              ),
+              Text('Page $_currentPage of $_lastPage',
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    color: AppColors.mediumNeutral,
+                  )),
             ],
           ),
         ),
@@ -414,13 +314,11 @@ class _ProductPageState extends State<ProductPage>
                 childAspectRatio: 0.58,
               ),
               itemCount: products.length,
-              itemBuilder: (context, index) {
-                return _ProductCard(
-                  product: products[index],
-                  index: index,
-                  onTap: () => _openDetail(products[index]),
-                );
-              },
+              itemBuilder: (context, index) => _ProductCard(
+                product: products[index],
+                index: index,
+                onTap: () => _openDetail(products[index]),
+              ),
             ),
           ),
         ),
@@ -440,7 +338,7 @@ class _ProductPageState extends State<ProductPage>
         20,
         12,
         20,
-        MediaQuery.of(context).padding.bottom + 16,
+        16,
       ),
       child: Column(
         children: [
@@ -448,9 +346,7 @@ class _ProductPageState extends State<ProductPage>
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(_lastPage, (i) {
               final pageNum = i + 1;
-
               final active = pageNum == _currentPage;
-
               return GestureDetector(
                 onTap: () => _jumpToPage(pageNum),
                 child: AnimatedContainer(
@@ -470,7 +366,6 @@ class _ProductPageState extends State<ProductPage>
           ),
 
           const SizedBox(height: 14),
-
           Row(
             children: [
               if (_currentPage > 1)
@@ -488,7 +383,6 @@ class _ProductPageState extends State<ProductPage>
                     ),
                   ),
                 ),
-
               Expanded(
                 flex: 3,
                 child: _LoadMoreButton(
@@ -538,25 +432,25 @@ class _PrevNextButton extends StatelessWidget {
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (iconLeft) ...[
-              Icon(icon, size: 18),
-              const SizedBox(width: 4),
-            ],
-
-            Text(
-              label,
-              style: GoogleFonts.inter(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-
-            if (!iconLeft) ...[
-              const SizedBox(width: 4),
-              Icon(icon, size: 18),
-            ],
-          ],
+          children: iconLeft
+              ? [
+                  Icon(icon, size: 18),
+                  const SizedBox(width: 4),
+                  Text(label,
+                      style: GoogleFonts.inter(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      )),
+                ]
+              : [
+                  Text(label,
+                      style: GoogleFonts.inter(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      )),
+                  const SizedBox(width: 4),
+                  Icon(icon, size: 18),
+                ],
         ),
       ),
     );
@@ -572,6 +466,7 @@ class _LoadMoreButton extends StatelessWidget {
   final VoidCallback onTap;
 
   const _LoadMoreButton({
+    super.key,
     required this.isLoading,
     required this.isLastPage,
     required this.onTap,
@@ -584,8 +479,11 @@ class _LoadMoreButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: (isLastPage || isLoading) ? null : onTap,
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
-          foregroundColor: AppColors.white,
+          backgroundColor: AppColors.white,
+          foregroundColor: AppColors.primary,
+          disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.35),
+          disabledForegroundColor: AppColors.white.withValues(alpha: 0.5),
+          elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
           ),
@@ -595,16 +493,28 @@ class _LoadMoreButton extends StatelessWidget {
                 width: 20,
                 height: 20,
                 child: CircularProgressIndicator(
-                  color: Colors.white,
                   strokeWidth: 2,
+                  color: AppColors.white,
                 ),
               )
-            : Text(
-                isLastPage ? 'All Products Loaded' : 'Load More',
-                style: GoogleFonts.inter(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+            : isLastPage
+                ? Text('All products loaded',
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ))
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Load More',
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          )),
+                      const SizedBox(width: 8),
+                      const Icon(Icons.keyboard_arrow_down_rounded, size: 20),
+                    ],
+                  ),
       ),
     );
   }
@@ -613,7 +523,7 @@ class _LoadMoreButton extends StatelessWidget {
 // ═══════════════════════════════════════════════════════════════════════════════
 // PRODUCT CARD
 // ═══════════════════════════════════════════════════════════════════════════════
-class _ProductCard extends StatelessWidget {
+class _ProductCard extends StatefulWidget {
   final Product product;
   final int index;
   final VoidCallback onTap;
@@ -625,70 +535,234 @@ class _ProductCard extends StatelessWidget {
   });
 
   @override
+  State<_ProductCard> createState() => _ProductCardState();
+}
+
+class _ProductCardState extends State<_ProductCard>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _pressCtrl = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 110),
+    reverseDuration: const Duration(milliseconds: 220),
+    lowerBound: 0.93,
+    upperBound: 1.00,
+    value: 1.0,
+  );
+
+  @override
+  void dispose() {
+    _pressCtrl.dispose();
+    super.dispose();
+  }
+
+  void _onTapDown(TapDownDetails _) {
+    _pressCtrl.animateTo(
+      0.93,
+      duration: const Duration(milliseconds: 100),
+      curve: Curves.easeIn,
+    );
+  }
+
+  void _onTapUp(TapUpDetails _) => _relax();
+  void _onTapCancel() => _relax();
+
+  void _relax() {
+    _pressCtrl.animateTo(
+      1.0,
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.elasticOut,
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.primary.withOpacity(0.06),
-              blurRadius: 20,
-              offset: const Offset(0, 6),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              flex: 58,
-              child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(20),
-                ),
-                child: _ProductImage(
-                  imageUrl: product.image,
-                  name: product.name,
-                ),
+    return AnimatedBuilder(
+      animation: _pressCtrl,
+      builder: (_, child) => Transform.scale(
+        scale: _pressCtrl.value,
+        child: child,
+      ),
+      child: GestureDetector(
+        onTapDown: _onTapDown,
+        onTapUp: _onTapUp,
+        onTapCancel: _onTapCancel,
+        onTap: widget.onTap,
+        child: Container(
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primary.withValues(alpha: 0.06),
+                blurRadius: 20,
+                offset: const Offset(0, 6),
               ),
-            ),
-
-            Expanded(
-              flex: 42,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(11, 9, 11, 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: 58,
+                child: Stack(
                   children: [
-                    Text(
-                      product.name,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.poppins(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.darkNeutral,
+                    ClipRRect(
+                      borderRadius:
+                          const BorderRadius.vertical(top: Radius.circular(20)),
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: double.infinity,
+                        child: _ProductImage(
+                          imageUrl: widget.product.image,
+                          name: widget.product.name,
+                        ),
                       ),
                     ),
-
-                    const Spacer(),
-
-                    Text(
-                      product.price,
-                      style: GoogleFonts.inter(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.primary,
+                    Positioned(
+                      top: 10,
+                      right: 10,
+                      child: Container(
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          color: AppColors.white.withValues(alpha: 0.88),
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.08),
+                              blurRadius: 6,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Icon(Icons.favorite_border_rounded,
+                            size: 15, color: AppColors.mediumNeutral),
                       ),
                     ),
+                    if (widget.product.isLimited)
+                      Positioned(
+                        top: 10,
+                        left: 10,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 7, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: AppColors.limitedRed,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: 5,
+                                height: 5,
+                                decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              const SizedBox(width: 4),
+                              Text('Only ${widget.product.stockQuantity} left',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 9,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                  )),
+                            ],
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),
-            ),
-          ],
+              Expanded(
+                flex: 42,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(11, 9, 11, 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (widget.product.brand != null)
+                            Text(
+                              widget.product.brand!.toUpperCase(),
+                              style: GoogleFonts.inter(
+                                fontSize: 9,
+                                color: AppColors.accent,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0.7,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          const SizedBox(height: 2),
+                          Text(
+                            widget.product.name,
+                            style: GoogleFonts.poppins(
+                              fontSize: 11.5,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.darkNeutral,
+                              height: 1.25,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          ...List.generate(
+                              5,
+                              (i) => Icon(
+                                    i < widget.product.rating.round()
+                                        ? Icons.star_rounded
+                                        : Icons.star_outline_rounded,
+                                    size: 11,
+                                    color: AppColors.starAmber,
+                                  )),
+                          const SizedBox(width: 4),
+                          Text('(${widget.product.reviewCount})',
+                              style: GoogleFonts.inter(
+                                fontSize: 10,
+                                color: AppColors.mediumNeutral,
+                              )),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              widget.product.price,
+                              style: GoogleFonts.inter(
+                                fontSize: 12.5,
+                                fontWeight: FontWeight.w800,
+                                color: AppColors.primary,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          Container(
+                            width: 28,
+                            height: 28,
+                            decoration: BoxDecoration(
+                              color: AppColors.primary,
+                              borderRadius: BorderRadius.circular(9),
+                            ),
+                            child: const Icon(Icons.add_rounded,
+                                color: Colors.white, size: 16),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -738,11 +812,26 @@ class _ProductImage extends StatelessWidget {
   Widget _placeholder() {
     return Container(
       color: const Color(0xFFEFF6F0),
-      child: Center(
-        child: Icon(
-          Icons.image_not_supported_outlined,
-          color: AppColors.mediumNeutral,
-        ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.spa_outlined,
+              color: AppColors.primary.withValues(alpha: 0.22), size: 40),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Text(
+              name,
+              style: GoogleFonts.inter(
+                fontSize: 10,
+                color: AppColors.mediumNeutral.withValues(alpha: 0.7),
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -760,47 +849,30 @@ class _ProductImage extends StatelessWidget {
 // ═══════════════════════════════════════════════════════════════════════════════
 // HEADER BUTTON
 // ═══════════════════════════════════════════════════════════════════════════════
-class _HeaderIconBtn extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onTap;
-
-  const _HeaderIconBtn({
-    required this.icon,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 38,
-        height: 38,
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.10),
-          borderRadius: BorderRadius.circular(11),
-        ),
-        child: Icon(
-          icon,
-          color: AppColors.white,
-          size: 19,
-        ),
-      ),
-    );
-  }
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// LOADING
-// ═══════════════════════════════════════════════════════════════════════════════
 class _FullPageSpinner extends StatelessWidget {
   const _FullPageSpinner();
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: CircularProgressIndicator(
-        color: AppColors.primary,
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(
+            width: 38,
+            height: 38,
+            child: CircularProgressIndicator(
+              strokeWidth: 2.5,
+              color: AppColors.primary,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text('Fetching products…',
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                color: AppColors.mediumNeutral,
+              )),
+        ],
       ),
     );
   }
@@ -826,16 +898,49 @@ class _FullPageError extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              message,
-              textAlign: TextAlign.center,
+            Container(
+              width: 64,
+              height: 64,
+              decoration: BoxDecoration(
+                color: AppColors.limitedRed.withValues(alpha: 0.08),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(Icons.wifi_off_rounded,
+                  color: AppColors.limitedRed.withValues(alpha: 0.7), size: 30),
             ),
-
-            const SizedBox(height: 20),
-
-            ElevatedButton(
-              onPressed: onRetry,
-              child: const Text('Retry'),
+            const SizedBox(height: 16),
+            Text('Connection Error',
+                style: GoogleFonts.poppins(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.darkNeutral,
+                )),
+            const SizedBox(height: 8),
+            Text(message,
+                style: GoogleFonts.inter(
+                  fontSize: 13,
+                  color: AppColors.mediumNeutral,
+                  height: 1.55,
+                ),
+                textAlign: TextAlign.center),
+            const SizedBox(height: 24),
+            SizedBox(
+              height: 46,
+              child: ElevatedButton.icon(
+                onPressed: onRetry,
+                icon: const Icon(Icons.refresh_rounded, size: 18),
+                label: Text('Try Again',
+                    style: GoogleFonts.inter(fontWeight: FontWeight.w600)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: AppColors.white,
+                  elevation: 0,
+                  padding: const EdgeInsets.symmetric(horizontal: 28),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(13),
+                  ),
+                ),
+              ),
             ),
           ],
         ),
@@ -859,10 +964,31 @@ class _EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text(
-        query.isEmpty
-            ? 'No products found'
-            : 'No results for "$query"',
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.search_off_rounded,
+              size: 48, color: AppColors.mediumNeutral.withValues(alpha: 0.35)),
+          const SizedBox(height: 14),
+          Text(
+              query.isEmpty
+                  ? 'No products available'
+                  : 'No results for "$query"',
+              style: GoogleFonts.poppins(
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+                color: AppColors.darkNeutral,
+              )),
+          if (query.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            TextButton(
+              onPressed: onClear,
+              child: Text('Clear search',
+                  style:
+                      GoogleFonts.inter(color: AppColors.accent, fontSize: 13)),
+            ),
+          ],
+        ],
       ),
     );
   }

@@ -4,9 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
-
-import '../../models/product_model.dart' show Product;
 import '../products/products_screen.dart' show AppColors;
+import '../../models/product_model.dart';
+// import '../../widgets/loading/shimmer_skeleton.dart';
+// import '../../widgets/loading/loader.dart';
+import '../../widgets/loading/shimmer.dart'; 
+
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // EXTENDED PRODUCT MODEL
@@ -497,52 +500,165 @@ class _ProductDetailPageState
 // PLACEHOLDER
 // ═══════════════════════════════════════════════════════════════════════════════
 
-class _HeroPlaceholder
-    extends StatelessWidget {
+class _HeroPlaceholder extends StatelessWidget {
   final String name;
+  const _HeroPlaceholder({required this.name});
 
-  const _HeroPlaceholder({
-    required this.name,
-  });
+  @override
+  Widget build(BuildContext context) => Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(Icons.spa_outlined,
+            color: AppColors.primary.withValues(alpha: 0.18), size: 68),
+        const SizedBox(height: 12),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 32),
+          child: Text(name,
+            style: GoogleFonts.poppins(
+              fontSize: 14, fontWeight: FontWeight.w500,
+              color: AppColors.mediumNeutral.withValues(alpha: 0.5),
+            ),
+            textAlign: TextAlign.center),
+        ),
+      ],
+    ),
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// SKELETON LOADER
+// ═══════════════════════════════════════════════════════════════════════════════
+class _SkeletonScreen extends StatelessWidget {
+  const _SkeletonScreen();
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return SingleChildScrollView(
+      physics: const NeverScrollableScrollPhysics(),
       child: Column(
-        mainAxisAlignment:
-            MainAxisAlignment.center,
-
         children: [
-          Icon(
-            Icons.image_outlined,
-            size: 70,
-            color: AppColors.primary
-                .withValues(alpha: 0.2),
-          ),
-
-          const SizedBox(height: 10),
-
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(
-              horizontal: 30,
+          AppShimmer(
+            child: Container(
+              height: 320,
+              width: double.infinity,
+              color: Colors.white,
             ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _shimmerBar(
+                  width: 90,
+                  height: 16,
+                ),
 
-            child: Text(
-              name,
+                const SizedBox(height: 14),
 
-              textAlign:
-                  TextAlign.center,
+                _shimmerBar(
+                  width: double.infinity,
+                  height: 24,
+                ),
 
-              style:
-                  GoogleFonts.poppins(
-                fontSize: 14,
-                color: AppColors
-                    .mediumNeutral,
-              ),
+                const SizedBox(height: 8),
+
+                _shimmerBar(
+                  width: 240,
+                  height: 24,
+                ),
+
+                const SizedBox(height: 24),
+
+                _shimmerCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _shimmerBar(
+                        width: 70,
+                        height: 14,
+                      ),
+
+                      const SizedBox(height: 12),
+
+                      _shimmerBar(
+                        width: 120,
+                        height: 28,
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 12),
+
+                _shimmerCard(
+                  child: Column(
+                    children: List.generate(
+                      3,
+                      (_) => Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: _shimmerBar(
+                          width: double.infinity,
+                          height: 14,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 12),
+
+                _shimmerCard(
+                  child: Column(
+                    children: List.generate(
+                      4,
+                      (_) => Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: _shimmerBar(
+                          width: double.infinity,
+                          height: 14,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  static Widget _shimmerBar({
+    required double width,
+    required double height,
+  }) {
+    return AppShimmer(
+      child: Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+    );
+  }
+
+  static Widget _shimmerCard({
+    required Widget child,
+  }) {
+    return AppShimmer(
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: child,
       ),
     );
   }
