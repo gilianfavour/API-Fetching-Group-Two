@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'providers/product_provider.dart';
 
+import 'screens/splash/splash_screen.dart';
+import 'screens/onboarding/onboarding_screen.dart';
 import 'screens/home/home_screen.dart';
 import 'screens/products/products_screen.dart'; 
 
@@ -95,7 +97,7 @@ class MyApp extends StatelessWidget {
       // --------------------------------------------
       
       home: const Scaffold(
-          body: HomePage(),
+          body: const SplashScreen(),
         ),
       // home: const ProductPage(), 
     );

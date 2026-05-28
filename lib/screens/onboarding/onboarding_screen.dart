@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nutriblend_group2/screens/home/home_screen.dart';
 
 // ===================== GOLDEN GLOW ONBOARDING =====================
 
@@ -21,23 +22,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void nextPage() {
-    if (currentIndex < 2) {
-      _controller.nextPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    } else {
-      debugPrint("Onboarding Complete");
-    }
+  if (currentIndex < 2) {
+    _controller.nextPage(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  } else {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const HomePage()),
+    );
   }
+}
 
-  void skip() {
-    _controller.jumpToPage(2);
-
-    setState(() {
-      currentIndex = 2;
-    });
-  }
+void skip() {
+  nextPage(); // reuse same logic
+}
 
   @override
   Widget build(BuildContext context) {
