@@ -5,18 +5,14 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  # sdk: '>=3.0.0 <4.0.0'     # ← Changed this line
-  # sdk: '^3.11.0'
-  sdk: '^3.9.2'
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-
-  provider: ^6.1.2
-  google_fonts: ^6.2.1  # Or latest stable version
-
   cupertino_icons: ^1.0.8
+  google_fonts: ^6.2.1
+  provider: ^6.1.2
   http: ^1.2.2
   shimmer: ^3.0.0
 
