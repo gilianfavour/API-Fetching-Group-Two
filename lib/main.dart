@@ -6,6 +6,8 @@ import 'providers/product_provider.dart';
 import 'screens/splash/splash_screen.dart';
 import 'screens/onboarding/onboarding_screen.dart';
 import 'screens/home/home_screen.dart';
+// import 'screens/products/products_screen.dart'; 
+
 import 'screens/products/products_screen.dart';
 
 
