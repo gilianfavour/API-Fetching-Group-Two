@@ -72,9 +72,7 @@ class ProductDetailModel {
       base: p,
 
       description:
-          p.description ??
-              'Pure, potent and effective ${p.name} '
-                  'designed for maximum results.',
+          p.description,
 
       highlights: [
         'Authentic formula — direct sourced',
@@ -115,7 +113,6 @@ class _ProductDetailPageState
   bool _wishlisted = false;
   bool _addingCart = false;
 
-  int _quantity = 1;
 
   late final AnimationController _fadeCtrl =
       AnimationController(
@@ -218,20 +215,6 @@ class _ProductDetailPageState
   // QUANTITY
   // ═══════════════════════════════════════════════════════════════════════════
 
-  void _adjustQty(int delta) {
-    final maxQty =
-        _detail?.stockQuantity ?? 10;
-
-    setState(() {
-      _quantity =
-          (_quantity + delta).clamp(
-        1,
-        maxQty,
-      );
-    });
-
-    HapticFeedback.selectionClick();
-  }
 
   // ═══════════════════════════════════════════════════════════════════════════
   // ADD TO CART
@@ -529,6 +512,7 @@ class _HeroPlaceholder extends StatelessWidget {
 // ═══════════════════════════════════════════════════════════════════════════════
 // SKELETON LOADER
 // ═══════════════════════════════════════════════════════════════════════════════
+// ignore: unused_element
 class _SkeletonScreen extends StatelessWidget {
   const _SkeletonScreen();
 

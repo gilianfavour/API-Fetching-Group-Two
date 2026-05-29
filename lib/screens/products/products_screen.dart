@@ -466,7 +466,6 @@ class _LoadMoreButton extends StatelessWidget {
   final VoidCallback onTap;
 
   const _LoadMoreButton({
-    super.key,
     required this.isLoading,
     required this.isLastPage,
     required this.onTap,

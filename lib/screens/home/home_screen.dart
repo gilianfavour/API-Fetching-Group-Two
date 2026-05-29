@@ -950,6 +950,7 @@ class _CategoryStrip extends StatelessWidget {
 // ══════════════════════════════════════════════
 // QUICK VIEW BOTTOM SHEET
 // ══════════════════════════════════════════════
+// ignore: unused_element
 class _QuickView extends StatelessWidget {
   final Product product;
   final bool isFav;
