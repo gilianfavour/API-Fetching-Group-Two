@@ -48,8 +48,8 @@ class Product {
       image: _parseImage(json),
 
       description:
-          json['description']
-              ?? 'No Description',
+          (json['description']?.toString()
+              ?? 'No Description').replaceAll(RegExp(r'<[^>]*>'), ''),
 
       brand: (json['brand'] as Map?)?['name'] ?? (json['category'] as Map?)?['name'],
       rating: ((json['average_rating'] ?? json['rating'] ?? 0) as num).toDouble(),
