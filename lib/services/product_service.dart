@@ -29,11 +29,19 @@ class ProductService {
           await http.get(url);
 
       if (response.statusCode == 200) {
-         
-         print(response.body);
 
         final data =
             jsonDecode(response.body);
+
+        // PRINT TOTAL PRODUCTS
+        print('Total Products: ${data['meta']['total']}');
+
+        // PRINT EACH PRODUCT
+        for (var product in data['data']) {
+
+          print(product['name']);
+          print(product['formatted_price']);
+        }
 
         return ProductResponse.fromJson(
           data,
