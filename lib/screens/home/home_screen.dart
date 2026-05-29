@@ -366,7 +366,7 @@ class _ProductRow extends StatelessWidget {
   Widget build(BuildContext context) {
     if (isLoading) return const HorizontalProductShimmer();
     return SizedBox(
-      height: 218,
+      height: 235,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
@@ -861,9 +861,14 @@ class _ProductCardState extends State<_ProductCard>
                           mainAxisAlignment:
                               MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('\$${p.price}',
-                                style: tt.titleSmall
-                                    ?.copyWith(fontSize: 13)),
+                            Expanded(
+                              child: Text('${p.price}',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: tt.titleSmall
+                                      ?.copyWith(fontSize: 13)),
+                            ),
+                            const SizedBox(width: 4),
                             GestureDetector(
                               onTap: widget.onFav,
                               child: AnimatedContainer(

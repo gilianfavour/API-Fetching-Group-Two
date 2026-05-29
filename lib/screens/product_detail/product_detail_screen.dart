@@ -49,9 +49,9 @@ class ProductDetailModel {
       base: Product.fromJson(j),
 
       description:
-          j['description']?.toString() ??
+          (j['description']?.toString() ??
               'Pure, potent and effective ${j['name'] ?? 'product'} '
-                  'designed for maximum results.',
+                  'designed for maximum results.').replaceAll(RegExp(r'<[^>]*>'), ''),
 
       highlights: highlights,
 
@@ -330,7 +330,7 @@ class _ProductDetailPageState
                         ),
 
                         Text(
-                          '\$${product.price}',
+                          '${product.price}',
 
                           style:
                               GoogleFonts.inter(
