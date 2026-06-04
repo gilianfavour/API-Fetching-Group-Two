@@ -16,13 +16,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _nameCtrl = TextEditingController();
   final _emailContactCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
+  final _confirmPasswordCtrl = TextEditingController();
   bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
 
   @override
   void dispose() {
     _nameCtrl.dispose();
     _emailContactCtrl.dispose();
     _passwordCtrl.dispose();
+    _confirmPasswordCtrl.dispose();
     super.dispose();
   }
 
@@ -34,6 +37,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       name: _nameCtrl.text.trim(),
       emailOrContact: _emailContactCtrl.text.trim(),
       password: _passwordCtrl.text,
+      passwordConfirmation: _confirmPasswordCtrl.text,
     );
 
     if (!mounted) return;
@@ -194,7 +198,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   TextFormField(
                     controller: _passwordCtrl,
                     obscureText: _obscurePassword,
-                    textInputAction: TextInputAction.done,
+                    textInputAction: TextInputAction.next,
                     style: GoogleFonts.inter(fontSize: 14),
                     decoration: _inputDecoration(
                       hintText: "••••••••",
@@ -214,6 +218,45 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       }
                       if (val.length < 6) {
                         return "Password must be at least 6 characters";
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Confirm Password Field
+                  Text(
+                    "Confirm Password",
+                    style: GoogleFonts.inter(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF1E293B),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  TextFormField(
+                    controller: _confirmPasswordCtrl,
+                    obscureText: _obscureConfirmPassword,
+                    textInputAction: TextInputAction.done,
+                    style: GoogleFonts.inter(fontSize: 14),
+                    decoration: _inputDecoration(
+                      hintText: "••••••••",
+                      icon: Icons.lock_outline_rounded,
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscureConfirmPassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                          color: const Color(0xFF64748B),
+                          size: 20,
+                        ),
+                        onPressed: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
+                      ),
+                    ),
+                    validator: (val) {
+                      if (val == null || val.isEmpty) {
+                        return "Confirm password is required";
+                      }
+                      if (val != _passwordCtrl.text) {
+                        return "Passwords do not match";
                       }
                       return null;
                     },

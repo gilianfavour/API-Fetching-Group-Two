@@ -51,6 +51,7 @@ class AuthProvider extends ChangeNotifier {
     required String name,
     required String emailOrContact,
     required String password,
+    required String passwordConfirmation,
   }) async {
     _isLoading = true;
     _error = null;
@@ -61,6 +62,7 @@ class AuthProvider extends ChangeNotifier {
         name: name,
         emailOrContact: emailOrContact,
         password: password,
+        passwordConfirmation: passwordConfirmation,
       );
       _isLoading = false;
       notifyListeners();

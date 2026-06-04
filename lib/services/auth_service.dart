@@ -11,12 +11,14 @@ class AuthService {
     required String name,
     required String emailOrContact,
     required String password,
+    required String passwordConfirmation,
   }) async {
     final url = Uri.parse('$baseUrl/auth/register');
 
     final Map<String, dynamic> body = {
       'name': name,
       'password': password,
+      'password_confirmation': passwordConfirmation,
     };
 
     if (emailOrContact.contains('@')) {
