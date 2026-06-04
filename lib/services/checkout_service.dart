@@ -85,10 +85,24 @@ class CheckoutService {
       } else {
         try {
           final responseData = jsonDecode(response.body);
+          if (responseData is Map) {
+            final errors = responseData['errors'];
+            if (errors is Map && errors.isNotEmpty) {
+              final firstVal = errors.values.first;
+              if (firstVal is List && firstVal.isNotEmpty) {
+                throw Exception(firstVal.first);
+              } else {
+                throw Exception(firstVal.toString());
+              }
+            }
+          }
           final errorMsg = responseData['message'] ?? responseData['error'] ?? 'Failed to place order';
           throw Exception(errorMsg);
-        } catch (_) {
-          throw Exception('Failed to place order (Status: ${response.statusCode})');
+        } catch (e) {
+          if (e is Exception && !e.toString().contains('FormatException') && !e.toString().contains('TypeError')) {
+            rethrow;
+          }
+          throw Exception('Failed to place order (Status: ${response.statusCode}). Response: ${response.body}');
         }
       }
     } catch (e) {

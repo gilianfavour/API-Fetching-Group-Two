@@ -63,7 +63,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    Theme.of(context);
     final authProvider = Provider.of<AuthProvider>(context);
 
     return Scaffold(

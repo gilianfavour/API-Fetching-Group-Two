@@ -103,7 +103,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _slide = 0;
   bool _detailOpen = false;
-  int _cartCount = 0;
   bool _isLoading = true;
 
   Timer? _timer;

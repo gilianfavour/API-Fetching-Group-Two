@@ -866,6 +866,7 @@ class _ProductImage extends StatelessWidget {
 // ═══════════════════════════════════════════════════════════════════════════════
 // HEADER BUTTON
 // ═══════════════════════════════════════════════════════════════════════════════
+// ignore: unused_element
 class _FullPageSpinner extends StatelessWidget {
   const _FullPageSpinner();
 
