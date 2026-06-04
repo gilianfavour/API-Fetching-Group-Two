@@ -19,96 +19,55 @@ class ProductService {
   Future<ProductResponse> fetchProducts({
     int page = 1,
   }) async {
-
     try {
-
-      final url =
-          Uri.parse('$baseUrl?page=$page');
-
-      final response =
-          await http.get(url);
+      final url = Uri.parse('$baseUrl?page=$page');
+      final response = await http.get(
+        url,
+        headers: {'Accept': 'application/json'},
+      );
 
       if (response.statusCode == 200) {
-
-        final data =
-            jsonDecode(response.body);
+        final data = jsonDecode(response.body);
 
         // PRINT TOTAL PRODUCTS
         print('Total Products: ${data['meta']['total']}');
 
         // PRINT EACH PRODUCT
         for (var product in data['data']) {
-
           print(product['name']);
           print(product['formatted_price']);
         }
 
-        return ProductResponse.fromJson(
-          data,
-        );
-
+        return ProductResponse.fromJson(data);
       } else {
-
-        throw Exception(
-          'Failed to load products',
-        );
+        throw Exception('Failed to load products (Status: ${response.statusCode})');
       }
-
     } catch (e) {
-
-      throw Exception(
-        'Error fetching products: $e',
-      );
+      throw Exception('Error fetching products: $e');
     }
   }
 
   // =========================================
   // FETCH SINGLE PRODUCT DETAILS
   // =========================================
-
   Future<Product> fetchProductDetails(
     int productId,
   ) async {
-
     try {
-
-      // PRODUCT DETAILS URL
-
-      final url = Uri.parse(
-        '$baseUrl/$productId',
+      final url = Uri.parse('$baseUrl/$productId');
+      final response = await http.get(
+        url,
+        headers: {'Accept': 'application/json'},
       );
-
-      // SEND REQUEST
-
-      final response =
-          await http.get(url);
-
-      // CHECK RESPONSE
 
       if (response.statusCode == 200) {
-
-        final data =
-            jsonDecode(response.body);
-
-        // SOME APIs RETURN:
-        // { data: {...} }
-
-        return Product.fromJson(
-          data['data'],
-        );
-
+        final data = jsonDecode(response.body);
+        return Product.fromJson(data['data']);
       } else {
-
-        throw Exception(
-          'Failed to load product details',
-        );
+        throw Exception('Failed to load product details (Status: ${response.statusCode})');
       }
-
     } catch (e) {
-
-      throw Exception(
-        'Error fetching product details: $e',
-      );
+      throw Exception('Error fetching product details: $e');
     }
   }
 }

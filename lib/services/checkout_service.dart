@@ -10,7 +10,10 @@ class CheckoutService {
   Future<List<Map<String, dynamic>>> fetchRegions() async {
     final url = Uri.parse('$baseUrl/regions');
     try {
-      final response = await http.get(url);
+      final response = await http.get(
+        url,
+        headers: {'Accept': 'application/json'},
+      );
       if (response.statusCode == 200) {
         final decoded = jsonDecode(response.body);
         return _parseList(decoded);
@@ -29,7 +32,10 @@ class CheckoutService {
   Future<List<Map<String, dynamic>>> fetchTowns(int regionId) async {
     final url = Uri.parse('$baseUrl/regions/$regionId/towns');
     try {
-      final response = await http.get(url);
+      final response = await http.get(
+        url,
+        headers: {'Accept': 'application/json'},
+      );
       if (response.statusCode == 200) {
         final decoded = jsonDecode(response.body);
         return _parseList(decoded);
@@ -68,18 +74,22 @@ class CheckoutService {
         url,
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
           'Authorization': 'Bearer $token',
         },
         body: jsonEncode(body),
       );
 
-      final responseData = jsonDecode(response.body);
-
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return responseData;
+        return jsonDecode(response.body);
       } else {
-        final errorMsg = responseData['message'] ?? responseData['error'] ?? 'Failed to place order';
-        throw Exception(errorMsg);
+        try {
+          final responseData = jsonDecode(response.body);
+          final errorMsg = responseData['message'] ?? responseData['error'] ?? 'Failed to place order';
+          throw Exception(errorMsg);
+        } catch (_) {
+          throw Exception('Failed to place order (Status: ${response.statusCode})');
+        }
       }
     } catch (e) {
       if (e is Exception) rethrow;

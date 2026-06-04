@@ -28,17 +28,23 @@ class AuthService {
     try {
       final response = await http.post(
         url,
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
         body: jsonEncode(body),
       );
 
-      final responseData = jsonDecode(response.body);
-
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return responseData;
+        return jsonDecode(response.body);
       } else {
-        final errorMsg = responseData['message'] ?? responseData['error'] ?? 'Registration failed';
-        throw Exception(errorMsg);
+        try {
+          final responseData = jsonDecode(response.body);
+          final errorMsg = responseData['message'] ?? responseData['error'] ?? 'Registration failed';
+          throw Exception(errorMsg);
+        } catch (_) {
+          throw Exception('Registration failed (Status: ${response.statusCode})');
+        }
       }
     } catch (e) {
       if (e is Exception) rethrow;
@@ -68,17 +74,23 @@ class AuthService {
     try {
       final response = await http.post(
         url,
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
         body: jsonEncode(body),
       );
 
-      final responseData = jsonDecode(response.body);
-
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return responseData;
+        return jsonDecode(response.body);
       } else {
-        final errorMsg = responseData['message'] ?? responseData['error'] ?? 'Invalid credentials';
-        throw Exception(errorMsg);
+        try {
+          final responseData = jsonDecode(response.body);
+          final errorMsg = responseData['message'] ?? responseData['error'] ?? 'Invalid credentials';
+          throw Exception(errorMsg);
+        } catch (_) {
+          throw Exception('Login failed (Status: ${response.statusCode})');
+        }
       }
     } catch (e) {
       if (e is Exception) rethrow;
