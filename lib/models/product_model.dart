@@ -90,4 +90,19 @@ class Product {
 
     return '';
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'formatted_price': price,
+      'main_image': image,
+      'description': description,
+      'brand': brand != null ? {'name': brand} : null,
+      'average_rating': rating,
+      'review_count': reviewCount,
+      'stock_quantity': stockQuantity,
+      'sku': sku,
+    };
+  }
 }

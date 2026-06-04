@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../providers/cart_provider.dart';
+import '../../providers/wishlist_provider.dart';
+import '../../widgets/notification_helper.dart';
 import '../cart/cart_screen.dart';
 import '../../widgets/loading/shimmer.dart';
 import '../../profile/profile.dart';
@@ -625,22 +627,42 @@ class _ProductCardState extends State<_ProductCard>
                     Positioned(
                       top: 10,
                       right: 10,
-                      child: Container(
-                        width: 30,
-                        height: 30,
-                        decoration: BoxDecoration(
-                          color: AppColors.white.withValues(alpha: 0.88),
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.08),
-                              blurRadius: 6,
-                              offset: const Offset(0, 2),
+                      child: Consumer<WishlistProvider>(
+                        builder: (context, wp, child) {
+                          final isFav = wp.contains(widget.product.id);
+                          return GestureDetector(
+                            onTap: () {
+                              wp.toggleWishlist(widget.product);
+                              showTopNotification(
+                                context,
+                                isFav
+                                    ? '${widget.product.name} removed from wishlist'
+                                    : '${widget.product.name} added to wishlist',
+                                isSuccess: !isFav,
+                              );
+                            },
+                            child: Container(
+                              width: 30,
+                              height: 30,
+                              decoration: BoxDecoration(
+                                color: AppColors.white.withValues(alpha: 0.88),
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.08),
+                                    blurRadius: 6,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: Icon(
+                                isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                                size: 15,
+                                color: isFav ? const Color(0xFFEF4444) : AppColors.mediumNeutral,
+                              ),
                             ),
-                          ],
-                        ),
-                        child: Icon(Icons.favorite_border_rounded,
-                            size: 15, color: AppColors.mediumNeutral),
+                          );
+                        },
                       ),
                     ),
                     if (widget.product.isLimited)
@@ -752,13 +774,10 @@ class _ProductCardState extends State<_ProductCard>
                           GestureDetector(
                             onTap: () {
                               Provider.of<CartProvider>(context, listen: false).addItem(widget.product);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('${widget.product.name} added to cart'),
-                                  backgroundColor: AppColors.primary,
-                                  duration: const Duration(seconds: 1),
-                                  behavior: SnackBarBehavior.floating,
-                                ),
+                              showTopNotification(
+                                context,
+                                '${widget.product.name} added to cart',
+                                isSuccess: true,
                               );
                             },
                             child: Container(

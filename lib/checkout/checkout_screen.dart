@@ -1,11 +1,14 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../providers/cart_provider.dart';
 import '../providers/auth_provider.dart';
 import '../services/checkout_service.dart';
 import '../widgets/loading/shimmer.dart';
 import '../screens/checkout/order_confirmation_screen.dart';
+import '../widgets/notification_helper.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -18,13 +21,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   final _formKey = GlobalKey<FormState>();
   final _checkoutService = CheckoutService();
   final _addressCtrl = TextEditingController();
+  final _referenceContactCtrl = TextEditingController();
+  final _mobileMoneyNumberCtrl = TextEditingController();
 
   List<Map<String, dynamic>> _regions = [];
   List<Map<String, dynamic>> _towns = [];
 
   int? _selectedRegionId;
   int? _selectedTownId;
-  String _selectedMethod = 'standard'; // default
+  String _selectedMethod = 'Standard Delivery'; // default for API
+
+  String _selectedPaymentMethod = 'cash'; // 'cash' or 'mobile_money'
+  String _selectedMno = 'MTN'; // 'MTN' or 'Airtel'
 
   bool _regionsLoading = true;
   bool _townsLoading = false;
@@ -42,6 +50,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   @override
   void dispose() {
     _addressCtrl.dispose();
+    _referenceContactCtrl.dispose();
+    _mobileMoneyNumberCtrl.dispose();
     super.dispose();
   }
 
@@ -93,9 +103,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     }
   }
 
-  // =========================================
-  // PLACE ORDER
-  // =========================================
   void _placeOrder() async {
     if (!_formKey.currentState!.validate()) return;
     if (_selectedRegionId == null) {
@@ -132,6 +139,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       };
     }).toList();
 
+    final addressWithRef = "${_addressCtrl.text.trim()} (Ref: ${_referenceContactCtrl.text.trim()})";
+
     try {
       final orderResult = await _checkoutService.placeOrder(
         token: authProvider.token!,
@@ -139,11 +148,40 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         deliveryMethod: _selectedMethod,
         deliveryRegionId: _selectedRegionId!,
         deliveryTownId: _selectedTownId!,
-        deliveryAddress: _addressCtrl.text.trim(),
+        deliveryAddress: addressWithRef,
+        referenceContact: _referenceContactCtrl.text.trim(),
+        paymentMethod: _selectedPaymentMethod,
       );
 
+      // Local Order Persistence
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        final localList = prefs.getStringList('local_placed_orders') ?? <String>[];
+        final newOrder = {
+          'id': orderResult['id']?.toString() ?? orderResult['order_number']?.toString() ?? DateTime.now().millisecondsSinceEpoch.toString(),
+          'order_number': orderResult['order_number']?.toString() ?? 'ORD-${DateTime.now().millisecondsSinceEpoch}',
+          'status': 'pending',
+          'created_at': DateTime.now().toUtc().toIso8601String(),
+          'delivery_address': addressWithRef,
+          'total_amount': cartProvider.totalAmount,
+          'items': cartProvider.items.map((item) => {
+            'product': {
+              'id': item.product.id,
+              'name': item.product.name,
+              'formatted_price': item.product.price,
+              'main_image': item.product.image,
+            },
+            'quantity': item.quantity,
+          }).toList(),
+        };
+        localList.add(jsonEncode(newOrder));
+        await prefs.setStringList('local_placed_orders', localList);
+      } catch (e) {
+        debugPrint("Error persisting order locally: $e");
+      }
+
       // Save attributes for confirmation screen before clearing cart
-      final deliveryAddress = _addressCtrl.text.trim();
+      final deliveryAddress = addressWithRef;
       final deliveryMethod = _selectedMethod;
       final totalAmount = cartProvider.totalAmount;
       final totalItems = cartProvider.totalQuantity;
@@ -156,6 +194,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       setState(() {
         _submitting = false;
       });
+
+      // Show top right green success notification
+      showTopNotification(context, "Order placed successfully!", isSuccess: true);
 
       // Navigate to order confirmation
       Navigator.pushReplacement(
@@ -180,13 +221,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   }
 
   void _showErrorSnackBar(String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(msg),
-        backgroundColor: const Color(0xFFEF4444),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+    showTopNotification(context, msg, isSuccess: false);
   }
 
   @override
@@ -221,7 +256,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Delivery Method Card
+              // Reference Contact Card
               Card(
                 elevation: 0,
                 color: Colors.white,
@@ -235,7 +270,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Delivery Method",
+                        "Reference Contact",
                         style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w700,
                           fontSize: 15,
@@ -243,56 +278,24 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         ),
                       ),
                       const SizedBox(height: 12),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: ChoiceChip(
-                              label: const Text('Standard Delivery'),
-                              selected: _selectedMethod == 'standard',
-                              selectedColor: const Color(0xFFE0F2FE),
-                              labelStyle: GoogleFonts.inter(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                                color: _selectedMethod == 'standard'
-                                    ? const Color(0xFF000435)
-                                    : const Color(0xFF64748B),
-                              ),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                              side: BorderSide(
-                                color: _selectedMethod == 'standard'
-                                    ? const Color(0xFF000435)
-                                    : Colors.grey.shade200,
-                              ),
-                              onSelected: (bool selected) {
-                                if (selected) setState(() => _selectedMethod = 'standard');
-                              },
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: ChoiceChip(
-                              label: const Text('Express Delivery'),
-                              selected: _selectedMethod == 'express',
-                              selectedColor: const Color(0xFFE0F2FE),
-                              labelStyle: GoogleFonts.inter(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                                color: _selectedMethod == 'express'
-                                    ? const Color(0xFF000435)
-                                    : const Color(0xFF64748B),
-                              ),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                              side: BorderSide(
-                                color: _selectedMethod == 'express'
-                                    ? const Color(0xFF000435)
-                                    : Colors.grey.shade200,
-                              ),
-                              onSelected: (bool selected) {
-                                if (selected) setState(() => _selectedMethod = 'express');
-                              },
-                            ),
-                          ),
-                        ],
+                      TextFormField(
+                        controller: _referenceContactCtrl,
+                        keyboardType: TextInputType.phone,
+                        textInputAction: TextInputAction.next,
+                        style: GoogleFonts.inter(fontSize: 14),
+                        decoration: _inputDecoration(
+                          hintText: "Enter contact number (e.g. 07XXXXXXXX)",
+                          icon: Icons.phone_android_rounded,
+                        ),
+                        validator: (val) {
+                          if (val == null || val.trim().isEmpty) {
+                            return "Reference contact is required";
+                          }
+                          if (val.trim().length < 10) {
+                            return "Please enter a valid phone number";
+                          }
+                          return null;
+                        },
                       ),
                     ],
                   ),
@@ -423,6 +426,181 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           return null;
                         },
                       ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Payment Method Card
+              Card(
+                elevation: 0,
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  side: BorderSide(color: Colors.grey.shade100),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Payment Method",
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 15,
+                          color: const Color(0xFF1E293B),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () => setState(() => _selectedPaymentMethod = 'mobile_money'),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                decoration: BoxDecoration(
+                                  color: _selectedPaymentMethod == 'mobile_money'
+                                      ? const Color(0xFFE0F2FE)
+                                      : Colors.white,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: _selectedPaymentMethod == 'mobile_money'
+                                        ? const Color(0xFF000435)
+                                        : Colors.grey.shade200,
+                                    width: 1.5,
+                                  ),
+                                ),
+                                child: Column(
+                                  children: [
+                                    Icon(
+                                      Icons.phone_android_rounded,
+                                      color: _selectedPaymentMethod == 'mobile_money'
+                                          ? const Color(0xFF000435)
+                                          : const Color(0xFF64748B),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      "Mobile Money",
+                                      style: GoogleFonts.inter(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600,
+                                        color: _selectedPaymentMethod == 'mobile_money'
+                                            ? const Color(0xFF000435)
+                                            : const Color(0xFF64748B),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () => setState(() => _selectedPaymentMethod = 'cash'),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                decoration: BoxDecoration(
+                                  color: _selectedPaymentMethod == 'cash'
+                                      ? const Color(0xFFE0F2FE)
+                                      : Colors.white,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: _selectedPaymentMethod == 'cash'
+                                        ? const Color(0xFF000435)
+                                        : Colors.grey.shade200,
+                                    width: 1.5,
+                                  ),
+                                ),
+                                child: Column(
+                                  children: [
+                                    Icon(
+                                      Icons.payments_outlined,
+                                      color: _selectedPaymentMethod == 'cash'
+                                          ? const Color(0xFF000435)
+                                          : const Color(0xFF64748B),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      "Cash on Delivery",
+                                      style: GoogleFonts.inter(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600,
+                                        color: _selectedPaymentMethod == 'cash'
+                                            ? const Color(0xFF000435)
+                                            : const Color(0xFF64748B),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      
+                      // Conditionally show Mobile Money options
+                      if (_selectedPaymentMethod == 'mobile_money') ...[
+                        const SizedBox(height: 16),
+                        Text(
+                          "Network Operator",
+                          style: GoogleFonts.inter(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xFF1E293B),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        DropdownButtonFormField<String>(
+                          value: _selectedMno,
+                          decoration: _inputDecoration(
+                            hintText: "Select operator",
+                            icon: Icons.wifi_tethering_rounded,
+                          ),
+                          items: const [
+                            DropdownMenuItem(value: 'MTN', child: Text('MTN Mobile Money')),
+                            DropdownMenuItem(value: 'Airtel', child: Text('Airtel Money')),
+                          ],
+                          onChanged: (val) {
+                            if (val != null) {
+                              setState(() => _selectedMno = val);
+                            }
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          "Mobile Money Number",
+                          style: GoogleFonts.inter(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xFF1E293B),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        TextFormField(
+                          controller: _mobileMoneyNumberCtrl,
+                          keyboardType: TextInputType.phone,
+                          style: GoogleFonts.inter(fontSize: 14),
+                          decoration: _inputDecoration(
+                            hintText: "Enter MM number (e.g. 07XXXXXXXX)",
+                            icon: Icons.phone_iphone_rounded,
+                          ),
+                          validator: (val) {
+                            if (_selectedPaymentMethod == 'mobile_money') {
+                              if (val == null || val.trim().isEmpty) {
+                                return "Mobile money number is required";
+                              }
+                              if (val.trim().length < 10) {
+                                return "Please enter a valid phone number";
+                              }
+                            }
+                            return null;
+                          },
+                        ),
+                      ],
                     ],
                   ),
                 ),

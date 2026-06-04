@@ -58,6 +58,8 @@ class CheckoutService {
     required int deliveryRegionId,
     required int deliveryTownId,
     required String deliveryAddress,
+    String? referenceContact,
+    String? paymentMethod,
   }) async {
     final url = Uri.parse('$baseUrl/orders');
 
@@ -68,6 +70,13 @@ class CheckoutService {
       'delivery_town_id': deliveryTownId,
       'delivery_address': deliveryAddress,
     };
+
+    if (referenceContact != null && referenceContact.isNotEmpty) {
+      body['reference_contact'] = referenceContact;
+    }
+    if (paymentMethod != null && paymentMethod.isNotEmpty) {
+      body['payment_method'] = paymentMethod;
+    }
 
     try {
       final response = await http.post(
