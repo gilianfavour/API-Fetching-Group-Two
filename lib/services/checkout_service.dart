@@ -54,7 +54,6 @@ class CheckoutService {
   Future<Map<String, dynamic>> placeOrder({
     required String token,
     required List<Map<String, dynamic>> items,
-    required String deliveryMethod,
     required int deliveryRegionId,
     required int deliveryTownId,
     required String deliveryAddress,
@@ -65,7 +64,6 @@ class CheckoutService {
 
     final body = {
       'items': items,
-      'delivery_method': deliveryMethod,
       'delivery_region_id': deliveryRegionId,
       'delivery_town_id': deliveryTownId,
       'delivery_address': deliveryAddress,

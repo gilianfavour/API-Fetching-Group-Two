@@ -5,7 +5,6 @@ import '../../providers/wishlist_provider.dart';
 import '../../providers/cart_provider.dart';
 import '../product_detail/product_detail_screen.dart';
 import '../../widgets/notification_helper.dart';
-import '../products/products_screen.dart' show AppColors;
 
 class WishlistScreen extends StatelessWidget {
   const WishlistScreen({super.key});

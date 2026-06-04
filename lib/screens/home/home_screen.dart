@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../providers/product_provider.dart';
 import '../../providers/cart_provider.dart';
-import '../../providers/auth_provider.dart';
 import '../../providers/wishlist_provider.dart';
 import '../../widgets/notification_helper.dart';
 import '../../models/product_model.dart';
@@ -12,7 +10,6 @@ import '../cart/cart_screen.dart';
 import '../products/products_screen.dart';
 import '../product_detail/product_detail_screen.dart';
 import '../../widgets/loading/shimmer_skeleton.dart';
-import '../../widgets/loading/loader.dart';
 import '../../widgets/loading/shimmer.dart';
 import '../../profile/profile.dart';
 import '../../widgets/common/app_bar.dart';
@@ -427,6 +424,7 @@ class _CategoryShimmer extends StatelessWidget {
 // ══════════════════════════════════════════════
 // PRODUCT ROW
 // ══════════════════════════════════════════════
+// ignore: unused_element
 class _ProductRow extends StatelessWidget {
   final List<Product> products;
   final Set<int> wishlist;

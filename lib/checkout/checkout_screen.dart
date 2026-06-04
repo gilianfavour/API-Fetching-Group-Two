@@ -145,7 +145,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       final orderResult = await _checkoutService.placeOrder(
         token: authProvider.token!,
         items: itemsPayload,
-        deliveryMethod: _selectedMethod,
         deliveryRegionId: _selectedRegionId!,
         deliveryTownId: _selectedTownId!,
         deliveryAddress: addressWithRef,

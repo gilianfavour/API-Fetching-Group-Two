@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import '../../providers/cart_provider.dart';
 import '../../providers/wishlist_provider.dart';
 import '../../widgets/notification_helper.dart';
 import '../products/products_screen.dart' show AppColors;
@@ -111,8 +110,6 @@ class _ProductDetailPageState
   ProductDetailModel? _detail;
 
   bool _isLoading = true;
-  bool _wishlisted = false;
-  bool _addingCart = false;
 
 
   late final AnimationController _fadeCtrl =
@@ -221,39 +218,6 @@ class _ProductDetailPageState
   // ADD TO CART
   // ═══════════════════════════════════════════════════════════════════════════
 
-  Future<void> _addToCart() async {
-    if (_addingCart) return;
-
-    setState(() {
-      _addingCart = true;
-    });
-
-    HapticFeedback.mediumImpact();
-
-    // Call CartProvider
-    Provider.of<CartProvider>(context, listen: false).addItem(widget.product);
-
-    await Future.delayed(
-      const Duration(milliseconds: 500),
-    );
-
-    if (!mounted) return;
-
-    setState(() {
-      _addingCart = false;
-    });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          '${widget.product.name} added to cart',
-          style: GoogleFonts.inter(),
-        ),
-        backgroundColor: AppColors.primary,
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
-  }
 
   // ═══════════════════════════════════════════════════════════════════════════
   // BUILD

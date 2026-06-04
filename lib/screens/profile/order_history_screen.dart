@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../providers/auth_provider.dart';
-import '../products/products_screen.dart' show AppColors;
 
 class OrderHistoryScreen extends StatefulWidget {
   const OrderHistoryScreen({super.key});
