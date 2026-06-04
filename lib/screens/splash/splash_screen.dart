@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:provider/provider.dart';
+import '../../providers/auth_provider.dart';
+import '../home/home_screen.dart';
 import '../onboarding/onboarding_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -19,10 +21,13 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(const Duration(seconds: 3), () {
       if (!mounted) return; // 👈 prevents crash
 
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final Widget nextScreen = authProvider.isLoggedIn ? const HomePage() : const OnboardingScreen();
+
       Navigator.pushReplacement(
         context,
         PageRouteBuilder(
-          pageBuilder: (_, __, ___) => const OnboardingScreen(),
+          pageBuilder: (_, __, ___) => nextScreen,
           transitionsBuilder: (_, animation, __, child) {
             return FadeTransition(opacity: animation, child: child);
           },

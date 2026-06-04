@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:nutriblend_group2/checkout/checkout_screen.dart';
+import 'package:provider/provider.dart';
+import '../../providers/cart_provider.dart';
+import '../cart/cart_screen.dart';
+import '../../widgets/loading/shimmer.dart';
+import '../../profile/profile.dart';
 import 'package:nutriblend_group2/screens/product_detail/product_detail_screen.dart';
 import '../../../widgets/common/app_bar.dart';
 import '../../../widgets/common/navigation_bar.dart';
@@ -202,7 +206,7 @@ class _ProductPageState extends State<ProductPage>
   void _navigateToCart() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => const CheckoutPage()),
+      MaterialPageRoute(builder: (_) => const CartScreen()),
     );
   }
 
@@ -215,8 +219,9 @@ class _ProductPageState extends State<ProductPage>
         // Already on Products
         break;
       case 2:
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Profile page coming soon')),
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const ProfilePage()),
         );
         break;
     }
@@ -235,7 +240,7 @@ class _ProductPageState extends State<ProductPage>
           children: [
             CustomTopBar(
               onCartTap: _navigateToCart,
-              cartCount: 0,
+              cartCount: Provider.of<CartProvider>(context).totalQuantity,
             ),
             Expanded(
               child: _buildBody(),
@@ -253,7 +258,7 @@ class _ProductPageState extends State<ProductPage>
   // ── Body ──────────────────────────────────────────────────────────────────
   Widget _buildBody() {
     if (_isLoading) {
-      return const _FullPageSpinner();
+      return const AppShimmer(child: _ProductPageShimmer());
     }
 
     if (_error != null) {
@@ -744,15 +749,28 @@ class _ProductCardState extends State<_ProductCard>
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          Container(
-                            width: 28,
-                            height: 28,
-                            decoration: BoxDecoration(
-                              color: AppColors.primary,
-                              borderRadius: BorderRadius.circular(9),
+                          GestureDetector(
+                            onTap: () {
+                              Provider.of<CartProvider>(context, listen: false).addItem(widget.product);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('${widget.product.name} added to cart'),
+                                  backgroundColor: AppColors.primary,
+                                  duration: const Duration(seconds: 1),
+                                  behavior: SnackBarBehavior.floating,
+                                ),
+                              );
+                            },
+                            child: Container(
+                              width: 28,
+                              height: 28,
+                              decoration: BoxDecoration(
+                                color: AppColors.primary,
+                                borderRadius: BorderRadius.circular(9),
+                              ),
+                              child: const Icon(Icons.add_rounded,
+                                  color: Colors.white, size: 16),
                             ),
-                            child: const Icon(Icons.add_rounded,
-                                color: Colors.white, size: 16),
                           ),
                         ],
                       ),
@@ -992,3 +1010,84 @@ class _EmptyState extends StatelessWidget {
     );
   }
 }
+
+class _ProductPageShimmer extends StatelessWidget {
+  const _ProductPageShimmer();
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.builder(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        mainAxisSpacing: 14,
+        crossAxisSpacing: 14,
+        childAspectRatio: 0.58,
+      ),
+      itemCount: 6,
+      itemBuilder: (context, index) {
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Image Shimmer
+              Expanded(
+                flex: 58,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFEFF6F0),
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                  ),
+                ),
+              ),
+              // Content Shimmer
+              Expanded(
+                flex: 42,
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(width: 40, height: 10, color: const Color(0xFFE2E8F0)),
+                          const SizedBox(height: 6),
+                          Container(width: double.infinity, height: 14, color: const Color(0xFFE2E8F0)),
+                          const SizedBox(height: 4),
+                          Container(width: 100, height: 14, color: const Color(0xFFE2E8F0)),
+                        ],
+                      ),
+                      Container(width: 60, height: 10, color: const Color(0xFFE2E8F0)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(width: 60, height: 16, color: const Color(0xFFE2E8F0)),
+                          Container(
+                            width: 28,
+                            height: 28,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFE2E8F0),
+                              borderRadius: BorderRadius.circular(9),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+

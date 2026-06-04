@@ -1,13 +1,12 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import '../../providers/cart_provider.dart';
 import '../products/products_screen.dart' show AppColors;
 import '../../models/product_model.dart';
-// import '../../widgets/loading/shimmer_skeleton.dart';
-// import '../../widgets/loading/loader.dart';
 import '../../widgets/loading/shimmer.dart'; 
 
 
@@ -229,8 +228,11 @@ class _ProductDetailPageState
 
     HapticFeedback.mediumImpact();
 
+    // Call CartProvider
+    Provider.of<CartProvider>(context, listen: false).addItem(widget.product);
+
     await Future.delayed(
-      const Duration(milliseconds: 800),
+      const Duration(milliseconds: 500),
     );
 
     if (!mounted) return;
@@ -239,19 +241,14 @@ class _ProductDetailPageState
       _addingCart = false;
     });
 
-    ScaffoldMessenger.of(context)
-        .showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           '${widget.product.name} added to cart',
           style: GoogleFonts.inter(),
         ),
-
-        backgroundColor:
-            AppColors.primary,
-
-        behavior:
-            SnackBarBehavior.floating,
+        backgroundColor: AppColors.primary,
+        behavior: SnackBarBehavior.floating,
       ),
     );
   }
@@ -272,10 +269,7 @@ class _ProductDetailPageState
             AppColors.lightBg,
 
         body: _isLoading
-            ? const Center(
-                child:
-                    CircularProgressIndicator(),
-              )
+            ? const _SkeletonScreen()
             : _buildDetail(),
       ),
     );
@@ -508,6 +502,7 @@ class _HeroPlaceholder extends StatelessWidget {
     ),
   );
 }
+
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // SKELETON LOADER

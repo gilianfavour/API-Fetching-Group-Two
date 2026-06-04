@@ -10,7 +10,7 @@ class ProductService {
   // BASE URL
 
   static const String baseUrl =
-      'https://admin.rasmuspharmaceuticals.com/api/v1/products';
+      'https://testing.rasmuspharmaceuticals.com/api/v1/products';
 
   // =========================================
   // FETCH ALL PRODUCTS

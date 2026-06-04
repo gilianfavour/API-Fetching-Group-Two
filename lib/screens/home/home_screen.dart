@@ -2,9 +2,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/product_provider.dart';
+import '../../providers/cart_provider.dart';
 import '../../models/product_model.dart';
 import 'package:nutriblend_group2/screens/products/products_screen.dart';
 import 'package:nutriblend_group2/screens/product_detail/product_detail_screen.dart';
+import '../cart/cart_screen.dart';
+import '../../profile/profile.dart';
 import '../../widgets/common/app_bar.dart';
 import '../../widgets/common/navigation_bar.dart';
 import '../../widgets/loading/shimmer_skeleton.dart';
@@ -162,8 +165,10 @@ class _HomePageState extends State<HomePage> {
   void _openCategory(String name) => _toast('Browsing $name');
 
   void _navigateToCart() {
-    // TODO: Navigator.push(context, MaterialPageRoute(builder: (_) => const CartPage()));
-    _toast('Cart page coming soon');
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const CartScreen()),
+    );
   }
 
   void _onNavBarTap(int index) {
@@ -177,7 +182,10 @@ class _HomePageState extends State<HomePage> {
         );
         break;
       case 2:
-        _toast('Profile page coming soon');
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const ProfilePage()),
+        );
         break;
     }
   }
@@ -228,7 +236,7 @@ class _HomePageState extends State<HomePage> {
         children: [
           CustomTopBar(
             onCartTap: _navigateToCart,
-            cartCount: _cartCount,
+            cartCount: Provider.of<CartProvider>(context).totalQuantity,
           ),
           Expanded(
             child: SingleChildScrollView(

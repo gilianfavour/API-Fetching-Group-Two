@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:nutriblend_group2/screens/home/home_screen.dart';
+import '../auth/login_screen.dart';
 
 // ===================== GOLDEN GLOW ONBOARDING =====================
 
@@ -31,7 +31,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   } else {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (_) => const HomePage()),
+      MaterialPageRoute(builder: (_) => const LoginScreen()),
     );
   }
 }
