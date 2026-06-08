@@ -3,16 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/product_provider.dart';
 import '../../providers/cart_provider.dart';
+import '../../providers/wishlist_provider.dart';
+import '../../widgets/notification_helper.dart';
 import '../../models/product_model.dart';
-import 'package:nutriblend_group2/screens/products/products_screen.dart';
-import 'package:nutriblend_group2/screens/product_detail/product_detail_screen.dart';
 import '../cart/cart_screen.dart';
+import '../products/products_screen.dart';
+import '../product_detail/product_detail_screen.dart';
+import '../../widgets/loading/shimmer_skeleton.dart';
+import '../../widgets/loading/shimmer.dart';
 import '../../profile/profile.dart';
 import '../../widgets/common/app_bar.dart';
 import '../../widgets/common/navigation_bar.dart';
-import '../../widgets/loading/shimmer_skeleton.dart';
-import '../../widgets/loading/loader.dart';
-import '../../widgets/loading/shimmer.dart';
 
 // ══════════════════════════════════════════════
 // MODELS
@@ -107,7 +108,6 @@ class _HomePageState extends State<HomePage> {
 
   Timer? _timer;
   final PageController _pageCtrl = PageController();
-  final Set<int> _wishlist = {};
 
   @override
   void initState() {
@@ -133,23 +133,8 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  void _toggleWishlist(Product p) {
-    setState(() => _wishlist.contains(p.id)
-        ? _wishlist.remove(p.id)
-        : _wishlist.add(p.id));
-    _toast(_wishlist.contains(p.id)
-        ? '${p.name} added to wishlist'
-        : 'Removed from wishlist');
-  }
-
   void _toast(String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(msg),
-      behavior: SnackBarBehavior.floating,
-      shape: const StadiumBorder(),
-      duration: const Duration(seconds: 2),
-      margin: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
-    ));
+    showTopNotification(context, msg, isSuccess: true);
   }
 
   void _openProduct(Product p) {
@@ -196,25 +181,87 @@ class _HomePageState extends State<HomePage> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(
-                height: 280,
-                child: Center(child: Loader(size: 60)),
-              ),
-              const SizedBox(height: 24),
-              const HorizontalProductShimmer(),
-              const SizedBox(height: 30),
+              // Search Bar Shimmer
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+                child: AppShimmer(
+                  child: Container(
+                    height: 46,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                ),
+              ),
+              
+              // Hero Section Shimmer
+              AppShimmer(
+                child: Container(
+                  height: 280,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(28),
+                      bottomRight: Radius.circular(28),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Stats Strip Shimmer
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: AppShimmer(
+                  child: Container(
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+              ),
+
+              // Featured Products Title Shimmer
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    _CategoryShimmer(),
-                    _CategoryShimmer(),
-                    _CategoryShimmer(),
-                    _CategoryShimmer(),
-                    _CategoryShimmer(),
+                  children: [
+                    AppShimmer(child: Container(width: 140, height: 16, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(4)))),
+                    AppShimmer(child: Container(width: 60, height: 14, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(4)))),
                   ],
+                ),
+              ),
+
+              // Horizontal Products Shimmer
+              const HorizontalProductShimmer(),
+              const SizedBox(height: 20),
+
+              // Browse Categories Title Shimmer
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: AppShimmer(
+                  child: Container(width: 150, height: 16, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(4))),
+                ),
+              ),
+
+              // Category Tabs Shimmer
+              SizedBox(
+                height: 44,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: 5,
+                  itemBuilder: (_, i) => const Padding(
+                    padding: EdgeInsets.only(right: 10),
+                    child: _CategoryShimmer(),
+                  ),
                 ),
               ),
               const SizedBox(height: 40),
@@ -300,16 +347,38 @@ class _HomePageState extends State<HomePage> {
                           builder: (_) => const ProductPage()),
                     ),
                   ),
-                  Consumer<ProductProvider>(
-                    builder: (context, provider, child) {
-                      if (provider.isLoading && provider.products.isEmpty) {
+                  Consumer2<ProductProvider, WishlistProvider>(
+                    builder: (context, productProd, wishlistProd, child) {
+                      if (productProd.isLoading && productProd.products.isEmpty) {
                         return const HorizontalProductShimmer();
                       }
-                      return _ProductRow(
-                        products: provider.products,
-                        wishlist: _wishlist,
-                        onTap: _openProduct,
-                        onFav: _toggleWishlist,
+                      return SizedBox(
+                        height: 235,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          physics: const BouncingScrollPhysics(),
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          itemCount: productProd.products.length,
+                          itemBuilder: (_, i) {
+                            final p = productProd.products[i];
+                            final isFav = wishlistProd.contains(p.id);
+                            return _ProductCard(
+                              product: p,
+                              isFav: isFav,
+                              onTap: () => _openProduct(p),
+                              onFav: () {
+                                wishlistProd.toggleWishlist(p);
+                                showTopNotification(
+                                  context,
+                                  isFav
+                                      ? '${p.name} removed from wishlist'
+                                      : '${p.name} added to wishlist',
+                                  isSuccess: !isFav,
+                                );
+                              },
+                            );
+                          },
+                        ),
                       );
                     },
                   ),
@@ -355,6 +424,7 @@ class _CategoryShimmer extends StatelessWidget {
 // ══════════════════════════════════════════════
 // PRODUCT ROW
 // ══════════════════════════════════════════════
+// ignore: unused_element
 class _ProductRow extends StatelessWidget {
   final List<Product> products;
   final Set<int> wishlist;

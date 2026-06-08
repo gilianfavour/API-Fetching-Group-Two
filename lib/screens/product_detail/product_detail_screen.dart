@@ -4,7 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import '../../providers/cart_provider.dart';
+import '../../providers/wishlist_provider.dart';
+import '../../widgets/notification_helper.dart';
 import '../products/products_screen.dart' show AppColors;
 import '../../models/product_model.dart';
 import '../../widgets/loading/shimmer.dart'; 
@@ -109,8 +110,6 @@ class _ProductDetailPageState
   ProductDetailModel? _detail;
 
   bool _isLoading = true;
-  bool _wishlisted = false;
-  bool _addingCart = false;
 
 
   late final AnimationController _fadeCtrl =
@@ -219,39 +218,6 @@ class _ProductDetailPageState
   // ADD TO CART
   // ═══════════════════════════════════════════════════════════════════════════
 
-  Future<void> _addToCart() async {
-    if (_addingCart) return;
-
-    setState(() {
-      _addingCart = true;
-    });
-
-    HapticFeedback.mediumImpact();
-
-    // Call CartProvider
-    Provider.of<CartProvider>(context, listen: false).addItem(widget.product);
-
-    await Future.delayed(
-      const Duration(milliseconds: 500),
-    );
-
-    if (!mounted) return;
-
-    setState(() {
-      _addingCart = false;
-    });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          '${widget.product.name} added to cart',
-          style: GoogleFonts.inter(),
-        ),
-        backgroundColor: AppColors.primary,
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
-  }
 
   // ═══════════════════════════════════════════════════════════════════════════
   // BUILD
@@ -279,128 +245,49 @@ class _ProductDetailPageState
     final detail = _detail!;
     final product = detail.base;
 
-    return Stack(
-      children: [
-        CustomScrollView(
-          physics:
-              const BouncingScrollPhysics(),
-
-          slivers: [
-            _buildSliverHero(product),
-
-            SliverToBoxAdapter(
-              child: FadeTransition(
-                opacity: _fadeAnim,
-
-                child: SlideTransition(
-                  position: _slideAnim,
-
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.all(
-                      16,
-                    ),
-
-                    child: Column(
-                      crossAxisAlignment:
-                          CrossAxisAlignment
-                              .start,
-
-                      children: [
-                        Text(
-                          product.name,
-
-                          style:
-                              GoogleFonts.poppins(
-                            fontSize: 24,
-                            fontWeight:
-                                FontWeight
-                                    .w700,
-                          ),
-                        ),
-
-                        const SizedBox(
-                          height: 10,
-                        ),
-
-                        Text(
-                          '${product.price}',
-
-                          style:
-                              GoogleFonts.inter(
-                            fontSize: 22,
-                            fontWeight:
-                                FontWeight
-                                    .w800,
-
-                            color:
-                                AppColors
-                                    .primary,
-                          ),
-                        ),
-
-                        const SizedBox(
-                          height: 20,
-                        ),
-
-                        Text(
-                          detail.description,
-
-                          style:
-                              GoogleFonts.inter(
-                            fontSize: 14,
-                            height: 1.7,
-                            color:
-                                AppColors
-                                    .mediumNeutral,
-                          ),
-                        ),
-
-                        const SizedBox(
-                          height: 120,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-
-        Positioned(
-          left: 16,
-          right: 16,
-          bottom: 20,
-
-          child: SizedBox(
-            height: 55,
-
-            child: ElevatedButton(
-              onPressed:
-                  _addingCart
-                      ? null
-                      : _addToCart,
-
-              style:
-                  ElevatedButton.styleFrom(
-                backgroundColor:
-                    AppColors.primary,
-              ),
-
-              child: _addingCart
-                  ? const CircularProgressIndicator(
-                      color: Colors.white,
-                    )
-                  : Text(
-                      'ADD TO CART',
-                      style:
-                          GoogleFonts.poppins(
-                        fontWeight:
-                            FontWeight
-                                .w700,
+    return CustomScrollView(
+      physics: const BouncingScrollPhysics(),
+      slivers: [
+        _buildSliverHero(product),
+        SliverToBoxAdapter(
+          child: FadeTransition(
+            opacity: _fadeAnim,
+            child: SlideTransition(
+              position: _slideAnim,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      product.name,
+                      style: GoogleFonts.poppins(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
+                    const SizedBox(height: 10),
+                    Text(
+                      '${product.price}',
+                      style: GoogleFonts.inter(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      detail.description,
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        height: 1.7,
+                        color: AppColors.mediumNeutral,
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                  ],
+                ),
+              ),
             ),
           ),
         ),
@@ -433,19 +320,26 @@ class _ProductDetailPageState
       ),
 
       actions: [
-        IconButton(
-          onPressed: () {
-            setState(() {
-              _wishlisted =
-                  !_wishlisted;
-            });
+        Consumer<WishlistProvider>(
+          builder: (context, wp, child) {
+            final isFav = wp.contains(product.id);
+            return IconButton(
+              onPressed: () {
+                wp.toggleWishlist(product);
+                showTopNotification(
+                  context,
+                  isFav
+                      ? '${product.name} removed from wishlist'
+                      : '${product.name} added to wishlist',
+                  isSuccess: !isFav,
+                );
+              },
+              icon: Icon(
+                isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                color: isFav ? const Color(0xFFEF4444) : null,
+              ),
+            );
           },
-
-          icon: Icon(
-            _wishlisted
-                ? Icons.favorite
-                : Icons.favorite_border,
-          ),
         ),
       ],
 

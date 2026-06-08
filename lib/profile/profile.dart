@@ -3,6 +3,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../screens/auth/login_screen.dart';
+import '../screens/wishlist/wishlist_screen.dart';
+import '../screens/profile/order_history_screen.dart';
+import '../screens/profile/settings_screen.dart';
+import '../screens/profile/help_support_screen.dart';
+import '../screens/profile/about_screen.dart';
+import '../widgets/notification_helper.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -115,33 +121,70 @@ class ProfilePage extends StatelessWidget {
                 _buildMenuItem(
                   icon: Icons.history_rounded,
                   title: "Order History",
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const OrderHistoryScreen()),
+                    );
+                  },
                 ),
                 _buildDivider(),
                 _buildMenuItem(
                   icon: Icons.favorite_border_rounded,
                   title: "My Wishlist",
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const WishlistScreen()),
+                    );
+                  },
                 ),
                 _buildDivider(),
                 _buildMenuItem(
                   icon: Icons.shield_outlined,
                   title: "Account Security",
-                  onTap: () {},
+                  onTap: () {
+                    showTopNotification(
+                      context,
+                      "Account Security features are coming soon!",
+                      isSuccess: false,
+                    );
+                  },
                 ),
               ]),
               const SizedBox(height: 24),
               _buildMenuCard([
                 _buildMenuItem(
+                  icon: Icons.settings_outlined,
+                  title: "Settings",
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                    );
+                  },
+                ),
+                _buildDivider(),
+                _buildMenuItem(
                   icon: Icons.help_outline_rounded,
                   title: "Help & Support",
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const HelpSupportScreen()),
+                    );
+                  },
                 ),
                 _buildDivider(),
                 _buildMenuItem(
                   icon: Icons.info_outline_rounded,
                   title: "About NutriBlend",
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const AboutScreen()),
+                    );
+                  },
                 ),
               ]),
               const SizedBox(height: 40),
