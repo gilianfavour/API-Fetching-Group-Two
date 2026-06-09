@@ -13,7 +13,15 @@ class CustomTopBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Color(0xFF000435),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border(
+          bottom: BorderSide(
+            color: Colors.black.withValues(alpha: 0.05),
+            width: 1,
+          ),
+        ),
+      ),
       child: SafeArea(
         bottom: false,
         child: Padding(
@@ -26,12 +34,12 @@ class CustomTopBar extends StatelessWidget {
                 width: 36,
                 height: 36,
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.12),
+                  color: const Color(0xFF000435).withValues(alpha: 0.06),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: const Icon(
                   Icons.local_pharmacy_outlined,
-                  color: Colors.white,
+                  color: Color(0xFF000435),
                   size: 20,
                 ),
               ),
@@ -41,9 +49,9 @@ class CustomTopBar extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const Text(
-                    'WellNest',
+                    'NutriBlend',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Color(0xFF000435),
                       fontSize: 17,
                       fontWeight: FontWeight.w800,
                       letterSpacing: 0.2,
@@ -52,7 +60,7 @@ class CustomTopBar extends StatelessWidget {
                   Text(
                     'Health & Wellness',
                     style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.5),
+                      color: const Color(0xFF000435).withValues(alpha: 0.5),
                       fontSize: 10,
                       fontWeight: FontWeight.w400,
                       letterSpacing: 0.3,
@@ -73,15 +81,15 @@ class CustomTopBar extends StatelessWidget {
                       width: 40,
                       height: 40,
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.1),
+                        color: const Color(0xFF000435).withValues(alpha: 0.06),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.15),
+                          color: const Color(0xFF000435).withValues(alpha: 0.12),
                         ),
                       ),
                       child: const Icon(
                         Icons.shopping_cart_checkout_outlined,
-                        color: Colors.white,
+                        color: Color(0xFF000435),
                         size: 20,
                       ),
                     ),

@@ -54,6 +54,7 @@ class _NavItemData {
 const _navItems = [
   _NavItemData(Icons.home_outlined, Icons.home_rounded, 'Home'),
   _NavItemData(Icons.shopping_bag_outlined, Icons.shopping_bag_rounded, 'Products'),
+   _NavItemData(Icons.line_style_outlined, Icons.line_style_outlined, 'WishList'),
   _NavItemData(Icons.person_outline_rounded, Icons.person_rounded, 'Profile'),
 ];
 

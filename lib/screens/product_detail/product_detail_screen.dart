@@ -1,13 +1,15 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import '../../providers/wishlist_provider.dart';
+import '../../providers/cart_provider.dart';
+import '../../models/cart_item.dart';
+import '../../widgets/notification_helper.dart';
 import '../products/products_screen.dart' show AppColors;
 import '../../models/product_model.dart';
-// import '../../widgets/loading/shimmer_skeleton.dart';
-// import '../../widgets/loading/loader.dart';
 import '../../widgets/loading/shimmer.dart'; 
 
 
@@ -49,9 +51,9 @@ class ProductDetailModel {
       base: Product.fromJson(j),
 
       description:
-          j['description']?.toString() ??
+          (j['description']?.toString() ??
               'Pure, potent and effective ${j['name'] ?? 'product'} '
-                  'designed for maximum results.',
+                  'designed for maximum results.').replaceAll(RegExp(r'<[^>]*>'), ''),
 
       highlights: highlights,
 
@@ -72,9 +74,7 @@ class ProductDetailModel {
       base: p,
 
       description:
-          p.description ??
-              'Pure, potent and effective ${p.name} '
-                  'designed for maximum results.',
+          p.description,
 
       highlights: [
         'Authentic formula — direct sourced',
@@ -112,10 +112,7 @@ class _ProductDetailPageState
   ProductDetailModel? _detail;
 
   bool _isLoading = true;
-  bool _wishlisted = false;
-  bool _addingCart = false;
 
-  int _quantity = 1;
 
   late final AnimationController _fadeCtrl =
       AnimationController(
@@ -218,64 +215,111 @@ class _ProductDetailPageState
   // QUANTITY
   // ═══════════════════════════════════════════════════════════════════════════
 
-  void _adjustQty(int delta) {
-    final maxQty =
-        _detail?.stockQuantity ?? 10;
-
-    setState(() {
-      _quantity =
-          (_quantity + delta).clamp(
-        1,
-        maxQty,
-      );
-    });
-
-    HapticFeedback.selectionClick();
-  }
 
   // ═══════════════════════════════════════════════════════════════════════════
   // ADD TO CART
   // ═══════════════════════════════════════════════════════════════════════════
 
-  Future<void> _addToCart() async {
-    if (_addingCart) return;
-
-    setState(() {
-      _addingCart = true;
-    });
-
-    HapticFeedback.mediumImpact();
-
-    await Future.delayed(
-      const Duration(milliseconds: 800),
-    );
-
-    if (!mounted) return;
-
-    setState(() {
-      _addingCart = false;
-    });
-
-    ScaffoldMessenger.of(context)
-        .showSnackBar(
-      SnackBar(
-        content: Text(
-          '${widget.product.name} added to cart',
-          style: GoogleFonts.inter(),
-        ),
-
-        backgroundColor:
-            AppColors.primary,
-
-        behavior:
-            SnackBarBehavior.floating,
-      ),
-    );
-  }
 
   // ═══════════════════════════════════════════════════════════════════════════
   // BUILD
   // ═══════════════════════════════════════════════════════════════════════════
+
+  Widget _buildBottomBar(BuildContext context) {
+    final cartProvider = Provider.of<CartProvider>(context);
+    final detail = _detail!;
+    final product = detail.base;
+    final inCartItem = cartProvider.items.firstWhere(
+      (item) => item.product.id == product.id,
+      orElse: () => CartItem(product: product, quantity: 0),
+    );
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 16,
+            offset: const Offset(0, -6),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.fromLTRB(24, 16, 24, 30),
+      child: Row(
+        children: [
+          // Quantity selector in detail page
+          if (inCartItem.quantity > 0) ...[
+            Container(
+              decoration: BoxDecoration(
+                color: const Color(0xFFF1F5F9),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.remove, size: 20, color: Color(0xFF1E293B)),
+                    onPressed: () => cartProvider.decrementItem(product.id),
+                  ),
+                  Text(
+                    '${inCartItem.quantity}',
+                    style: GoogleFonts.inter(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
+                      color: const Color(0xFF1E293B),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.add, size: 20, color: Color(0xFF1E293B)),
+                    onPressed: () => cartProvider.addItem(product),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 16),
+          ],
+          Expanded(
+            child: SizedBox(
+              height: 54,
+              child: ElevatedButton(
+                onPressed: () {
+                  cartProvider.addItem(product);
+                  showTopNotification(
+                    context,
+                    '${product.name} added to cart',
+                    isSuccess: true,
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF000435),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  elevation: 0,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.shopping_bag_outlined, size: 20),
+                    const SizedBox(width: 8),
+                    Text(
+                      inCartItem.quantity > 0 ? "Add More" : "Add to Cart",
+                      style: GoogleFonts.inter(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -289,11 +333,9 @@ class _ProductDetailPageState
             AppColors.lightBg,
 
         body: _isLoading
-            ? const Center(
-                child:
-                    CircularProgressIndicator(),
-              )
+            ? const _SkeletonScreen()
             : _buildDetail(),
+        bottomNavigationBar: _isLoading ? null : _buildBottomBar(context),
       ),
     );
   }
@@ -302,133 +344,64 @@ class _ProductDetailPageState
     final detail = _detail!;
     final product = detail.base;
 
-    return Stack(
-      children: [
-        CustomScrollView(
-          physics:
-              const BouncingScrollPhysics(),
-
-          slivers: [
-            _buildSliverHero(product),
-
-            SliverToBoxAdapter(
-              child: FadeTransition(
-                opacity: _fadeAnim,
-
-                child: SlideTransition(
-                  position: _slideAnim,
-
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.all(
-                      16,
-                    ),
-
-                    child: Column(
-                      crossAxisAlignment:
-                          CrossAxisAlignment
-                              .start,
-
-                      children: [
-                        Text(
-                          product.name,
-
-                          style:
-                              GoogleFonts.poppins(
-                            fontSize: 24,
-                            fontWeight:
-                                FontWeight
-                                    .w700,
-                          ),
-                        ),
-
-                        const SizedBox(
-                          height: 10,
-                        ),
-
-                        Text(
-                          '\$${product.price}',
-
-                          style:
-                              GoogleFonts.inter(
-                            fontSize: 22,
-                            fontWeight:
-                                FontWeight
-                                    .w800,
-
-                            color:
-                                AppColors
-                                    .primary,
-                          ),
-                        ),
-
-                        const SizedBox(
-                          height: 20,
-                        ),
-
-                        Text(
-                          detail.description,
-
-                          style:
-                              GoogleFonts.inter(
-                            fontSize: 14,
-                            height: 1.7,
-                            color:
-                                AppColors
-                                    .mediumNeutral,
-                          ),
-                        ),
-
-                        const SizedBox(
-                          height: 120,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-
-        Positioned(
-          left: 16,
-          right: 16,
-          bottom: 20,
-
-          child: SizedBox(
-            height: 55,
-
-            child: ElevatedButton(
-              onPressed:
-                  _addingCart
-                      ? null
-                      : _addToCart,
-
-              style:
-                  ElevatedButton.styleFrom(
-                backgroundColor:
-                    AppColors.primary,
-              ),
-
-              child: _addingCart
-                  ? const CircularProgressIndicator(
-                      color: Colors.white,
-                    )
-                  : Text(
-                      'ADD TO CART',
-                      style:
-                          GoogleFonts.poppins(
-                        fontWeight:
-                            FontWeight
-                                .w700,
+    return RefreshIndicator(
+      onRefresh: () async {
+        setState(() {
+          _isLoading = true;
+        });
+        await _fetchDetail();
+      },
+      color: AppColors.primary,
+      backgroundColor: Colors.white,
+      child: CustomScrollView(
+        physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+        slivers: [
+          _buildSliverHero(product),
+        SliverToBoxAdapter(
+          child: FadeTransition(
+            opacity: _fadeAnim,
+            child: SlideTransition(
+              position: _slideAnim,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      product.name,
+                      style: GoogleFonts.poppins(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
+                    const SizedBox(height: 10),
+                    Text(
+                      '${product.price}',
+                      style: GoogleFonts.inter(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      detail.description,
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        height: 1.7,
+                        color: AppColors.mediumNeutral,
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                  ],
+                ),
+              ),
             ),
           ),
         ),
       ],
-    );
+    
+    ));
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -456,19 +429,26 @@ class _ProductDetailPageState
       ),
 
       actions: [
-        IconButton(
-          onPressed: () {
-            setState(() {
-              _wishlisted =
-                  !_wishlisted;
-            });
+        Consumer<WishlistProvider>(
+          builder: (context, wp, child) {
+            final isFav = wp.contains(product.id);
+            return IconButton(
+              onPressed: () {
+                wp.toggleWishlist(product);
+                showTopNotification(
+                  context,
+                  isFav
+                      ? '${product.name} removed from wishlist'
+                      : '${product.name} added to wishlist',
+                  isSuccess: !isFav,
+                );
+              },
+              icon: Icon(
+                isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                color: isFav ? const Color(0xFFEF4444) : null,
+              ),
+            );
           },
-
-          icon: Icon(
-            _wishlisted
-                ? Icons.favorite
-                : Icons.favorite_border,
-          ),
         ),
       ],
 
@@ -526,9 +506,11 @@ class _HeroPlaceholder extends StatelessWidget {
   );
 }
 
+
 // ═══════════════════════════════════════════════════════════════════════════════
 // SKELETON LOADER
 // ═══════════════════════════════════════════════════════════════════════════════
+// ignore: unused_element
 class _SkeletonScreen extends StatelessWidget {
   const _SkeletonScreen();
 
