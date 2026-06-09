@@ -13,6 +13,7 @@ import '../../../widgets/common/app_bar.dart';
 import '../../../widgets/common/navigation_bar.dart';
 import '../../models/product_model.dart';
 import '../../services/product_service.dart';
+import '../../screens/wishlist/wishlist_screen.dart';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // APP COLOR CONSTANTS
@@ -222,9 +223,14 @@ class _ProductPageState extends State<ProductPage>
         break;
       case 2:
         Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const ProfilePage()),
-        );
+            context,
+            MaterialPageRoute(
+                builder: (_) =>
+                    const WishlistScreen())); // ← your wishlist screen
+        break;
+      case 3:
+        Navigator.push(
+            context, MaterialPageRoute(builder: (_) => const ProfilePage()));
         break;
     }
   }
@@ -310,21 +316,29 @@ class _ProductPageState extends State<ProductPage>
         Expanded(
           child: FadeTransition(
             opacity: _fadeAnim,
-            child: GridView.builder(
-              padding: const EdgeInsets.fromLTRB(16, 4, 16, 20),
-              physics: const BouncingScrollPhysics(),
-              gridDelegate:
-                  const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 14,
-                crossAxisSpacing: 14,
-                childAspectRatio: 0.58,
-              ),
-              itemCount: products.length,
-              itemBuilder: (context, index) => _ProductCard(
-                product: products[index],
-                index: index,
-                onTap: () => _openDetail(products[index]),
+            child: RefreshIndicator(
+              onRefresh: () async {
+                _currentPage = 1;
+                await _loadPage();
+              },
+              color: AppColors.primary,
+              backgroundColor: Colors.white,
+              child: GridView.builder(
+                padding: const EdgeInsets.fromLTRB(16, 4, 16, 20),
+                physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                gridDelegate:
+                    const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 14,
+                  crossAxisSpacing: 14,
+                  childAspectRatio: 0.58,
+                ),
+                itemCount: products.length,
+                itemBuilder: (context, index) => _ProductCard(
+                  product: products[index],
+                  index: index,
+                  onTap: () => _openDetail(products[index]),
+                ),
               ),
             ),
           ),

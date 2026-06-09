@@ -5,6 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import '../../providers/wishlist_provider.dart';
+import '../../providers/cart_provider.dart';
+import '../../models/cart_item.dart';
 import '../../widgets/notification_helper.dart';
 import '../products/products_screen.dart' show AppColors;
 import '../../models/product_model.dart';
@@ -223,6 +225,102 @@ class _ProductDetailPageState
   // BUILD
   // ═══════════════════════════════════════════════════════════════════════════
 
+  Widget _buildBottomBar(BuildContext context) {
+    final cartProvider = Provider.of<CartProvider>(context);
+    final detail = _detail!;
+    final product = detail.base;
+    final inCartItem = cartProvider.items.firstWhere(
+      (item) => item.product.id == product.id,
+      orElse: () => CartItem(product: product, quantity: 0),
+    );
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 16,
+            offset: const Offset(0, -6),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.fromLTRB(24, 16, 24, 30),
+      child: Row(
+        children: [
+          // Quantity selector in detail page
+          if (inCartItem.quantity > 0) ...[
+            Container(
+              decoration: BoxDecoration(
+                color: const Color(0xFFF1F5F9),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.remove, size: 20, color: Color(0xFF1E293B)),
+                    onPressed: () => cartProvider.decrementItem(product.id),
+                  ),
+                  Text(
+                    '${inCartItem.quantity}',
+                    style: GoogleFonts.inter(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
+                      color: const Color(0xFF1E293B),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.add, size: 20, color: Color(0xFF1E293B)),
+                    onPressed: () => cartProvider.addItem(product),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 16),
+          ],
+          Expanded(
+            child: SizedBox(
+              height: 54,
+              child: ElevatedButton(
+                onPressed: () {
+                  cartProvider.addItem(product);
+                  showTopNotification(
+                    context,
+                    '${product.name} added to cart',
+                    isSuccess: true,
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF000435),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  elevation: 0,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.shopping_bag_outlined, size: 20),
+                    const SizedBox(width: 8),
+                    Text(
+                      inCartItem.quantity > 0 ? "Add More" : "Add to Cart",
+                      style: GoogleFonts.inter(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<
@@ -237,6 +335,7 @@ class _ProductDetailPageState
         body: _isLoading
             ? const _SkeletonScreen()
             : _buildDetail(),
+        bottomNavigationBar: _isLoading ? null : _buildBottomBar(context),
       ),
     );
   }
@@ -245,10 +344,19 @@ class _ProductDetailPageState
     final detail = _detail!;
     final product = detail.base;
 
-    return CustomScrollView(
-      physics: const BouncingScrollPhysics(),
-      slivers: [
-        _buildSliverHero(product),
+    return RefreshIndicator(
+      onRefresh: () async {
+        setState(() {
+          _isLoading = true;
+        });
+        await _fetchDetail();
+      },
+      color: AppColors.primary,
+      backgroundColor: Colors.white,
+      child: CustomScrollView(
+        physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+        slivers: [
+          _buildSliverHero(product),
         SliverToBoxAdapter(
           child: FadeTransition(
             opacity: _fadeAnim,
@@ -292,7 +400,8 @@ class _ProductDetailPageState
           ),
         ),
       ],
-    );
+    
+    ));
   }
 
   // ═══════════════════════════════════════════════════════════════════════════

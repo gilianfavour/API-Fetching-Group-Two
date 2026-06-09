@@ -60,7 +60,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
             // ================= APP NAME =================
             Text(
-              "WellNest",
+              "NutriBlend",
               style: GoogleFonts.poppins(
                 fontSize: 30,
                 fontWeight: FontWeight.w700,

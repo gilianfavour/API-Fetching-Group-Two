@@ -148,6 +148,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         deliveryRegionId: _selectedRegionId!,
         deliveryTownId: _selectedTownId!,
         deliveryAddress: addressWithRef,
+        deliveryMethod: _selectedMethod,
         referenceContact: _referenceContactCtrl.text.trim(),
         paymentMethod: _selectedPaymentMethod,
       );
@@ -424,6 +425,137 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           }
                           return null;
                         },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Delivery Method Card
+              Card(
+                elevation: 0,
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  side: BorderSide(color: Colors.grey.shade100),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Delivery Method",
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 15,
+                          color: const Color(0xFF1E293B),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () => setState(() => _selectedMethod = 'Standard Delivery'),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                decoration: BoxDecoration(
+                                  color: _selectedMethod == 'Standard Delivery'
+                                      ? const Color(0xFFE0F2FE)
+                                      : Colors.white,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: _selectedMethod == 'Standard Delivery'
+                                        ? const Color(0xFF000435)
+                                        : Colors.grey.shade200,
+                                    width: 1.5,
+                                  ),
+                                ),
+                                child: Column(
+                                  children: [
+                                    Icon(
+                                      Icons.local_shipping_outlined,
+                                      color: _selectedMethod == 'Standard Delivery'
+                                          ? const Color(0xFF000435)
+                                          : const Color(0xFF64748B),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      "Standard",
+                                      style: GoogleFonts.inter(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600,
+                                        color: _selectedMethod == 'Standard Delivery'
+                                            ? const Color(0xFF000435)
+                                            : const Color(0xFF64748B),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      "3-5 days • Free",
+                                      style: GoogleFonts.inter(
+                                        fontSize: 11,
+                                        color: const Color(0xFF64748B),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () => setState(() => _selectedMethod = 'Express Delivery'),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                decoration: BoxDecoration(
+                                  color: _selectedMethod == 'Express Delivery'
+                                      ? const Color(0xFFE0F2FE)
+                                      : Colors.white,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: _selectedMethod == 'Express Delivery'
+                                        ? const Color(0xFF000435)
+                                        : Colors.grey.shade200,
+                                    width: 1.5,
+                                  ),
+                                ),
+                                child: Column(
+                                  children: [
+                                    Icon(
+                                      Icons.bolt_rounded,
+                                      color: _selectedMethod == 'Express Delivery'
+                                          ? const Color(0xFF000435)
+                                          : const Color(0xFF64748B),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      "Express",
+                                      style: GoogleFonts.inter(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600,
+                                        color: _selectedMethod == 'Express Delivery'
+                                            ? const Color(0xFF000435)
+                                            : const Color(0xFF64748B),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      "1-2 days • UGX 10,000",
+                                      style: GoogleFonts.inter(
+                                        fontSize: 11,
+                                        color: const Color(0xFF64748B),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),

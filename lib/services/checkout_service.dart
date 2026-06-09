@@ -57,6 +57,7 @@ class CheckoutService {
     required int deliveryRegionId,
     required int deliveryTownId,
     required String deliveryAddress,
+    required String deliveryMethod,
     String? referenceContact,
     String? paymentMethod,
   }) async {
@@ -64,6 +65,7 @@ class CheckoutService {
 
     final body = {
       'items': items,
+      'delivery_method': deliveryMethod,
       'delivery_region_id': deliveryRegionId,
       'delivery_town_id': deliveryTownId,
       'delivery_address': deliveryAddress,
