@@ -4,6 +4,17 @@ A premium mobile application built with Flutter, designed for seamless health, w
 
 ---
 
+# Group Members
+1. FAVOUR GILIAN 2024/DSC/0035/SS
+2. Musiimenta Agnes 2024/DSC/0051/SS
+3. Navugga Deirdre Idah 2024/DSC/0085/SS
+4. Bakuweera violah   2024/DSC/0026/SS
+5. AZIIRWE MERCY   2024/DSC/0024/SS
+6. Nanyunja Whitney Josephin   2024/DSC/0084/SS
+7. Ainembabazi Glorious   2024/DSC/004/SS
+8. Nawamwena Nazifa   2024/DSC/0086/SS
+9. Fayima Rahuman     2024/DSC/0034/SS
+
 ## 🎨 Theme & Design Guidelines (Source of Truth)
 
 To maintain a consistent UI/UX across all screens and prevent layout fragmentation, all developers must strictly adhere to the following style guide. Do not hardcode custom hex codes or fonts outside of these definitions.
