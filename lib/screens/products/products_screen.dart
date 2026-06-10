@@ -7,13 +7,10 @@ import '../../providers/wishlist_provider.dart';
 import '../../widgets/notification_helper.dart';
 import '../cart/cart_screen.dart';
 import '../../widgets/loading/shimmer.dart';
-import '../../profile/profile.dart';
 import 'package:nutriblend_group2/screens/product_detail/product_detail_screen.dart';
 import '../../../widgets/common/app_bar.dart';
-import '../../../widgets/common/navigation_bar.dart';
 import '../../models/product_model.dart';
 import '../../services/product_service.dart';
-import '../../screens/wishlist/wishlist_screen.dart';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // APP COLOR CONSTANTS
@@ -213,28 +210,6 @@ class _ProductPageState extends State<ProductPage>
     );
   }
 
-  void _onNavBarTap(int index) {
-    switch (index) {
-      case 0:
-        Navigator.pop(context);
-        break;
-      case 1:
-        // Already on Products
-        break;
-      case 2:
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (_) =>
-                    const WishlistScreen())); // ← your wishlist screen
-        break;
-      case 3:
-        Navigator.push(
-            context, MaterialPageRoute(builder: (_) => const ProfilePage()));
-        break;
-    }
-  }
-
   // ═══════════════════════════════════════════════════════════════════════════
   // BUILD
   // ═══════════════════════════════════════════════════════════════════════════
@@ -252,10 +227,6 @@ class _ProductPageState extends State<ProductPage>
             ),
             Expanded(
               child: _buildBody(),
-            ),
-            CustomBottomNavBar(
-              currentIndex: 1,
-              onTap: _onNavBarTap,
             ),
           ],
         ),

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
-import '../home/home_screen.dart';
+import '../main_navigation_screen.dart';
 import '../onboarding/onboarding_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -22,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
       if (!mounted) return; // 👈 prevents crash
 
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
-      final Widget nextScreen = authProvider.isLoggedIn ? const HomePage() : const OnboardingScreen();
+      final Widget nextScreen = authProvider.isLoggedIn ? const MainNavigationScreen() : const OnboardingScreen();
 
       Navigator.pushReplacement(
         context,

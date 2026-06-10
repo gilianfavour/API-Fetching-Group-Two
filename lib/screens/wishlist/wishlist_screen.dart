@@ -7,7 +7,8 @@ import '../product_detail/product_detail_screen.dart';
 import '../../widgets/notification_helper.dart';
 
 class WishlistScreen extends StatelessWidget {
-  const WishlistScreen({super.key});
+  final bool showBackButton;
+  const WishlistScreen({super.key, this.showBackButton = false});
 
   @override
   Widget build(BuildContext context) {
@@ -20,10 +21,12 @@ class WishlistScreen extends StatelessWidget {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Color(0xFF000435)),
-          onPressed: () => Navigator.pop(context),
-        ),
+        leading: showBackButton
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Color(0xFF000435)),
+                onPressed: () => Navigator.pop(context),
+              )
+            : null,
         centerTitle: true,
         title: Text(
           "My Wishlist",

@@ -15,6 +15,7 @@ import '../../widgets/loading/shimmer.dart';
 import '../../profile/profile.dart';
 import '../../widgets/common/navigation_bar.dart';
 import '../../screens/wishlist/wishlist_screen.dart';
+import '../../providers/navigation_provider.dart';
 
 // ══════════════════════════════════════════════
 // CONSTANTS
@@ -195,29 +196,8 @@ class _HomePageState extends State<HomePage> {
   void _navigateToCart() => Navigator.push(
       context, MaterialPageRoute(builder: (_) => const CartScreen()));
 
-  void _navigateToProducts({String? category}) => Navigator.push(
-      context, MaterialPageRoute(builder: (_) => const ProductPage()));
-
-  void _onNavBarTap(int index) {
-    switch (index) {
-      case 0:
-        break; // Already on Home
-      case 1:
-        Navigator.push(
-            context, MaterialPageRoute(builder: (_) => const ProductPage()));
-        break;
-      case 2:
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (_) =>
-                    const WishlistScreen())); // ← your wishlist screen
-        break;
-      case 3:
-        Navigator.push(
-            context, MaterialPageRoute(builder: (_) => const ProfilePage()));
-        break;
-    }
+  void _navigateToProducts({String? category}) {
+    Provider.of<NavigationProvider>(context, listen: false).setIndex(1);
   }
 
   // ── Shimmer skeleton
@@ -515,10 +495,6 @@ class _HomePageState extends State<HomePage> {
             const SliverToBoxAdapter(child: SizedBox(height: 24)),
           ],
         ),
-      ),
-      bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: 0,
-        onTap: _onNavBarTap,
       ),
     );
   }
