@@ -5,6 +5,7 @@ import 'providers/product_provider.dart';
 import 'providers/auth_provider.dart';
 import 'providers/cart_provider.dart';
 import 'providers/wishlist_provider.dart';
+import 'providers/navigation_provider.dart';
 
 import 'screens/splash/splash_screen.dart';
 // import 'screens/onboarding/onboarding_screen.dart';
@@ -22,6 +23,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => AuthProvider()..loadPersistedAuth()),
         ChangeNotifierProvider(create: (_) => CartProvider()),
         ChangeNotifierProvider(create: (_) => WishlistProvider()),
+        ChangeNotifierProvider(create: (_) => NavigationProvider()),
       ],
 
       child: const MyApp(),

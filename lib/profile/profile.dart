@@ -135,7 +135,7 @@ class ProfilePage extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const WishlistScreen()),
+                      MaterialPageRoute(builder: (_) => const WishlistScreen(showBackButton: true)),
                     );
                   },
                 ),

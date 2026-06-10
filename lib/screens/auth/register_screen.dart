@@ -48,6 +48,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
           content: const Text('Registration successful! Please login.'),
           backgroundColor: Colors.green.shade700,
           behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(
+            bottom: MediaQuery.of(context).size.height - 150,
+            left: 16,
+            right: 16,
+          ),
         ),
       );
       Navigator.pushReplacement(
@@ -57,9 +62,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(authProvider.error ?? 'Registration failed. Try again.'),
+          content:
+              Text(authProvider.error ?? 'Registration failed. Try again.'),
           backgroundColor: const Color(0xFFEF4444),
           behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(
+            bottom: MediaQuery.of(context).size.height - 150,
+            left: 16,
+            right: 16,
+          ),
         ),
       );
     }
@@ -76,7 +87,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Color(0xFF000435)),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded,
+              color: Color(0xFF000435)),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -84,7 +96,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: Center(
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
-            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
             child: Form(
               key: _formKey,
               child: Column(
@@ -100,7 +113,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         color: const Color(0xFF000435),
                         borderRadius: BorderRadius.circular(24),
                       ),
-                      child: const Icon(Icons.spa, color: Colors.white, size: 42),
+                      child:
+                          const Icon(Icons.spa, color: Colors.white, size: 42),
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -205,11 +219,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       icon: Icons.lock_outline_rounded,
                       suffixIcon: IconButton(
                         icon: Icon(
-                          _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                          _obscurePassword
+                              ? Icons.visibility_off_outlined
+                              : Icons.visibility_outlined,
                           color: const Color(0xFF64748B),
                           size: 20,
                         ),
-                        onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                        onPressed: () => setState(
+                            () => _obscurePassword = !_obscurePassword),
                       ),
                     ),
                     validator: (val) {
@@ -244,11 +261,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       icon: Icons.lock_outline_rounded,
                       suffixIcon: IconButton(
                         icon: Icon(
-                          _obscureConfirmPassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                          _obscureConfirmPassword
+                              ? Icons.visibility_off_outlined
+                              : Icons.visibility_outlined,
                           color: const Color(0xFF64748B),
                           size: 20,
                         ),
-                        onPressed: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
+                        onPressed: () => setState(() =>
+                            _obscureConfirmPassword = !_obscureConfirmPassword),
                       ),
                     ),
                     validator: (val) {
@@ -272,7 +292,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF000435),
                         foregroundColor: Colors.white,
-                        disabledBackgroundColor: const Color(0xFF000435).withOpacity(0.5),
+                        disabledBackgroundColor:
+                            const Color(0xFF000435).withOpacity(0.5),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -313,7 +334,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         onTap: () {
                           Navigator.pushReplacement(
                             context,
-                            MaterialPageRoute(builder: (_) => const LoginScreen()),
+                            MaterialPageRoute(
+                                builder: (_) => const LoginScreen()),
                           );
                         },
                         child: Text(

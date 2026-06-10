@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
-import '../home/home_screen.dart';
+import '../main_navigation_screen.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -42,11 +42,16 @@ class _LoginScreenState extends State<LoginScreen> {
           content: Text('Welcome back, ${authProvider.user?.name ?? "User"}!'),
           backgroundColor: const Color(0xFF000435),
           behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(
+            bottom: MediaQuery.of(context).size.height - 150,
+            left: 16,
+            right: 16,
+          ),
         ),
       );
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const HomePage()),
+        MaterialPageRoute(builder: (_) => const MainNavigationScreen()),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -54,6 +59,11 @@ class _LoginScreenState extends State<LoginScreen> {
           content: Text(authProvider.error ?? 'Authentication failed.'),
           backgroundColor: const Color(0xFFEF4444),
           behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(
+            bottom: MediaQuery.of(context).size.height - 150,
+            left: 16,
+            right: 16,
+          ),
         ),
       );
     }
@@ -86,7 +96,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: const Color(0xFF000435),
                         borderRadius: BorderRadius.circular(24),
                       ),
-                      child: const Icon(Icons.spa, color: Colors.white, size: 42),
+                      child:
+                          const Icon(Icons.spa, color: Colors.white, size: 42),
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -160,11 +171,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       icon: Icons.lock_outline_rounded,
                       suffixIcon: IconButton(
                         icon: Icon(
-                          _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                          _obscurePassword
+                              ? Icons.visibility_off_outlined
+                              : Icons.visibility_outlined,
                           color: const Color(0xFF64748B),
                           size: 20,
                         ),
-                        onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                        onPressed: () => setState(
+                            () => _obscurePassword = !_obscurePassword),
                       ),
                     ),
                     validator: (val) {
@@ -188,7 +202,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF000435),
                         foregroundColor: Colors.white,
-                        disabledBackgroundColor: const Color(0xFF000435).withOpacity(0.5),
+                        disabledBackgroundColor:
+                            const Color(0xFF000435).withOpacity(0.5),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -229,7 +244,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         onTap: () {
                           Navigator.pushReplacement(
                             context,
-                            MaterialPageRoute(builder: (_) => const RegisterScreen()),
+                            MaterialPageRoute(
+                                builder: (_) => const RegisterScreen()),
                           );
                         },
                         child: Text(

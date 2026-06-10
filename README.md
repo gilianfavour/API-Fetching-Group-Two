@@ -1,8 +1,6 @@
-# Golden Glow Mobile Application
+# NutriBlend Mobile Application
 
-A mobile Golden Glow application featuring a clean, modular user interface designed for seamless product discovery and shopping.
-We changed the colors from gold to blue and white becaue visibility was going to be hard
-And the typography and the color names are all there in the main.dart file. Endavour to use them than writing from scratch
+A premium mobile application built with Flutter, designed for seamless health, wellness, and pharmaceutical product discovery and shopping. NutriBlend features a clean, modular user interface, smooth animations, and a persistent navigation shell for a fluid user experience.
 
 ---
 
@@ -14,7 +12,7 @@ To maintain a consistent UI/UX across all screens and prevent layout fragmentati
 
 | Usage | Hex Code | Visual Sample | Application |
 | :--- | :--- | :--- | :--- |
-| **Primary / Brand** | `#000435` | 🟦 Dark Blue | Active Bottom Nav, Primary Buttons, Price Tags, Selection Highlights |
+| **Primary / Brand** | `#000435` | 🟦 Dark Navy | Active Bottom Nav, Primary Buttons, Price Tags, Selection Highlights |
 | **Secondary Accent**| `#0EA5E9` | 🔷 Light Sky Blue | Hyperlinks, Secondary CTA ("See More" link text) |
 | **Dark Neutral** | `#1E293B` | ⬛ Deep Slate | Primary Headings, Product Names, Heavy Body Text |
 | **Medium Neutral** | `#64748B` | ⬜ Cool Grey | Form Placeholders, Secondary Descriptions, Pagination Text |
@@ -22,126 +20,117 @@ To maintain a consistent UI/UX across all screens and prevent layout fragmentati
 
 ### 🔤 Typography & Font Hierarchy
 
-We are utilizing **Google Fonts** via the `google_fonts` package. 
+We utilize **Google Fonts** via the `google_fonts` package. 
 
-* **Headings & Titles:** `GoogleFonts.poppins()` (Weight: `FontWeight.w640` or `w700`)
+* **Headings & Titles:** `GoogleFonts.poppins()` (Weight: `FontWeight.w600` or `w700`)
 * **Body Text & UI Labels:** `GoogleFonts.inter()` (Weight: `FontWeight.w400` or `w500`)
 
-#### Global Text Style Definitions:
+#### Global Text Style Definitions (in `ThemeData`):
 * **Screen Titles (AppBar):** Poppins, Size `20`, Bold (`w600`), Color: `Dark Neutral`
 * **Product Card Titles:** Poppins, Size `16`, Semi-Bold (`w500`), Color: `Dark Neutral`
-* **Price Tags:** Inter, Size `16`, Bold (`w700`), Color: `Primary (#2596be)`
+* **Price Tags:** Inter, Size `16`, Bold (`w700`), Color: `Primary (#000435)`
 * **Body Description:** Inter, Size `14`, Regular (`w400`), Color: `Medium Neutral`
 
-## ⚙️ Implementation: Global Theme Configuration
-
-### Step 1: Add dependencies
-Ensure your `pubspec.yaml` includes the google_fonts package:
-```yaml
-dependencies:
-  flutter:
-    sdk: flutter
-  google_fonts: ^6.1.0  # Or latest stable version
 ---
 
-## ⚙️ Coding Standard: Theme Enforcement
+## 📱 Application Flow & Navigation Architecture
 
-Do not pass raw hex values like `Color(0xFF2596BE)` directly into your widgets. Instead, always refer to the global app theme variables so that updates can be rolled out instantly across the entire app if the design tweaks change.
+The application implements a persistent navigation shell (`MainNavigationScreen`) that hosts the core tabs using an `IndexedStack` to preserve state (like scroll position and page offsets) as the user navigates.
 
-```dart
-// Example of how to style your components:
-Text(
-  "Product Name",
-  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-        color: Theme.of(context).colorScheme.onBackground,
-      ),
-);
-
-ElevatedButton(
-  style: ElevatedButton.styleFrom(
-    backgroundColor: Theme.of(context).colorScheme.primary, // Resolves to #2596be
-  ),
-  onPressed: () {},
-  child: Text("Add to Cart"),
-);
-
-
-## 📱 Application Flow & Architecture
-
-The application design is mapped out into four primary phases: onboarding, discovery, detail viewing, and checkout.
-
-[Splash Screen]
-│
-▼
-[Onboarding Screens]
-│
-▼
-[Dashboard / Home Page] ──(Click "See More" / Bottom Nav)──> [Product Catalog Page]
-│                                                              │
-(Click Product Card)                                           (Click Product Card)
-│                                                              │
-└─────────────────────────► [Product Details] ◄────────────────┘
-│
-(Add to Cart)
-│
-▼
-[Checkout Page]
+```
+          [Splash Screen] 
+                 │
+                 ▼
+        [Onboarding Screens]
+                 │
+                 ▼
+      [Login / Register Screens]
+                 │
+                 ▼
+    [Main Navigation Shell (Persistent bottom bar)]
+     ├── Tab 0: [Dashboard / Home Page]
+     ├── Tab 1: [Product Catalog Page] (2x3 Grid + Pagination)
+     ├── Tab 2: [Wishlist Screen]
+     └── Tab 3: [Profile Page]
+           │
+           ├─► [Order History / Settings / Help / About]
+           │
+     [Product Card Click] ──► [Product Details] ──► [Add to Cart] ──► [Checkout / Cart]
+```
 
 ### Flow Breakdown:
 1. **Entry:** User boots into the **Splash Screen** and slides through the **Onboarding Screens**.
-2. **Discovery (Home):** The user lands on the **Dashboard (Home Page)**. 
-   * Clicking a **Product Card** takes them directly to the **Product Details Page**.
-   * Clicking the **"See More" CTA** takes them to the main **Product Catalog Page**.
-3. **Discovery (Catalog):** The **Product Page** displays items in a structured **2-row by 3-column grid** equipped with **pagination**. Clicking any item here also opens its **Product Details Page**.
-4. **Purchase:** From the details page, the user can **Add to Cart** and proceed to the **Checkout Page**.
+2. **Authentication:** User logs in or registers via the **Login/Register Screens**.
+3. **Core Shell:** Once authenticated, the user lands on the **Main Navigation Shell**, which houses the persistent bottom navigation bar.
+4. **Dashboard (Home):** Tab 0 displays category quick-links, promo banners, and horizontal lists of featured products and best sellers.
+5. **Product Catalog:** Tab 1 displays all available products in a clean grid with search filtering and page pagination.
+6. **Wishlist:** Tab 2 allows users to view favorited items, add them directly to the cart, or remove them.
+7. **Profile & Settings:** Tab 3 manages user settings, order history, and logging out.
+8. **Checkout:** Deep-dive details (like product details, cart, and checkout) are pushed on top of the shell stack, hiding the navigation bar when active.
 
 ---
 
 ## 📦 Screen & Layout Architecture
 
-### 1. Entry Phase
-* **Splash Screen (`splash_screen.dart`)**: App branding, logo placeholder, and a loading spinner.
-* **Onboarding Screen (`onboarding_screen.dart`)**: Multi-step introductory view with an image banner, feature descriptions, and standard "Skip/Next" controls.
+### 1. Entry & Auth Phase
+* **Splash Screen (`splash_screen.dart`)**: Displays NutriBlend branding with a loading spinner and handles auto-login routing.
+* **Onboarding Screen (`onboarding_screen.dart`)**: Multi-step introductory view with slide illustrations and skip/next actions.
+* **Login & Register Screens (`login_screen.dart`, `register_screen.dart`)**: Sleek form validation layouts connected to authentication services.
 
-### 2. Main Hubs
-* **Dashboard / Home (`home_page.dart`)**: 
-  * Unified top `AppBar` (managed in `main.dart`).
-  * **Hero Section:** Banner image with a descriptive callout and a "See More" CTA button.
-  * **Horizontal Product Row:** A quick-scroll row of featured products with minimal details.
-* **Product Catalog Page (`product_page.dart`)**:
-  * Persistent search bar at the top.
-  * **Grid Display:** Products organized cleanly into **2 rows and 3 columns** per page.
-  * **Pagination Controls:** Located at the bottom to easily load subsequent product batches.
-* **Global Navigation (`bottom_nav_bar.dart`)**: Persistent bottom links mapping to **Home**, **Products**, and **Profile**.
+### 2. Main Hubs (Hosted inside `MainNavigationScreen`)
+* **Dashboard / Home (`home_screen.dart`)**: 
+  * Unified top header with logo, title, notifications, and cart shortcut.
+  * **Hero Carousel:** Auto-sliding banner carousel showing current campaigns.
+  * **Quick Categories:** Grid shortcuts to find skincare, supplements, Hair Care, vitamins, etc.
+  * **Horizontal Product Rows:** Showcases of "Featured Products" and "Best Sellers".
+* **Product Catalog Page (`products_screen.dart`)**:
+  * Grid layout showing products with search query filters.
+  * **Pagination Controls:** Bullet indicator showing the current page of products.
+* **Wishlist Screen (`wishlist_screen.dart`)**:
+  * Shows favorited items. Can be viewed as a tab (no back button) or pushed standalone (shows back button).
+* **Profile Page (`profile.dart`)**:
+  * Displays user profile details, order history link, settings, help center, and logout action.
 
-### 3. Detail Phase
-* **Product Details (`product_detail.dart`)**: Deep-dive view of an item including a large product asset, price tags, descriptive copy, and a primary **"Add to Cart"** button.
-* **Checkout Page (`checkout_page.dart`)**: A layout handling cart confirmation, shipping details, and payment processing.
-
----
-
-## 👥 Task Distribution Matrix
-
-To ensure development moves efficiently, responsibilities are divided on a per-page basis:
-
-| Feature / Page | Assigned Developer | Status |
-| :--- | :--- | :--- |
-| **Splash & Onboarding Screens** | *whitney* | ⏳ Not Started / 🏗️ In Progress |
-| **Dashboard / Home Page (Hero + Row)** | *Violah* | ⏳ Not Started / 🏗️ In Progress |
-| **Product Catalog Page (2x3 Grid + Pagination)** | *Agie* | ⏳ Not Started / 🏗️ In Progress |
-| **Product Details Page (Add to Cart logic)** | *Agie* | ⏳ Not Started / 🏗️ In Progress |
-| **Checkout Page (Static/Functional)** | *Whitney* | ⏳ Not Started / 🏗️ In Progress |
-| **Global Shell (AppBar & Bottom Navigation)** | *Glorius* | ⏳ Not Started / 🏗️ In Progress |
+### 3. Detail & Purchase Phase
+* **Product Details (`product_detail_screen.dart`)**: Immersive view of a product with price, description, rating details, and a primary **Add to Cart** action.
+* **Cart Page (`cart_screen.dart`)**: Manages items added to cart, quantity adjustments, and total calculations.
+* **Checkout Page (`checkout_screen.dart`)**: Static-functional view to capture shipping info, order summary, and submit payment.
+* **Order Confirmation (`order_confirmation_screen.dart`)**: Success state displaying order tracking details.
 
 ---
+
 
 ## 🛠️ Setup & Technical Guidelines
 
 * **Framework:** Flutter / Dart
-* **Architecture Style:** Clean Code / Feature-first approach.
-* **Global State:** *[e.g., Provider / Bloc / Riverpod]* will manage the Cart state and Pagination index updates.
+* **Architecture Style:** Feature-first modular structure.
+* **Global State Management:** Managed using **Provider** for clean reactive updates:
+  * `AuthProvider`: Handles session storage, registration, login, and logging out.
+  * `ProductProvider`: Fetches products from services, handles loading state, and detail selection.
+  * `CartProvider`: Manages the local shopping cart, sums quantities, and item totals.
+  * `WishlistProvider`: Manages the user's liked products list.
+  * `NavigationProvider`: Controls the active index of the persistent shell bottom bar.
 
 ### Getting Started
 1. Clone the repository.
 2. Run `flutter pub get` to install dependencies.
-3. Check your assigned page in the **Task Distribution Matrix** above before making a feature branch!
+3. Launch with `flutter run` on your preferred emulator or device.
+
+## Screenshots
+![Splash Screen](image.png)
+![Onboarding screen](image-1.png)
+![SignUp](image-2.png)
+![SignIn](image-3.png)
+![Shimmer](image-5.png)
+![HomePage](image-4.png)
+![HomePage](image-6.png)
+![Products Screen](image-7.png)
+![Product Details Screen](image-8.png)
+![Whistlist](image-9.png)
+![Cart Page](image-11.png)
+![CheckOut Page](image-10.png)
+![Profile Page](image-12.png)
+![Order Hostory](image-14.png)
+![Help and Support](image-13.png)
+![Settings Page](image-15.png)
+![About NutriBlend](image-16.png)
